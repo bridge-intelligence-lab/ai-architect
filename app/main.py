@@ -22,6 +22,7 @@ from .routers.policy import router as policy_router
 from .routers.predict import router as predict_router
 from .routers.query import router as query_router
 from .routers.research import router as research_router
+from .routers.think import router as think_router
 from .routers.risk import router as risk_router
 from .utils.logger import get_logger
 from .utils.metrics import request_count, request_latency
@@ -143,3 +144,4 @@ app.include_router(architect_router)
 app.include_router(architect_stream_router)
 app.include_router(architect_ui_router)
 app.include_router(unified_ui_router)
+app.include_router(think_router)
