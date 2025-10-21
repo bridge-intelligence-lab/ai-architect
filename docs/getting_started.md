@@ -60,6 +60,25 @@ Troubleshooting
 - Vector store not found in LangChain mode: check VECTORSTORE_PATH and re-run scripts/ingest_docs.py
 - Protected endpoints (RBAC): use X-User-Role: analyst for grounded /query and admin-only routes
 
+LiteLLM gateway (OpenAI-compatible)
+- To route LLM calls via LiteLLM, set:
+  - LLM_PROVIDER=openai
+  - OPENAI_BASE_URL=http://<your-litellm-host>:<port>/v1
+  - LLM_API_KEY=<token-if-required>
+  - LLM_MODEL=<alias-configured-in-LiteLLM>
+  - EMBEDDINGS_PROVIDER=openai (if embeddings proxied)
+  - EMBEDDINGS_MODEL=<embeddings-alias>
+- Docker Compose snippet:
+  services:
+    app:
+      environment:
+        - LLM_PROVIDER=openai
+        - OPENAI_BASE_URL=http://litellm:4000/v1
+        - LLM_API_KEY=sk-litellm-any
+        - LLM_MODEL=gpt-4o-mini
+        - EMBEDDINGS_PROVIDER=openai
+        - EMBEDDINGS_MODEL=text-embedding-3-small
+
 Next steps
 - Explore the API: docs/api.md
 - Learn the architecture: docs/architecture_index.md

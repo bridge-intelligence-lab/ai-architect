@@ -110,6 +110,7 @@ Complete file map → `docs/components.md`
 ---
 
 ## 📚 Documentation
+- Mandala integration: [docs/mandala-architecture.md](docs/mandala-architecture.md), [docs/mandala-Implementation-plan.md](docs/mandala-Implementation-plan.md)
 - [Docs index](docs/README.md)
 - [Getting started](docs/getting_started.md)
 - [API](docs/api.md)

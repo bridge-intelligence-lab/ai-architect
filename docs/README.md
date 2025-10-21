@@ -3,6 +3,8 @@
 Start here to explore AI Architect. This index complements the product-focused root README and serves as the corpus for the Architect agent (RAG grounding).
 
 Entry points
+- mandala-architecture.md: high-level integration roadmap (AI Architect + Mandala)
+- mandala-Implementation-plan.md: phased plan and next tasks
 - ai-architect-launch.md: launch scope, UX goals, and checklist
 - architecture_index.md: orientation for the Architect use case and system map
 - components.md: mapping of files to features and services
