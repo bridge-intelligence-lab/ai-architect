@@ -17,7 +17,7 @@ Thanks for your interest in contributing! This project aims to be a minimal refe
    - make ingest
 
 ## Code style and tests
-- Python 3.10+
+- Python 3.11+
 - Lint: `make lint` (uses ruff)
 - Tests: `make test`
 - Please keep tests deterministic; use stub embeddings and temp paths where possible.

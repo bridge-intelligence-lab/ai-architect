@@ -4,7 +4,7 @@ import uuid
 from contextlib import asynccontextmanager
 from typing import Callable
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,11 +22,16 @@ from .routers.policy import router as policy_router
 from .routers.predict import router as predict_router
 from .routers.query import router as query_router
 from .routers.research import router as research_router
+from .routers.think import router as think_router
 from .routers.risk import router as risk_router
 from .utils.logger import get_logger
 from .utils.metrics import request_count, request_latency
 
+# Load .env normally first
 load_dotenv()
+# In local env, force .env to override any pre-set environment (e.g., VS Code injected)
+if os.getenv("APP_ENV", "local").lower() == "local":
+    load_dotenv(find_dotenv(), override=True)
 
 APP_ENV = os.getenv("APP_ENV", "local")
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
@@ -37,7 +42,10 @@ logger = get_logger(level=LOG_LEVEL)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info({"event": "startup", "env": APP_ENV})
+    # Log resolved LLM provider/model early for diagnostics
+    resolved_provider = (os.getenv("LLM_PROVIDER", "stub") or "stub").lower()
+    resolved_model = os.getenv("LLM_MODEL", "gpt-4o-mini")
+    logger.info({"event": "startup", "env": APP_ENV, "llm_provider": resolved_provider, "llm_model": resolved_model})
     # Initialize DB tables
     try:
         from db.session import init_db
@@ -136,3 +144,4 @@ app.include_router(architect_router)
 app.include_router(architect_stream_router)
 app.include_router(architect_ui_router)
 app.include_router(unified_ui_router)
+app.include_router(think_router)

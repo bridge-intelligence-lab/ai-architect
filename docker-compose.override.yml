@@ -1,0 +1,15 @@
+services:
+  api:
+    # Hot reload for development
+    command: /bin/sh -lc ". /opt/venv/bin/activate; python -m pip install -U pip setuptools wheel || true; if [ -n \"${TORCH_INDEX_URL}\" ]; then pip install --index-url \"${TORCH_INDEX_URL}\" torch || true; fi; pip install -e .; uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    environment:
+      - LOG_LEVEL=DEBUG
+      # If you need torch in dev, keep CPU index; remove if not needed
+      - TORCH_INDEX_URL=https://download.pytorch.org/whl/cpu
+    volumes:
+      - ./:/app
+      - pip_cache:/root/.cache/pip
+    # Ensure file change notifications work on some hosts
+    # (optional) increase inotify watches for heavy reloads
+    # sysctls:
+    #   - fs.inotify.max_user_watches=524288

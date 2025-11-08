@@ -40,7 +40,7 @@ This service is a FastAPI application for AI risk, compliance, and observability
 - RBAC
   - Header: X-User-Role with one of: guest, analyst, admin (default: guest if missing/unknown).
   - Route-level rules (summary):
-    - /metrics: open by default; if METRICS_TOKEN is set, requires header X-Metrics-Token.
+    - /metrics: open by default; if METRICS_TOKEN is set, requires header X-Metrics-Token. See observability_metrics.md for details.
     - /predict: analyst/admin
     - /query: grounded=true requires analyst/admin; grounded=false allows guest.
     - /research: step-based rules

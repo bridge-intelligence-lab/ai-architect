@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-architect/contracts/messages.json",
+  "title": "Mandala <-> AI Architect Message Contract",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/defs/ThinkRequest" },
+    { "$ref": "#/defs/ToolResult" }
+  ],
+  "defs": {
+    "UUID": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F-]{8,}$"
+    },
+    "ISODate": { "type": "string", "format": "date-time" },
+    "Action": {
+      "type": "object",
+      "required": ["type", "correlation_id"],
+      "properties": {
+        "type": { "const": "call_tool" },
+        "name": { "type": "string", "minLength": 1 },
+        "args": { "type": "object", "additionalProperties": true },
+        "correlation_id": { "$ref": "#/defs/UUID" }
+      },
+      "additionalProperties": false
+    },
+    "Plan": {
+      "type": "object",
+      "required": ["summary"],
+      "properties": {
+        "summary": { "type": "string" },
+        "steps": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "Audit": {
+      "type": "object",
+      "properties": {
+        "request_id": { "type": "string" },
+        "created_at": { "$ref": "#/defs/ISODate" }
+      },
+      "additionalProperties": true
+    },
+    "ThinkRequest": {
+      "type": "object",
+      "required": ["request_type", "session_id", "user_id", "prompt"],
+      "properties": {
+        "request_type": { "const": "ThinkRequest" },
+        "session_id": { "type": "string", "minLength": 1 },
+        "user_id": { "type": "string", "minLength": 1 },
+        "prompt": { "type": "string", "minLength": 1 },
+        "context": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": false
+    },
+    "ToolResult": {
+      "type": "object",
+      "required": ["request_type", "session_id", "user_id", "correlation_id", "result"],
+      "properties": {
+        "request_type": { "const": "ToolResult" },
+        "session_id": { "type": "string", "minLength": 1 },
+        "user_id": { "type": "string", "minLength": 1 },
+        "correlation_id": { "$ref": "#/defs/UUID" },
+        "result": { "type": "object", "additionalProperties": true }
+      },
+      "additionalProperties": false
+    },
+    "Response": {
+      "type": "object",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": { "$ref": "#/defs/Action" }
+        },
+        "plan": { "$ref": "#/defs/Plan" },
+        "audit": { "$ref": "#/defs/Audit" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

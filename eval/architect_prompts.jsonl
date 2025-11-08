@@ -1,0 +1,8 @@
+{"question": "Explain how short-term and long-term memory work in this system."}
+{"question": "Outline a plan to add a GDPR compliance check feature with RAG citations."}
+{"question": "Propose steps to integrate a risk scoring model and expose it via the API."}
+{"question": "How can we add PII remediation workflows and what environment flags matter?"}
+{"question": "Design a monitoring plan with Prometheus and Grafana for this app."}
+{"question": "What changes are needed to support OpenRouter as a provider alongside OpenAI?"}
+{"question": "Suggest a rollout plan to enable long-term memory safely for users."}
+{"question": "How do we make the Architect agent return structured JSON consistently?"}

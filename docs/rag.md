@@ -31,3 +31,7 @@ Determinism notes
 
 Roadmap and backends
 - For Pinecone and other managed vector DBs, see rag_vector_backends.md for the plan and additional env flags (LC_VECTOR_BACKEND=pinecone, etc.).
+
+See also
+- ports_and_adapters.md: RAGPort design, backends, capabilities, and fallbacks
+- related_projects.md: ecosystem projects (LangChain, LlamaIndex, Haystack, SK) and how we integrate

@@ -80,3 +80,9 @@ Architect agent and community loop
   - PII_REMEDIATION_ENABLED (default: true)
   - PII_REMEDIATION_INCLUDE_SNIPPETS (default: true)
 - Output: remediation items per type, optional citations and snippets
+
+---
+
+See also
+- ports_and_adapters.md: interface-first architecture and planner/RAG backends
+- related_projects.md: curated ecosystem overview and how this project complements it

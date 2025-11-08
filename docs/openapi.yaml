@@ -455,6 +455,14 @@ paths:
           - type: string
           - type: 'null'
           title: User Id
+      - name: llm_model
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Llm Model
       responses:
         '200':
           description: Successful Response
@@ -563,6 +571,30 @@ paths:
             text/html:
               schema:
                 type: string
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /think:
+    post:
+      summary: Think Endpoint
+      operationId: think_endpoint_think_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              additionalProperties: true
+              type: object
+              title: Payload
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
         '422':
           description: Validation Error
           content:

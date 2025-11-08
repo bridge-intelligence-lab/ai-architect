@@ -2,8 +2,8 @@ FROM python:3.11.9-slim-bookworm
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    VIRTUAL_ENV=/app/.venv \
-    PATH="/app/.venv/bin:$PATH"
+    VIRTUAL_ENV=/opt/venv \
+    PATH="/opt/venv/bin:$PATH"
 
 WORKDIR /app
 
@@ -14,11 +14,12 @@ RUN apt-get update \
         build-essential \
         gcc \
         curl \
+        python3-venv \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Create venv and install pip
-RUN python -m venv $VIRTUAL_ENV && pip install --no-cache-dir -U pip
+RUN python -m venv $VIRTUAL_ENV && pip install --no-cache-dir -U pip setuptools wheel
 
 # Install CPU-only PyTorch wheels first, then sentence-transformers
 RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu torch torchvision torchaudio && \

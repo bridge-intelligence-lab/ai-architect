@@ -5,63 +5,51 @@ services:
       dockerfile: Dockerfile
       args:
         TORCH_VARIANT: ${TORCH_VARIANT:-cpu}
-    container_name: ai-monitor-api
+    image: ai-architect:dev
+    # Production-like default command; dev override will change this
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
     env_file:
       - .env
     environment:
-      - APP_ENV=production
-      - LOG_LEVEL=INFO
-      - PROMETHEUS_ENABLED=true
-      - REQUEST_ID_HEADER=X-Request-ID
-      - EMBEDDINGS_PROVIDER=stub
-      - VECTORSTORE_PATH=/data/vectorstore
-      - DOCS_PATH=/app/docs
-      - PROJECT_GUIDE_ENABLED=true
-      - DB_URL=sqlite:////data/audit.db
-      # Optional: protect /metrics with a token. If unset or empty, /metrics is open.
-      # Set a strong value in production and configure Prometheus to send X-Metrics-Token header.
-      - METRICS_TOKEN=${METRICS_TOKEN:-}
-      # Forward OPENAI_API_KEY from host env at runtime (do not store in .env inside image)
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-    ports:
-      - "8000:8000"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-    volumes:
-      - ./examples:/app/examples:ro
-      - ./docs:/app/docs:ro
-      - ./data:/data
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    working_dir: /app
 
   prometheus:
     image: prom/prometheus:latest
-    container_name: ai-monitor-prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    container_name: prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/usr/share/prometheus/console_libraries
+      - --web.console.templates=/usr/share/prometheus/consoles
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
     ports:
       - "9090:9090"
-    depends_on:
-      - api
+    restart: unless-stopped
 
   grafana:
     image: grafana/grafana:latest
-    container_name: ai-monitor-grafana
-    ports:
-      - "3000:3000"
+    container_name: grafana
+    depends_on:
+      - prometheus
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
-    depends_on:
-      - prometheus
     volumes:
-      - grafana-data:/var/lib/grafana
-      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
-      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
 
 volumes:
-  grafana-data:
+  venv_cache:
+  pip_cache:
+  prometheus_data:
+  grafana_data:

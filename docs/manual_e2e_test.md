@@ -3,7 +3,7 @@
 This guide walks you through a comprehensive, reproducible end-to-end (E2E) test of the AI Architect. It combines manual validation with scripted commands (curl/Python) and optional stress testing.
 
 Prerequisites
-- Python 3.10+
+- Python 3.11+
 - POSIX shell (bash)
 - curl and jq installed (required for the script)
   - Ubuntu/Debian: `sudo apt-get update && sudo apt-get install -y jq`
@@ -258,7 +258,7 @@ sqlite3 audit.db 'select count(1) from audit;'
 ```
 Metrics counters
 ```
-curl -sS localhost:8000/metrics | grep '^tokens_total' -n | head -n 3
+curl -sS localhost:8000/metrics | grep '^app_tokens_total' -n | head -n 3
 ```
 Expected: tokens_total appears and increases after requests
 
