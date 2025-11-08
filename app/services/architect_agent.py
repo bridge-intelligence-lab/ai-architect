@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Tuple
 
-from langchain.output_parsers import PydanticOutputParser
+from langchain_core.output_parsers import PydanticOutputParser
 from app.services.llm_client import LLMClient
 from app.services.architect_schema import ArchitectPlan
 from app.services.langchain_rag import answer_with_citations

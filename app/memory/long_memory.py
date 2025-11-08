@@ -10,6 +10,7 @@ from app.utils.logger import get_logger
 logger = get_logger(__name__)
 
 PREFIX = os.getenv("MEMORY_COLLECTION_PREFIX", "memory")
+MEMORY_LONG_RETENTION_DAYS = int(os.getenv("MEMORY_LONG_RETENTION_DAYS", "0"))
 
 # Fallback in-memory store to avoid external dependency in tests/CI
 _FACT_STORE: dict[str, list[dict[str, Any]]] = {}
