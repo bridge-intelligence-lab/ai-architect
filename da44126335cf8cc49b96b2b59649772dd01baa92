@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to improve code quality and streamline development processes through automated tools and task management in the project.
+
+- **Work performed / experiment**: Introduced a new pre-commit configuration file to integrate code formatting and linting tools (Ruff, Black, Isort) into the development workflow. Updated the VSCode tasks to rename and modify existing tasks for testing, serving the application, linting, and exporting OpenAPI documentation.
+
+- **Result or outcome**: The implementation of automated code quality checks and streamlined task management enhances the development process, ensuring consistent code style and reducing manual errors.
+
+- **Learning or next step**: Monitor the effectiveness of the new pre-commit hooks and VSCode tasks in improving code quality and developer productivity. Consider further automation or integration of additional tools based on team feedback.
