@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The effectiveness of using synthetic data for training a logistic regression model and its implications for real-world performance.
+
+- **Work performed / experiment**: Implemented a Grafana dashboard for monitoring model performance and created comprehensive Data and Model Cards to document the synthetic dataset and logistic regression model, including details on data sources, preprocessing, evaluation metrics, and limitations.
+
+- **Result or outcome**: Successfully established a monitoring solution with Grafana and documented the model and dataset, highlighting the synthetic nature of the data and its limitations for production use.
+
+- **Learning or next step**: Recognize the need for further validation of the model with real-world data and incorporate bias and fairness audits for future deployments.
