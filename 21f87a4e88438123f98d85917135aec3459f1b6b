@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aims to enhance the documentation and usability of the project by creating a self-guided product tour and solution architect assistant using the existing documentation as a resource.
+
+- **Work performed / experiment**: A new document (`project_guide_rag.md`) was created outlining a phased approach to implement a Project Guide feature, which includes phases for document ingestion, brainstorming, gap detection, and maintaining a patterns catalogue. The README was updated to reference this new document.
+
+- **Result or outcome**: The addition of the Project Guide aims to facilitate onboarding, discovery, and contributions by providing structured guidance and resources, thus improving the overall usability of the project.
+
+- **Learning or next step**: The next steps involve implementing the initial ingestion of documentation, adding a mode flag for the Project Guide, and developing the associated prompts and testing strategies to ensure the feature meets its objectives while maintaining compliance and auditability.
