@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to log API output for better monitoring and debugging while ensuring the application architecture is clearly documented.
+
+- **Work performed / experiment**: Added a new task in the VSCode configuration to run the API with logging enabled, and updated the README to include a detailed architecture diagram using Mermaid syntax.
+
+- **Result or outcome**: The API can now be run with logs directed to a file, enhancing observability. The architecture documentation is improved, providing a clearer understanding of system components and their interactions.
+
+- **Learning or next step**: Monitor the logs generated during API execution for insights into performance and issues. Further refine the architecture documentation as the system evolves and additional components are integrated.
