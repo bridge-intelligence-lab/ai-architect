@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The implementation of a machine learning-like scoring method for risk assessment could enhance the accuracy of risk evaluations compared to the existing heuristic method.
+
+- **Work performed / experiment**: Developed a deterministic scoring function that simulates machine learning behavior without external dependencies. This involved creating a new scoring method that analyzes text based on the presence of risky keywords and normalizes the score based on text length. Updated the `/risk` endpoint to return the scoring method used and modified the scoring logic to switch between heuristic and deterministic scoring based on an environment variable.
+
+- **Result or outcome**: The code now includes an optional deterministic scoring method that can be enabled via an environment variable (`RISK_ML_ENABLED`). The `/risk` endpoint has been updated to return the method used for scoring, and tests have been added to verify the functionality of the new scoring method.
+
+- **Learning or next step**: Further testing and validation of the deterministic scoring method's effectiveness compared to the heuristic method are needed. Additionally, exploring the integration of actual machine learning models in the future could provide further improvements in risk assessment accuracy.
