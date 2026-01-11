@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to enhance the document ingestion process to support PDF files alongside existing text formats, while also implementing a log retention feature for database audits.
+
+- **Work performed / experiment**: The code was modified to include a new function for extracting text from PDF files using the PyMuPDF library. Additionally, a new retention script was created to manage the deletion of old audit logs based on a configurable retention period. The README was updated to reflect the new capability of ingesting PDF files.
+
+- **Result or outcome**: The ingestion script now successfully processes both text and PDF files, allowing for broader document handling. The audit log retention feature was implemented, enabling automatic cleanup of old logs.
+
+- **Learning or next step**: The next step involves testing the PDF ingestion functionality to ensure text extraction works correctly across various PDF formats and refining the retention logic based on operational feedback. Further documentation may be needed to guide users on the new features.
