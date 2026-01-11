@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to enhance the application's observability by integrating metrics tracking for HTTP requests and their performance, specifically focusing on error handling and response times.
+
+- **Work performed / experiment**: Modifications were made to the codebase to include Prometheus metrics for tracking request counts and latencies. This involved updating the request logging middleware to capture metrics on both successful and failed requests, as well as adjusting the metrics router to utilize a centralized registry for metrics.
+
+- **Result or outcome**: The implementation successfully tracks the number of requests and their latencies, providing insights into application performance and error rates. The changes also included a new section in the README for metrics exposure, enhancing documentation for users.
+
+- **Learning or next step**: The next step involves monitoring the collected metrics in a production environment to assess their utility and accuracy. Further refinements may be made based on observed performance data and user feedback.
