@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The existing architecture diagram may not effectively represent the flow of data and processes within the system, leading to potential misunderstandings of the system's components and their interactions.
+
+- **Work performed / experiment**: The architecture diagram in the README.md file was restructured from a top-down flowchart to a left-right flowchart format. This involved simplifying the representation of components and their interactions, focusing on key processes such as search, fetch, summarize, and risk check, while also reorganizing audit-related elements.
+
+- **Result or outcome**: The updated diagram provides a clearer and more concise representation of the system's architecture, enhancing readability and understanding of the data flow and audit processes.
+
+- **Learning or next step**: Evaluate the effectiveness of the new diagram by soliciting feedback from team members and stakeholders to ensure it meets their needs for clarity and comprehensibility. Further iterations may be necessary based on this feedback.
