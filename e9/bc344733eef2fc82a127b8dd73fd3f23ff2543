@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need for improved documentation in the README file to enhance understanding of the project's architecture and components.
+
+- **Work performed / experiment**: Updated the README file to include an architecture diagram and screenshots related to CI, logs, and the MLflow UI.
+
+- **Result or outcome**: The README now reflects the inclusion of the architecture diagram and relevant screenshots, marking this task as complete.
+
+- **Learning or next step**: Ensure that documentation is consistently updated with new features and changes to maintain clarity for future users and contributors.
