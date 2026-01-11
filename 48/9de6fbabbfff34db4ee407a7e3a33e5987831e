@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The functionality of the `load_prompt` method in handling various prompt queries and versions is uncertain, particularly regarding its error handling for non-existent prompts and versions.
+
+- **Work performed / experiment**: A new test suite was created in `tests/test_prompts.py` using pytest to validate the behavior of the `load_prompt` function. This includes tests for loading the latest prompt, loading a specific version, and ensuring that appropriate exceptions are raised for missing prompts and invalid versions.
+
+- **Result or outcome**: The tests confirm that the `load_prompt` function correctly retrieves prompts and versions, and raises the expected exceptions when prompts or versions are not found.
+
+- **Learning or next step**: The successful implementation of these tests indicates that the `load_prompt` function behaves as intended. Future steps may include expanding the test coverage to include additional edge cases or integrating these tests into a continuous integration pipeline to ensure ongoing reliability.
