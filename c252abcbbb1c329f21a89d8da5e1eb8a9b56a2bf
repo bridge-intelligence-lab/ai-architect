@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to include user role information in API requests to ensure proper access and functionality for different user types.
+
+- **Work performed / experiment**: Modified the API request in the `manual_e2e_test.sh` script to include an additional header (`X-User-Role: analyst`) when posting research data.
+
+- **Result or outcome**: The change allows the API to correctly identify the user's role, potentially affecting the response and access to resources based on user permissions.
+
+- **Learning or next step**: Test the modified script to verify that the inclusion of the user role header improves the API's response and functionality for different user roles.
