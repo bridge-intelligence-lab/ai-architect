@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The integration of PDF file ingestion into the existing document processing system may require adjustments to ensure compatibility and functionality alongside text files.
+
+- **Work performed / experiment**: Updated the README documentation to reflect the inclusion of a sample PDF file (`examples/gdpr.pdf`) for ingestion, and removed instructions for manually creating a text file. The PDF file was created with basic content to test the ingestion process.
+
+- **Result or outcome**: The README now provides clearer instructions for users on how to utilize the document ingestion feature, including support for both text and PDF formats.
+
+- **Learning or next step**: Further testing of the document ingestion script (`ingest_docs.py`) will be conducted to verify that the system correctly processes the new PDF format and extracts text as intended.
