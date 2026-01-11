@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to enhance the `/research` endpoint to include a new step for risk checking and to improve audit capabilities for compliance tracking.
+
+- **Work performed / experiment**: Modified the `/research` endpoint to accept an additional step, `risk_check`, and updated the output structure to include step-level audit details. Implemented example usage and notes for configuration options.
+
+- **Result or outcome**: The `/research` endpoint now supports a more comprehensive workflow that includes risk assessment, along with detailed audit information for each step, enhancing compliance and traceability.
+
+- **Learning or next step**: Continue to test the new functionality in various scenarios to ensure reliability and effectiveness of the risk-checking process, and explore further integration with MLflow for model management.
