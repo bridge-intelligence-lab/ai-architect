@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The existing prediction API may not adequately validate input features against the expected model schema, potentially leading to errors during prediction.
+
+- **Work performed / experiment**: Implemented a new endpoint (`/predict/schema`) to retrieve the expected feature list and model metadata. Enhanced the existing prediction logic to validate input features against the model's expected feature order, ensuring that the input matches the training schema. Added error handling for missing or extra features and improved numeric validation for input values.
+
+- **Result or outcome**: The new schema endpoint successfully returns the required feature list and metadata. The prediction function now raises clear HTTP exceptions for invalid input, improving robustness and user feedback.
+
+- **Learning or next step**: The implementation has improved input validation and error handling. Future work may involve further refining the feature validation process and exploring automated tests to ensure the prediction API behaves as expected under various scenarios.
