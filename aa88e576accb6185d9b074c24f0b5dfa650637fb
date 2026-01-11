@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to enable various features and configurations in the application to enhance its functionality and performance, specifically regarding the integration of RAG (Retrieval-Augmented Generation) and LLM (Large Language Model) capabilities.
+
+- **Work performed / experiment**: The code diff involved modifying the `.env.example`, `Dockerfile`, and `docker-compose.yml` files. Key changes included enabling RAG and LLM features, setting the LLM provider to OpenAI, and configuring the environment for a virtual environment setup in the Docker container.
+
+- **Result or outcome**: The application now has enhanced capabilities with RAG and LLM features enabled, allowing for improved data retrieval and processing. The Docker setup has been streamlined to use a virtual environment, ensuring better dependency management.
+
+- **Learning or next step**: The next step involves testing the application with the new configurations to evaluate the performance improvements and ensure that the enabled features function as intended. Further adjustments may be needed based on the testing outcomes.
