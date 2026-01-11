@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The integration of a local observability stack using Prometheus and Grafana will enhance monitoring capabilities for the AI risk monitoring application.
+
+- **Work performed / experiment**: Implemented a new `docker-compose.yml` file to set up services for the API, Prometheus, and Grafana. Added a Mermaid diagram to the README for visualizing the agent flow, and created a Grafana dashboard JSON file for monitoring metrics.
+
+- **Result or outcome**: Successfully established a local observability stack that allows for real-time monitoring of application metrics, including request rates and latency. The README now includes detailed instructions for starting the stack and using Grafana.
+
+- **Learning or next step**: Validate the functionality of the observability stack by testing the metrics collection and visualization in Grafana. Further refine the dashboard based on user feedback and performance data.
