@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The implementation of role-based access controls and the ability for guests to perform ungrounded queries may affect the system's functionality and security.
+
+- **Work performed / experiment**: Updated the README to include new curl commands for testing role-based access, allowing analysts to perform grounded queries and guests to perform ungrounded queries. Added detailed phases for future enhancements, including the introduction of various agents for tasks like PII detection and risk scoring.
+
+- **Result or outcome**: Successfully documented the new capabilities and planned enhancements, ensuring clarity on how different user roles interact with the system and outlining future development phases.
+
+- **Learning or next step**: Continue to implement and test the outlined features in subsequent phases, focusing on the integration of agents and ensuring robust role-based access controls are maintained.
