@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The implementation of a memory management system that can efficiently store and retrieve user facts and session data using both in-memory and database storage methods.
+
+- **Work performed / experiment**: Developed two new modules: `long_memory.py` for managing user facts with an in-memory store and embedding retrieval, and `short_memory.py` for handling session data with a SQLite database. Implemented functions for fact ingestion and retrieval, as well as session turn management.
+
+- **Result or outcome**: Successfully created a dual memory system that allows for flexible storage options, enabling retrieval of user facts based on embeddings and managing session data through a structured database.
+
+- **Learning or next step**: Evaluate the performance of both memory systems under load and refine the embedding retrieval process. Consider implementing additional features such as data expiration or more sophisticated similarity measures to enhance retrieval accuracy.
