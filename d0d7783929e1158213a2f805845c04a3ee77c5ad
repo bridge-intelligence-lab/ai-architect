@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The routing intents for various prompts (PII, risk, policy) and the structure of PII entities returned by the API are functioning correctly and meeting specified requirements.
+
+- **Work performed / experiment**: Added checks to validate the router intents for specific prompts and assertions for the structure of PII entities returned when the `include_citations` flag is set. This included testing for expected intents and ensuring that required fields in the response are present.
+
+- **Result or outcome**: The code now logs pass/fail messages based on the validation of router intents and the presence of required fields in PII entities. Failures are logged with specific messages to aid in debugging.
+
+- **Learning or next step**: Further testing is needed to ensure that the new checks are robust and cover all edge cases. Additionally, consider implementing automated tests to streamline validation processes in future iterations.
