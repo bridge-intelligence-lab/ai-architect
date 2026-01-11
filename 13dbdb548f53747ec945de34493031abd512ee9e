@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to implement a mechanism to detect and manage changes in the OpenAPI schema automatically during pull requests, while also enhancing the model loading process in the MLflow client.
+
+- **Work performed / experiment**: A new GitHub Actions workflow (`openapi-drift-check.yml`) was created to check for OpenAPI schema drift on pull requests. The Dockerfile was updated to use a specific Python version and included an upgrade step for dependencies. Modifications were made to the `predict.py` and `mlflow_client.py` files to enhance the model loading functionality by including the model URI and implementing a caching mechanism for loaded models.
+
+- **Result or outcome**: The new workflow successfully detects changes in the OpenAPI schema, prompting developers to regenerate and commit the updated schema if drift is detected. The model loading process now supports caching, improving efficiency by reducing redundant model loading operations.
+
+- **Learning or next step**: The team will monitor the effectiveness of the OpenAPI drift detection and the model caching mechanism in practice. Future steps may include refining the caching strategy based on usage patterns and further automating the schema update process.
