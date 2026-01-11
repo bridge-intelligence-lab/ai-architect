@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to optimize Docker image builds by managing dependencies and configurations for CPU and GPU variants of PyTorch.
+
+- **Work performed / experiment**: Introduced a `.dockerignore` file to exclude unnecessary files from the Docker build context, modified the `Dockerfile` to allow for conditional installation of CPU or CUDA versions of PyTorch based on a build argument, and updated the `.env.example` and `README.md` to document the new `METRICS_TOKEN` feature for securing metrics access.
+
+- **Result or outcome**: The Docker image build process is now more efficient, with reduced size and improved installation speed for PyTorch. The documentation has been enhanced to guide users on securing metrics endpoints.
+
+- **Learning or next step**: Monitor the impact of these changes on build times and image sizes, and gather feedback from users regarding the new metrics security feature to determine if further adjustments are needed.
