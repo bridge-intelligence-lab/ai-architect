@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to validate the performance of a machine learning model and assess data drift between a baseline dataset and a new batch of data.
+
+- **Work performed / experiment**: The CI workflow was updated to include steps for training a machine learning model and checking for data drift. Two new CSV files were created: a baseline dataset and a new batch dataset.
+
+- **Result or outcome**: The CI workflow now successfully trains a model and performs a drift check, allowing for automated validation of model performance against new data.
+
+- **Learning or next step**: The next step involves analyzing the results of the drift check to determine if the model's performance is consistent with the baseline, and making adjustments to the model or data preprocessing as necessary.
