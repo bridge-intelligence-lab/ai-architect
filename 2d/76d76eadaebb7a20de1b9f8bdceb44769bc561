@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to monitor model performance and detect data drift effectively during the CI process.
+
+- **Work performed / experiment**: Enhanced the `README.md` documentation to include instructions for logging parameters, metrics, and artifacts to MLflow during model training, and added a deterministic drift check using the `ml/drift.py` script.
+
+- **Result or outcome**: The updated documentation provides clearer guidance on how to track model performance and handle data drift, including the option to fail the CI build if drift exceeds a specified threshold.
+
+- **Learning or next step**: Implement the drift detection in the CI pipeline and evaluate its effectiveness in maintaining model performance over time.
