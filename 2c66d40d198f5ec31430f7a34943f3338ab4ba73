@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The integration of LiteLLM as an OpenAI-compatible gateway for LLM calls may require specific configuration settings to function correctly within the existing architecture.
+
+- **Work performed / experiment**: Documentation was updated to include new integration details for LiteLLM, outlining necessary environment variables and providing a Docker Compose snippet for setup.
+
+- **Result or outcome**: The README and getting started documentation now contain clear instructions for configuring LiteLLM, enhancing the usability and accessibility of the integration for developers.
+
+- **Learning or next step**: Further testing of the LiteLLM integration will be conducted to ensure that the documented configurations work as intended and to identify any additional requirements or optimizations needed for seamless operation.
