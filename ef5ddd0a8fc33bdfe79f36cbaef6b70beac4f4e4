@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The existing PII (Personally Identifiable Information) detection patterns may not adequately cover various locales and types of PII, leading to potential gaps in detection accuracy.
+
+- **Work performed / experiment**: The code was modified to introduce locale-specific patterns for PII detection. This included adding regex patterns for US, UK, Canadian, and German identifiers, as well as enhancing the base patterns for email, phone numbers, and other identifiers. Functions were created to dynamically compile active patterns based on environment variables for PII types and locales.
+
+- **Result or outcome**: The implementation now supports a broader range of PII types and locales, allowing for more accurate detection of sensitive information across different regions. The system can adapt to various configurations based on environment settings.
+
+- **Learning or next step**: Further testing is needed to evaluate the effectiveness of the new patterns in real-world scenarios. Additionally, feedback from users should be gathered to refine the regex patterns and ensure they minimize false positives while maximizing detection accuracy.
