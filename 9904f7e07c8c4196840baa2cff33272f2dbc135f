@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The effectiveness of integrating machine learning (ML) into the risk scoring endpoint and its impact on scoring accuracy compared to heuristic methods.
+
+- **Work performed / experiment**: Updated the API documentation to clarify the behavior of the risk scoring endpoint, including the introduction of feature flags (RISK_ML_ENABLED, RISK_THRESHOLD) and detailed audit fields. Conducted tests to ensure the new features function correctly.
+
+- **Result or outcome**: The documentation now accurately reflects the new risk scoring logic, differentiating between heuristic and ML-based scoring methods. All tests related to these changes passed successfully.
+
+- **Learning or next step**: Proceed with deeper reviews of MLflow integration and ensure predictable local runs, while continuing to monitor the performance of the ML path in production.
