@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The effectiveness of a PII detection mechanism using regex and heuristics, and the potential for integration with additional tools like spaCy/NER for enhanced detection capabilities.
+
+- **Work performed / experiment**: Developed an initial PII detector that utilizes regex and heuristics, integrated it with the router, and created tests and documentation for the `pii_detect` intent and audit fields.
+
+- **Result or outcome**: Successfully implemented a functioning PII detection system with masked previews and established a testing framework, while identifying areas for future enhancement.
+
+- **Learning or next step**: Plan to extend the detection patterns to include additional types (e.g., IBAN, IPv6, passport IDs) and explore the creation of a dedicated `/pii` endpoint with UI examples, as well as integrating RAG policy citations for cross-intent functionality.
