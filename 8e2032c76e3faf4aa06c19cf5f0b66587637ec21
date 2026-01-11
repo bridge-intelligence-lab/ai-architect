@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The integration of LangChain tracing and monitoring into the existing application architecture may improve observability and debugging capabilities.
+
+- **Work performed / experiment**: Added environment variables for LangChain tracing in the `.env.example` file, modified the Dockerfile to change the virtual environment path, and updated the Makefile to include a new command for live evaluation.
+
+- **Result or outcome**: Successfully integrated LangChain tracing configuration, updated the virtual environment path for Docker, and added a new evaluation command to the Makefile, enhancing the development workflow.
+
+- **Learning or next step**: Monitor the effectiveness of the LangChain tracing in production to assess its impact on debugging and performance. Further refine the live evaluation process based on initial results.
