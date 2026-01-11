@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to enable specific features in the application environment and ensure proper documentation for user guidance.
+
+- **Work performed / experiment**: Added instructions in the README.md file to enable the `/architect` feature by setting the `PROJECT_GUIDE_ENABLED` variable. Expanded the documentation section to include links to various resources for better user onboarding.
+
+- **Result or outcome**: Improved clarity in the setup process for users by providing explicit instructions on enabling features and enhancing the documentation structure.
+
+- **Learning or next step**: Monitor user feedback on the updated documentation and instructions to identify any further areas for improvement or additional features that may require clarification.
