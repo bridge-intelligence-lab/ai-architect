@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The existing router configuration documentation may not adequately explain the behavior and setup of the router for intent selection in queries.
+
+- **Work performed / experiment**: The README.md file was modified to remove outdated router configuration details and a new file, router.md, was created to provide a clearer and more structured explanation of the router's configuration, behavior, and usage examples.
+
+- **Result or outcome**: The documentation now includes a comprehensive guide on how to enable the router, select backends, provide rules, and understand the behavior of the router, including examples for testing.
+
+- **Learning or next step**: Future documentation updates should focus on expanding the examples and possibly integrating user feedback to ensure clarity and usability for developers configuring the router.
