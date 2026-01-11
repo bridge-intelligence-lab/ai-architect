@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to enhance the application's functionality by integrating a new feature that allows users to interact with an "architect" mode for generating guided responses and brainstorming ideas based on user queries.
+
+- **Work performed / experiment**: The code changes involved adding a new router for the architect feature in the FastAPI application, modifying the main application to include this router, and updating the README documentation to provide instructions on how to use the new feature. Additionally, a new file for handling architect requests was created, defining the request and response models.
+
+- **Result or outcome**: The integration of the architect feature was successfully implemented, allowing users to submit questions in either "guide" or "brainstorm" mode. The application now supports generating responses with citations and suggested steps.
+
+- **Learning or next step**: The next step involves testing the architect feature to ensure it functions as intended and gathering user feedback to refine the feature further. Additionally, monitoring its performance and usability will help identify any potential improvements.
