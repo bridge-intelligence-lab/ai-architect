@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The existing logging mechanism for end-to-end tests may not adequately organize output files, making it difficult to trace logs from individual test runs.
+
+- **Work performed / experiment**: Modified the logging structure in the end-to-end testing script to create a timestamped subdirectory for each test run within the `./e2e_logs` directory. Updated the script to save all relevant output files and logs in this new structure.
+
+- **Result or outcome**: The script now organizes outputs by timestamp, allowing for easier identification and retrieval of logs related to specific test runs. Additionally, implemented a cleanup function to ensure that the server process is properly terminated after tests.
+
+- **Learning or next step**: The new logging structure improves traceability of test results. Future work will involve validating the effectiveness of this structure in real testing scenarios and potentially adding more detailed assertions to enhance test reliability.
