@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The implementation of memory retention and maximum fact limits may not function correctly when environment variables are not properly utilized or configured.
+
+- **Work performed / experiment**: Refactored the code to replace direct usage of environment variables with local variables for `MEMORY_LONG_MAX_FACTS` and `MEMORY_LONG_RETENTION_DAYS`. Additionally, implemented filtering of audit fields based on the status of memory features being enabled or disabled.
+
+- **Result or outcome**: The code now consistently retrieves configuration values from environment variables, improving clarity and maintainability. The audit process is enhanced to conditionally include memory-related fields based on feature flags.
+
+- **Learning or next step**: Validate the functionality of the new implementation through testing to ensure that memory retention and filtering work as intended under various configurations. Further, monitor for any edge cases related to the handling of memory statistics in the audit process.
