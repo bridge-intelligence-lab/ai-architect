@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The integration of a document ingestion process for retrieval-augmented generation (RAG) within the application architecture is uncertain in terms of its implementation and effectiveness.
+
+- **Work performed / experiment**: Added a new task in the VSCode configuration to automate the ingestion of documents using a Python script (`ingest_docs.py`). Updated the README to reflect the new setup process, including creating a virtual environment, installing dependencies, and running the document ingestion script.
+
+- **Result or outcome**: Successfully implemented a new task for document ingestion, allowing the application to process local documents for RAG. The README now provides clearer instructions for setting up the environment and running the application.
+
+- **Learning or next step**: The next step involves testing the document ingestion functionality with various document types to evaluate its performance and accuracy in retrieving relevant information during queries. Further enhancements may include refining the ingestion process based on feedback and results from initial tests.
