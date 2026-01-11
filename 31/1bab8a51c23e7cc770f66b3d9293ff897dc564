@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to implement a prompt registry to track and manage different versions of prompts used in queries and research, ensuring that the correct version is utilized and logged for auditing purposes.
+
+- **Work performed / experiment**: Added a new `prompts.py` utility to load prompt configurations from YAML files. Updated the `post_query` and `post_research` functions to include logic for loading prompt versions and recording them in audit logs. Modified the `.env.example` file to include environment variables for prompt versions.
+
+- **Result or outcome**: Successfully integrated a prompt registry that allows for the dynamic loading of prompt versions, enhancing the auditing process by associating the prompt version with each request. This ensures better traceability and management of prompt usage.
+
+- **Learning or next step**: Validate the functionality of the prompt registry in various scenarios to ensure robustness. Consider expanding the prompt management system to include versioning strategies and user feedback mechanisms for continuous improvement.
