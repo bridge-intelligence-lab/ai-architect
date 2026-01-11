@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to implement a retention sweeper for managing audit data effectively and ensuring compliance with data retention policies.
+
+- **Work performed / experiment**: Added a new VS Code task labeled "Sweep retention (audit)" to automate the execution of a Python script (`sweep_retention.py`) that deletes audit rows older than a specified retention period. Updated the README to include instructions for using this new feature and provided an example for setting up necessary documentation files.
+
+- **Result or outcome**: Successfully integrated the retention sweeper functionality into the project, allowing for on-demand execution via a VS Code task or command line. The README was also updated to reflect these changes and provide clearer guidance to users.
+
+- **Learning or next step**: Monitor the performance and effectiveness of the retention sweeper in practice. Consider further enhancements based on user feedback and compliance requirements, as well as documenting any additional features or improvements in future iterations.
