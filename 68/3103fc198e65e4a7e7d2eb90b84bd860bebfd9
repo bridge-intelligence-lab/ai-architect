@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to enhance memory management by tracking pruning operations for both short-term and long-term memory in the application.
+
+- **Work performed / experiment**: Implemented additional tracking for memory pruning in the `post_query` function. This includes updating the audit logs to capture the number of pruned entries for both short-term and long-term memory. Added endpoints for listing and clearing memory, as well as for managing retention policies.
+
+- **Result or outcome**: Successfully integrated memory pruning tracking into the audit system, allowing for better insights into memory usage and management. The documentation and tests were updated to reflect these changes.
+
+- **Learning or next step**: Monitor the performance and effectiveness of the new pruning tracking features in production. Consider further enhancements based on user feedback and system performance metrics.
