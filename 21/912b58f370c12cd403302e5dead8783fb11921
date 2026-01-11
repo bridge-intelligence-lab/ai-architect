@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to create a Docker container for deploying a Python application, ensuring all dependencies are correctly installed and configured for a production environment.
+
+- **Work performed / experiment**: A Dockerfile was created to define the environment for the application, including installing necessary build dependencies, copying project files, and setting up the application to run with Uvicorn. Additionally, a `render.yaml` file was added to facilitate deployment on Render, specifying service configurations and environment variables.
+
+- **Result or outcome**: The Dockerfile and render.yaml were successfully implemented, allowing for the application to be built and deployed in a containerized environment. The README was updated to include deployment instructions for Render.
+
+- **Learning or next step**: The next step involves testing the deployment process on Render to ensure that the application runs as expected and verifying that all environment variables are correctly set for production use. Further exploration of persistent storage options may also be necessary.
