@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The application requires robust error handling and idempotent data ingestion to ensure reliability and consistency in processing requests and managing documents.
+
+- **Work performed / experiment**: Implemented custom exception handlers for various error types in the FastAPI application, including validation and generic exceptions. Enhanced the document ingestion process in the RAGRetriever class to ensure idempotency by using content hashes for document IDs and added logic to delete existing documents before adding new ones.
+
+- **Result or outcome**: The application now has improved error handling, which provides clearer responses for different types of errors. The ingestion process is more reliable, preventing duplicate entries and ensuring that documents are only added if their content has changed.
+
+- **Learning or next step**: Monitor the application for any edge cases in error handling and document ingestion. Consider further testing the idempotency feature under various scenarios to ensure it behaves as expected in production.
