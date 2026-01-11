@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The legacy retrieval system may cause intermittent citation issues in specific environments, leading to uncertainty about the reliability of citation retrieval.
+
+- **Work performed / experiment**: The legacy Chroma-based retrieval path was removed, and the system was updated to use the LangChain-backed retrieval path by default. This involved refactoring code in multiple files, including the removal of legacy embedding methods and the integration of a new citation retrieval method.
+
+- **Result or outcome**: The changes resolved the intermittent citation issues and simplified the configuration process. The new system is now more stable and efficient, with plans for future enhancements like multi-query and hyDE improvements.
+
+- **Learning or next step**: The next steps involve implementing planned improvements to the LangChain path and monitoring the system's performance to ensure stability and reliability in citation retrieval.
