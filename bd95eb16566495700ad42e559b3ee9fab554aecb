@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The implementation of memory statistics in the streaming metadata may not function correctly or may not be included when the relevant flags are enabled.
+
+- **Work performed / experiment**: Modified the `_gen_sse` function to include memory statistics in the metadata when specific environment flags (`MEMORY_SHORT_ENABLED` and `MEMORY_LONG_ENABLED`) are set to true. Developed a new test case to verify that the memory reads are included in the metadata when these flags are enabled.
+
+- **Result or outcome**: The code now correctly emits memory statistics in the metadata of the streaming response when the corresponding flags are activated. The test case successfully confirms that the expected memory read values are present in the emitted metadata.
+
+- **Learning or next step**: The implementation works as intended, confirming that the system can dynamically include memory statistics based on environment configurations. Future steps may involve further testing with different configurations and exploring additional metrics to include in the metadata.
