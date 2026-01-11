@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The integration of a Router Agent to dynamically select intents (QA, PII detection, risk scoring, etc.) based on user input and feature flags may improve the application's response accuracy and flexibility.
+
+- **Work performed / experiment**: Implemented a feature-flagged Router Agent that determines the intent of user queries. Updated the `post_query` function to utilize this Router Agent, preserving existing functionality while allowing for new routing capabilities. Enhanced logging for observability and updated documentation and tests accordingly.
+
+- **Result or outcome**: The code now supports dynamic intent routing based on user input and feature flags, while maintaining backward compatibility. Structured logging has been added for better monitoring of query processing.
+
+- **Learning or next step**: Future work includes extending router rules and configurations to support richer backends and developing UI/documentation examples for the Router Agent.
