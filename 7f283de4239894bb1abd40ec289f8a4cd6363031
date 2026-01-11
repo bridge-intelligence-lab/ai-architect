@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to adapt the CI workflow and codebase to improve dependency management and ensure compatibility with different environments while maintaining functionality.
+
+- **Work performed / experiment**: Modified the CI configuration to switch the Python version from 3.11 to 3.10, implemented a virtual environment for dependency installation, and updated the linting and testing steps. Additionally, changes were made to the `query.py` and `rag_retriever.py` files to enhance the handling of the `rag_backend` and to allow for a configurable collection name.
+
+- **Result or outcome**: The CI workflow now uses a virtual environment for better dependency isolation, and the code changes ensure that the `rag_backend` is explicitly set and handled correctly. The collection name for the RAG retriever can now be configured via an environment variable, improving flexibility.
+
+- **Learning or next step**: Validate the new CI workflow and code changes through testing to ensure that all functionalities work as intended. Monitor the impact of these changes on the overall system performance and adaptability to different environments.
