@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The implementation of role-based access control (RBAC) for different user roles (admin, analyst, guest) in the application may not function as intended, particularly regarding access to specific endpoints.
+
+- **Work performed / experiment**: Added multiple shell tasks to the VSCode configuration for testing RBAC functionality. Implemented role checks in the `/metrics` endpoint to ensure only users with the "admin" role can access it. Updated the README to reflect the new RBAC enforcement rules.
+
+- **Result or outcome**: Successfully established role-based access checks, confirming that the application correctly restricts access to the `/metrics` endpoint for non-admin users. The tasks for testing various roles were created and documented.
+
+- **Learning or next step**: Further testing of the RBAC implementation is needed to ensure all endpoints enforce the correct permissions. Next steps include refining the role checks for other endpoints and conducting comprehensive tests to validate the overall security model.
