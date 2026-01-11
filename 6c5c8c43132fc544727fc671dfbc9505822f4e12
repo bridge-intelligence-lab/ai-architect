@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The integration of model signature and feature order logging in the ML training process may improve the predict endpoint's reliability and clarity in serving predictions.
+
+- **Work performed / experiment**: Enhanced the `/predict` endpoint documentation to specify the required request format and error handling. Updated the ML training script to log model signatures and feature order, ensuring alignment during model serving. Conducted negative tests for the `/predict` endpoint to validate error handling.
+
+- **Result or outcome**: The documentation now clearly outlines the requirements for the `/predict` endpoint, including the structure of the request and potential error responses. The ML training process successfully logs additional artifacts, improving the predictability of model serving.
+
+- **Learning or next step**: Continue to monitor the performance of the `/predict` endpoint with the new logging features in place. Further review the integration of MLflow for consistency and explore additional testing scenarios to ensure robustness in various use cases.
