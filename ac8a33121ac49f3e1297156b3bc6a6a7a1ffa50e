@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The effectiveness of a new PII (Personally Identifiable Information) detection mechanism based on regex and heuristics in accurately identifying and masking various types of sensitive data.
+
+- **Work performed / experiment**: Added documentation for PII detection configuration, including environment variables for specifying types and locales, detailed descriptions of supported PII patterns, and examples of usage. Implemented a deterministic PII detection system that masks detected values while providing previews and counts.
+
+- **Result or outcome**: Successfully documented the PII detection features, including the ability to customize detection through environment variables and the behavior of the masking system. The implementation allows for locale-specific patterns and provides a clear interface for users to test the functionality.
+
+- **Learning or next step**: Further testing is needed to evaluate the accuracy of the PII detection patterns and to refine the system to minimize false positives. Consider enhancing the regex patterns based on user feedback and real-world data to improve detection reliability.
