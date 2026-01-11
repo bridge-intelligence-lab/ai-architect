@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The effectiveness and reliability of the AI Risk & Compliance Monitor's end-to-end functionality need to be validated through a comprehensive testing process.
+
+- **Work performed / experiment**: A new manual end-to-end (E2E) test plan was developed, detailing the setup and execution of various test scenarios for the AI Risk & Compliance Monitor. This included health checks, query validations (both grounded and ungrounded), intent selection, PII detection, and risk scoring, using curl commands and Python scripts.
+
+- **Result or outcome**: The test plan provides a structured approach to validate the system's components and outputs, ensuring that each feature behaves as expected. It includes specific commands, expected results, and a methodology for logging outputs, facilitating reproducibility.
+
+- **Learning or next step**: The next step involves executing the test plan to confirm the functionality of the AI Risk & Compliance Monitor, identifying any discrepancies or areas for improvement based on the test results. Further refinements to the test plan may be necessary based on initial findings.
