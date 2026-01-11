@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The project requires an upgrade from Python 3.10 to 3.11 to ensure compatibility with new features and improvements in the Python ecosystem.
+
+- **Work performed / experiment**: Updated the CI workflow configurations and various project files to use Python 3.11 instead of Python 3.10. This included modifying the setup in CI workflows, the virtual environment creation in the Makefile, and updating documentation to reflect the new Python version requirement.
+
+- **Result or outcome**: The project is now configured to use Python 3.11, ensuring that all dependencies and tools are compatible with this version. The CI/CD pipeline and local development setup have been successfully adjusted.
+
+- **Learning or next step**: Monitor the project's performance and compatibility with Python 3.11, and assess any issues that arise from the upgrade. Consider further testing to leverage new features introduced in Python 3.11.
