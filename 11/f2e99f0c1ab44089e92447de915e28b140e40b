@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need for a structured contribution process and clear development guidelines for the project to enhance collaboration and maintainability.
+
+- **Work performed / experiment**: Created a new `CONTRIBUTING.md` file outlining steps for contributing, including setting up a virtual environment, running tests, starting the API, and maintaining code quality. Updated the `README.md` to reference the Makefile for convenience in local development.
+
+- **Result or outcome**: Established a clear and concise guide for contributors, improving the onboarding process and ensuring consistency in development practices.
+
+- **Learning or next step**: Monitor contributor feedback on the new guidelines and make adjustments as necessary. Consider implementing automated OpenAPI exports in CI for further efficiency.
