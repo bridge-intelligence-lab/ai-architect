@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The script requires the `jq` command-line tool for JSON processing, and the correct formatting of JSON strings in API requests is crucial for successful execution.
+
+- **Work performed / experiment**: Added a check to ensure `jq` is installed before running the script. Modified JSON string formatting in multiple API request commands to escape quotes properly.
+
+- **Result or outcome**: The script now verifies the presence of `jq`, preventing execution errors if it is not installed. The API requests are formatted correctly, ensuring that they can be processed without syntax errors.
+
+- **Learning or next step**: Confirm the functionality of the script in various environments to ensure compatibility and reliability. Consider automating the installation of `jq` if it is not found to streamline the setup process.
