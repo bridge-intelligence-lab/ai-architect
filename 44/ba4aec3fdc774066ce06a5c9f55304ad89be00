@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The effectiveness of implementing a gated drift check in the CI workflow to ensure model performance stability over time.
+
+- **Work performed / experiment**: Modified the CI workflow to change the drift check step from optional to gated, ensuring that the drift check must pass for the workflow to proceed. Updated documentation to reflect the owner and contact information.
+
+- **Result or outcome**: The CI workflow now enforces a mandatory drift check, which enhances the reliability of the model by preventing deployment if significant drift is detected. Documentation was updated to provide accurate ownership and contact details.
+
+- **Learning or next step**: Monitor the impact of the gated drift check on model performance and deployment frequency. Consider further enhancements to the drift detection methodology based on observed results.
