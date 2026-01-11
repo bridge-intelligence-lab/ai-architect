@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The implementation of a machine learning (ML) based risk scoring system may improve the accuracy of risk assessments compared to heuristic methods.
+
+- **Work performed / experiment**: Enhanced the risk scoring functionality by introducing an optional ML-like deterministic scorer, gated by the `RISK_ML_ENABLED` environment variable. Implemented robust parsing for environment variables and added logging for better traceability of scoring methods and thresholds.
+
+- **Result or outcome**: The code now supports both heuristic and ML-based scoring methods, with improved logging for monitoring the scoring process. The ML scoring path is conditionally executed based on the environment variable, allowing for easier toggling between methods.
+
+- **Learning or next step**: Further development is planned to integrate MLflow for model management and to implement data drift monitoring and model evaluation strategies in subsequent phases.
