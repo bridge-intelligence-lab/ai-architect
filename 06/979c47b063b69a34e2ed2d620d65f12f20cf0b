@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to establish a streamlined development environment and testing process for the ai-risk-monitor application, ensuring that all necessary scripts and dependencies are easily accessible and executable.
+
+- **Work performed / experiment**: A Makefile was created to automate the setup and management of the development environment, including tasks such as creating a virtual environment, installing dependencies, running tests, and serving the application. Additionally, a bash script was introduced to facilitate testing of various API endpoints using `curl`, allowing for easy querying and interaction with the application.
+
+- **Result or outcome**: The introduction of the Makefile and the curl_examples.sh script successfully simplified the development workflow, enabling developers to quickly set up the environment and test API functionalities without manual intervention.
+
+- **Learning or next step**: The next step involves gathering feedback from the development team on the usability of the Makefile and curl script, and iterating on these tools to further enhance the development process and address any identified pain points.
