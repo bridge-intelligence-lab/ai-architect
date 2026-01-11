@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The requirement for the `jq` tool in the end-to-end (E2E) testing process was unclear, potentially leading to issues in script execution if not installed.
+
+- **Work performed / experiment**: Added documentation to the `README.md` and `manual_e2e_test.md` files to specify the installation of `jq` as a prerequisite for running the E2E test script.
+
+- **Result or outcome**: The documentation now clearly outlines the need for `jq`, including installation instructions for various operating systems, ensuring users can properly set up their environment for testing.
+
+- **Learning or next step**: Monitor user feedback on the clarity of the updated documentation and consider further enhancements if additional dependencies arise in future testing processes.
