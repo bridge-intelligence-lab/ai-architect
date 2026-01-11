@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The existing SSE streaming method produces disjointed content, leading to a need for a more cohesive and user-friendly output that maintains clarity and coherence in responses.
+
+- **Work performed / experiment**: Developed a LangGraph pipeline for the Architect that orchestrates sub-tasks asynchronously, allowing for concurrent execution while ensuring a single, consolidated response is returned upon completion. This involved defining specific graph nodes for input, retrieval, planning, feature detection, and audit enrichment, along with establishing clear edges for concurrency.
+
+- **Result or outcome**: A new API endpoint was created that delivers a final JSON object containing a summary, optional steps, flags, citations, and audit information. The implementation includes a mode toggle for users to choose between the current SSE streaming and the new deterministic mode, which enhances user experience by providing progress indicators and a cohesive final output.
+
+- **Learning or next step**: The next steps involve rolling out the backend graph with minimal UI, enhancing the user interface and experience, and implementing retries and resilience features. Additionally, comprehensive testing and documentation will be developed to ensure robustness and clarity in the new mode's functionality.
