@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The integration of multiple machine learning models on a single GPU setup may lead to resource contention, affecting performance and model accessibility.
+
+- **Work performed / experiment**: Configured a single-box setup on `tensorbook` with a 3080 Ti GPU to run vLLM and Ollama models. Adjusted settings in VSCode for auto-saving files and documented the setup process for running models, including cache management, service configurations, and API integrations.
+
+- **Result or outcome**: Successfully established a working environment where vLLM runs on the GPU and Ollama operates on the CPU without resource conflicts. Verified functionality through API tests, ensuring models were accessible and operational.
+
+- **Learning or next step**: The setup demonstrated effective resource management; future experiments may involve scaling the setup by introducing additional GPUs or optimizing model configurations to enhance performance further.
