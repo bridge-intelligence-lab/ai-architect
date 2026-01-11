@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to implement a new research functionality within the application, allowing users to submit research topics and receive structured findings based on specified steps.
+
+- **Work performed / experiment**: A new router for research was created in `research.py`, which includes an endpoint for handling POST requests. The endpoint validates the input, processes the research using an `Agent`, estimates token usage and cost, and logs the request details for auditing purposes. Additionally, a new schema for the research request and response was defined in `research.py`.
+
+- **Result or outcome**: The new research functionality was successfully integrated into the application, allowing users to submit research requests and receive structured responses. The implementation includes input validation, cost estimation, and audit logging.
+
+- **Learning or next step**: The next step involves testing the new functionality for performance and accuracy, gathering user feedback, and iterating on the implementation based on real-world usage and requirements.
