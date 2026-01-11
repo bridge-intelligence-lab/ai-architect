@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The existing OpenAPI specification may not adequately represent the expanded functionality of the AI Risk & Compliance Monitor, potentially leading to incomplete documentation and integration issues.
+
+- **Work performed / experiment**: The OpenAPI specification was significantly revised to enhance clarity and completeness, including the addition of new endpoints and detailed request/response schemas. Additionally, a new entry was added to the `.gitignore` file to exclude end-to-end logs from version control.
+
+- **Result or outcome**: The OpenAPI documentation is now more comprehensive, reflecting the full range of functionalities offered by the application, which should improve developer understanding and integration. The `.gitignore` update prevents unnecessary log files from cluttering the repository.
+
+- **Learning or next step**: Further testing of the updated API endpoints is required to ensure they function as intended. Additionally, ongoing documentation reviews will be necessary to keep pace with future feature additions and changes.
