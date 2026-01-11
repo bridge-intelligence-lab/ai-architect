@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: There was uncertainty regarding the alignment between the codebase and the documentation, particularly concerning API endpoints and their specifications in OpenAPI.
+
+- **Work performed / experiment**: A code review was conducted to assess the current state of documentation against the implemented code. This included verifying the presence of architect endpoints in OpenAPI, updating documentation for RAG ingestion, and ensuring metrics names matched the code.
+
+- **Result or outcome**: The review confirmed that architect endpoints were now included in OpenAPI with corrected content types. Documentation was updated to reflect the lightweight nature of RAG ingestion and clarified regarding PII handling.
+
+- **Learning or next step**: The next steps involve continuing to align documentation with code changes, particularly focusing on router behavior, memory management, and PII detection, as well as ensuring ongoing updates to the documentation as the code evolves.
