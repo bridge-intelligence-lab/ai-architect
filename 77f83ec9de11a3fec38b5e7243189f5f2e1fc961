@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The implementation of a continuous integration workflow for OpenAPI schema validation and the enhancement of API response types for better documentation and error handling.
+
+- **Work performed / experiment**: A new GitHub Actions workflow (`openapi-drift.yml`) was created to check for changes in the OpenAPI schema during pull requests. The Dockerfile was updated to use a specific Python version and improve package installation. Additionally, API endpoints were modified to include response schemas for better OpenAPI documentation.
+
+- **Result or outcome**: The workflow successfully detects schema drift, prompting developers to regenerate and commit the OpenAPI schema if changes are detected. The API endpoints now provide clearer response types, enhancing the documentation and usability of the API.
+
+- **Learning or next step**: Monitor the effectiveness of the OpenAPI drift check in catching schema changes and refine the workflow as needed. Further testing of the updated API endpoints will ensure that the new response types function correctly and meet user requirements.
