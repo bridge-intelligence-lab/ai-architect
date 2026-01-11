@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to ensure that metrics related to the application do not include requests made to the /metrics endpoint, which could skew performance data.
+
+- **Work performed / experiment**: Documentation was updated to clarify middleware behavior regarding request logging and audit persistence. A new test was implemented to verify that requests to the /metrics endpoint are excluded from request counters.
+
+- **Result or outcome**: The test confirmed that the /metrics endpoint does not increment the application request counter, ensuring accurate metrics reporting. All related tests passed successfully.
+
+- **Learning or next step**: The team will continue to monitor observability features and may explore additional metrics or logging enhancements based on the outcomes of this implementation. Further documentation updates may be required as new features are developed.
