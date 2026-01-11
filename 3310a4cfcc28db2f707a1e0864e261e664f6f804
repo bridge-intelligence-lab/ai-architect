@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to enhance observability metrics for better monitoring and analysis of application performance and resource usage.
+
+- **Work performed / experiment**: Updated documentation to clarify observability metrics, including the introduction of a new file (`observability_metrics.md`) detailing Prometheus metrics and their configuration. Adjusted existing documentation to reference this new file and updated metric names in examples.
+
+- **Result or outcome**: Improved clarity and accessibility of observability metrics documentation, allowing for better understanding and utilization of metrics related to application performance. The metric name was corrected from `tokens_total` to `app_tokens_total` in the testing documentation.
+
+- **Learning or next step**: Further testing and validation of the new metrics and their integration with Prometheus and Grafana to ensure accurate monitoring and reporting. Consider gathering feedback from users on the updated documentation for continuous improvement.
