@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The integration of machine learning model training and drift detection into the existing workflow is uncertain regarding its effectiveness and ease of use.
+
+- **Work performed / experiment**: Added new tasks to the VSCode configuration for training a machine learning model (`ml/train.py`) and checking for model drift (`ml/drift.py`). Updated the README to include usage examples and clarified the MLflow integration for logging model parameters and metrics.
+
+- **Result or outcome**: Successfully implemented and documented the ability to train a model and check for drift within the development environment, enhancing the workflow for machine learning tasks.
+
+- **Learning or next step**: Continue to refine the integration by implementing CI/CD processes that automatically run the training and drift detection scripts on pull requests, and explore further enhancements to the MLflow integration for better model management.
