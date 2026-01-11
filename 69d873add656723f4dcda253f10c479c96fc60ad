@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The effectiveness of a new rules-based backend for routing intents based on configurable JSON rules is uncertain, particularly regarding how well it can prioritize and match intents.
+
+- **Work performed / experiment**: Implemented a new rules backend (version 2) that allows for dynamic configuration of routing rules via JSON. This includes loading rules from environment variables or files, normalizing rule structures, and sorting them by priority. Updated the README to document the new configuration options and usage examples.
+
+- **Result or outcome**: Successfully extended the router's functionality to support richer backend configurations, allowing for more flexible and prioritized intent routing based on user-defined rules. The implementation was tested with example queries to verify expected behavior.
+
+- **Learning or next step**: Further testing and validation of the new routing logic in various scenarios to ensure robustness and accuracy. Additionally, consider developing a user interface for easier rule management and documentation for end-users.
