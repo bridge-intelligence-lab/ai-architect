@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The behavior of the router's backend when the router is disabled (i.e., when `ROUTER_ENABLED` is set to false) and its impact on the audit logs.
+
+- **Work performed / experiment**: Modified the `post_query` function to conditionally set the `audit.router_backend` to "simple" when the router is disabled. Updated documentation to reflect this behavior and created a new test to verify that the correct backend is reported in the audit logs when the router is disabled.
+
+- **Result or outcome**: The code now correctly reflects the router's mode in the audit logs, ensuring that when the router is disabled, the backend is reported as "simple". The new test confirms that the expected behavior occurs, returning a status code of 200 and the appropriate audit information.
+
+- **Learning or next step**: The implementation successfully meets the requirement for auditing the router's backend state. Future steps may include further testing under different configurations and exploring additional features or optimizations for the router service.
