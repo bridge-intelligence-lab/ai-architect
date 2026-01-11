@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to implement a new API endpoint for detecting Personally Identifiable Information (PII) in text and ensuring proper access control and auditing mechanisms.
+
+- **Work performed / experiment**: Developed a new FastAPI router (`pii.py`) that includes a POST endpoint for PII detection. Implemented request validation, role-based access control (RBAC), PII detection logic, optional retrieval of policy references, and cost estimation for processing.
+
+- **Result or outcome**: Successfully integrated the PII detection functionality into the application, allowing users with appropriate roles to submit text for analysis and receive detailed responses, including detected PII entities and associated costs.
+
+- **Learning or next step**: Monitor the performance and accuracy of the PII detection feature in production, gather user feedback, and consider enhancements such as improving the PII detection algorithm or expanding the types of PII that can be detected.
