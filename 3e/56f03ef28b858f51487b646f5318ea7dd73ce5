@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to implement a reliable method for detecting Personally Identifiable Information (PII) in user queries to enhance data privacy and compliance.
+
+- **Work performed / experiment**: Developed a new PII detection feature within the application. This involved creating a new service (`pii_detector.py`) that utilizes regex patterns to identify various types of PII (e.g., emails, phone numbers, social security numbers) in user queries. The `post_query` function in `query.py` was modified to handle PII detection and store results for auditing.
+
+- **Result or outcome**: Successfully integrated PII detection into the query processing workflow. The system can now identify and summarize detected PII, providing feedback to users while also preparing data for audit purposes.
+
+- **Learning or next step**: Further testing and validation of the PII detection accuracy and performance are required. Additionally, exploring enhancements to the detection algorithms and expanding the types of PII recognized could improve functionality and compliance.
