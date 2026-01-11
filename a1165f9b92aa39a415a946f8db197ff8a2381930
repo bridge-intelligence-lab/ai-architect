@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The legacy Chroma-based retrieval path may not function reliably in isolated environments, potentially returning no citations.
+
+- **Work performed / experiment**: Documented the behavior of the legacy retrieval path and recommended the use of the LangChain backend for improved stability and future feature support.
+
+- **Result or outcome**: Identified the need to prefer the LangChain backend by setting LC_RAG_ENABLED=true to avoid issues with the legacy path and outlined plans to deprecate the legacy system.
+
+- **Learning or next step**: Plan to consolidate the retrieval system on LangChain, incorporating enhancements such as multi-query and hyDE improvements.
