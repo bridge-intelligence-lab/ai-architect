@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The implementation of a streaming feature for user input in the architect form may not be necessary or could be simplified.
+
+- **Work performed / experiment**: The code was modified to remove the streaming toggle functionality, which included deleting the associated UI elements and logic that handled streaming input. The textarea for user questions was retained, and the display of steps was updated to use HTML line breaks instead of plain text formatting.
+
+- **Result or outcome**: The streaming feature was successfully removed, simplifying the codebase and potentially improving user experience by focusing on a single input method without the complexity of toggling between streaming and non-streaming modes.
+
+- **Learning or next step**: Monitor user interactions with the updated form to evaluate if the removal of the streaming feature enhances usability. Consider further enhancements based on user feedback and performance metrics.
