@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to enhance the AI Architect's functionality by dynamically determining the 'grounded' state of requests based on user input, rather than enforcing a static mode.
+
+- **Work performed / experiment**: The code was modified to include a new router for architect stream functionality and to adjust the logic for the 'grounded' parameter in the ArchitectRequest model. The decision-making process for the 'grounded' state was updated to use heuristics based on the content of the user's question.
+
+- **Result or outcome**: The changes allowed for more flexible handling of user queries, improving the system's ability to determine when to enforce grounded queries based on the context of the request. This included the addition of optional fields for feature requests in the response model.
+
+- **Learning or next step**: The next step involves testing the new dynamic grounding logic in various scenarios to evaluate its effectiveness and user satisfaction. Further refinements may be necessary based on feedback and performance metrics.
