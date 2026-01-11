@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The implementation of memory field filtering in the audit log based on environment variables may not function as intended, potentially leading to incorrect audit data being returned.
+
+- **Work performed / experiment**: Code was modified to filter out memory-related fields from the audit log when memory features are disabled. Additionally, unit tests were created to verify that memory fields are correctly included or excluded based on the environment variable settings.
+
+- **Result or outcome**: The code changes successfully filtered memory fields from the audit log when the corresponding environment variables were set to "false". The tests confirmed that the audit log behaves as expected under both enabled and disabled conditions.
+
+- **Learning or next step**: The implementation is functioning correctly, but further testing could explore edge cases or performance implications of filtering large audit logs. Additionally, consider documenting the behavior of the memory flags for future reference.
