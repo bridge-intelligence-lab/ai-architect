@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team needed to establish a reliable testing environment for Python applications using pytest within Visual Studio Code (VSCode).
+
+- **Work performed / experiment**: New configuration files were created for VSCode, including `launch.json` for debugging, `settings.json` for enabling pytest, and `tasks.json` for running tests. These files set up the environment, specify test arguments, and define tasks for executing tests.
+
+- **Result or outcome**: The new configurations successfully enabled the execution of pytest tests directly from VSCode, streamlining the testing process and ensuring that the virtual environment is correctly activated.
+
+- **Learning or next step**: The team will monitor the effectiveness of the new testing setup and make adjustments as necessary, potentially exploring additional pytest features or integrating more complex testing scenarios.
