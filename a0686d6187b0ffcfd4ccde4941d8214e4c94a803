@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The need to ensure that the FastAPI application correctly exposes streaming endpoints and metrics in the OpenAPI documentation with appropriate content types.
+
+- **Work performed / experiment**: Modified the FastAPI application to include response classes and content type specifications for the `/architect/stream` and `/metrics` endpoints. Updated the `.gitignore` file to include new documentation files and adjusted the code review documentation to reflect these changes.
+
+- **Result or outcome**: The `/architect/stream` endpoint is now properly documented in OpenAPI with a `text/event-stream` content type, and the `/metrics` endpoint is set to return `text/plain`. This enhances the clarity and usability of the API documentation.
+
+- **Learning or next step**: Continue to monitor the API's behavior during testing and ensure that the new content types function as intended. Document any further adjustments needed based on testing outcomes and user feedback.
