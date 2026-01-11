@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The previous implementation of memory management did not dynamically handle configuration settings for maximum facts and retention days, potentially leading to hardcoded values and reduced flexibility.
+
+- **Work performed / experiment**: Refactored the code to retrieve configuration values for `MEMORY_LONG_MAX_FACTS` and `MEMORY_LONG_RETENTION_DAYS` directly from environment variables instead of using hardcoded values. Additionally, implemented filtering of audit fields based on the state of memory features being enabled or disabled.
+
+- **Result or outcome**: The code now dynamically adjusts memory management parameters based on environment settings, improving configurability. The audit process is also refined to exclude memory-related fields when the corresponding features are disabled.
+
+- **Learning or next step**: Validate the new implementation by testing various configurations of the environment variables to ensure that memory management behaves as expected under different scenarios. Further exploration of performance impacts when memory features are toggled on and off may also be beneficial.
