@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The effectiveness of integrating a lightweight classifier for risk scoring and the potential benefits of using machine learning for enhanced scoring accuracy.
+
+- **Work performed / experiment**: Implemented an initial heuristic scorer and a POST /risk endpoint for analysts/admins, integrated the risk_score intent into the router to enrich audit trails and provide concise answers, and planned for an optional machine learning scorer using scikit-learn, contingent on the RISK_ML_ENABLED flag.
+
+- **Result or outcome**: Successfully established a foundational risk scoring mechanism with the ability to enhance audit capabilities and provide immediate responses, while laying the groundwork for future machine learning integration.
+
+- **Learning or next step**: Further development of the optional ML scorer, including confidence calibration and the establishment of thresholds, as well as the implementation of RAG-based mitigations and explanations.
