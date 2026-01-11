@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to optimize the Docker build process for a project that uses PyTorch, specifically to ensure that the installation is efficient and compatible with CPU-only environments.
+
+- **Work performed / experiment**: Modifications were made to the Dockerfile to streamline the installation of PyTorch and its dependencies by removing conditional logic for CPU/GPU variants and directly installing CPU-only wheels. Additionally, updates were made to the README to clarify the installation process and provide guidance on enabling LangChain RetrievalQA.
+
+- **Result or outcome**: The Dockerfile now installs CPU-only versions of PyTorch and its related libraries more efficiently, and the documentation has been updated to assist users in setting up the environment correctly, including optional features.
+
+- **Learning or next step**: The next step involves testing the new Docker setup to ensure that the CPU-only installation works as intended and evaluating the performance of the LangChain RetrievalQA feature when enabled. Further exploration may be needed to implement GPU support if required in the future.
