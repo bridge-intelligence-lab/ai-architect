@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The team aimed to implement a new prediction feature in the application, uncertain about the integration of machine learning model predictions and the handling of input data.
+
+- **Work performed / experiment**: A new router for predictions was created (`predict.py`), which includes an endpoint (`/predict`) that accepts a request with features, loads the latest machine learning model, processes the input, and returns predictions. The implementation also includes error handling, auditing, and cost estimation.
+
+- **Result or outcome**: The new prediction feature was successfully integrated, allowing users to make predictions based on provided features. The system now logs relevant metrics and costs associated with each prediction request.
+
+- **Learning or next step**: The team learned about the complexities of model integration and input validation. The next step involves testing the prediction endpoint under various scenarios to ensure robustness and accuracy, as well as optimizing performance based on user feedback.
