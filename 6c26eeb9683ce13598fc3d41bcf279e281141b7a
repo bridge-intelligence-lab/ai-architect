@@ -1,0 +1,7 @@
+- **Hypothesis or technical uncertainty**: The effectiveness of the automated end-to-end testing script in validating the outputs of various API calls, particularly regarding the presence of expected data types and counts in responses.
+
+- **Work performed / experiment**: Enhanced the end-to-end testing script by adding assertions to validate the presence of expected entities in the PII (Personally Identifiable Information) responses and the correct risk scoring method when machine learning is enabled. Additionally, checks were implemented to ensure citation counts are within expected bounds for different configurations.
+
+- **Result or outcome**: The script now automatically verifies critical aspects of API responses, logging results for both successful validations and warnings for any discrepancies, thus improving the reliability of the testing process.
+
+- **Learning or next step**: Continue to refine the testing framework by adding more assertions for other API endpoints and exploring additional edge cases to ensure comprehensive coverage of the system's functionality.
