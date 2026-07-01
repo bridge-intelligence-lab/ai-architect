@@ -9,12 +9,14 @@
 ![Hero](docs/images/hero.png)
 
 ## Why AI Architect
-**AI Architect** demonstrates how to build LLM-driven systems with **governance, observability, and FinOps** built-in. It merges **RAG**, **agentic workflows**, and **MLflow** into a production-grade reference architecture.
+**AI Architect** demonstrates how to build LLM-driven systems with **governance, observability, and FinOps** built-in. It brings **retrieval**, **orchestration**, and **MLflow** together into a locally-runnable reference architecture (a demonstrator, not a hardened product). See [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md) for what is shipped vs in progress.
 
 - **Transparent** by design — audit logs, hashed request/response pairs.
 - **Observable** — Prometheus `/metrics` + Grafana dashboards.
-- **Cost-aware** — token and cost tracking per user/day.
+- **Cost-aware** — per-request token accounting and FinOps metrics (real per-model $ cost via LiteLLM is on the roadmap).
 - **Governed** — RBAC, retention sweeps, and prompt registries.
+
+> **Project status (honest):** a working demonstrator, not a hardened product. Out of the box the LLM runs in a deterministic offline **stub** unless a provider key is set; RAG ships a **keyword/deterministic baseline** (vector retrieval is on the roadmap); the architect is a structured **chain** (a LangGraph agent is planned). What is shipped vs in progress lives in [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md).
 
 ---
 
@@ -179,12 +181,14 @@ Full details → `docs/observability.md`, `docs/security.md`
 ## 🗺️ Roadmap (Condensed)
 | Phase | Focus | Status |
 |-------|--------|--------|
-| 0–2 | Core APIs, RAG, Audit, Metrics | ✅ Done |
-| 3–4 | Agents, RBAC, Grafana, Deploy Recipes | ✅ Done |
+| 0–2 | Core APIs, RAG (keyword baseline), Audit, Metrics | ✅ Done |
+| 3–4 | Orchestration (chain), RBAC, Grafana, Deploy Recipes | ✅ Done |
 | 5–6 | PII detection, Risk ML integration, Router v2 | 🚧 In Progress |
-| 7–8 | Memory & Advanced Agents | ✅ Done |
-| 9 | Architect deterministic mode (LangGraph) | ✅ Done |
-| 10+ | New sub-agents (FinOps, Drift Monitor, Router Preview) | 🧩 Planned |
+| 7–8 | Memory (short + long term) | ✅ Done |
+| 9 | Architect agent on LangGraph | 🧩 Planned |
+| 10+ | Real vector RAG, LiteLLM cost tracking, MCP surface | 🧩 Planned |
+
+> Roadmap and build-vs-buy rationale: [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md), [ADR-0004](docs/adr/0004-build-vs-buy.md).
 
 ---
 

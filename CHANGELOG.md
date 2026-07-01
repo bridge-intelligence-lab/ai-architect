@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Docs
+
+* Add `docs/MODERNIZATION_PLAN.md` and `docs/adr/0004-build-vs-buy.md` sequencing the 2026 level-up (real vector RAG, native structured outputs, LiteLLM cost, LangGraph agent, optional MCP) as small per-PR changes with a build-vs-buy rationale per component.
+* Reconcile the README roadmap to reality (no behavior change): the LangGraph architect mode is **planned**, not shipped; RAG ships a keyword/deterministic baseline; the architect is a structured chain; and the LLM runs in a deterministic offline stub unless a provider key is set.
+
 ## [0.9.0] - 2025-10-07
 
 ### Added
