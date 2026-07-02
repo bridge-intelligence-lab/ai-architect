@@ -5,6 +5,11 @@ from typing import List, Optional
 import mlflow
 import mlflow.sklearn
 
+# Recent MLflow releases put the filesystem tracking backend in maintenance mode
+# and raise unless this opt-out is set. The local file store is intentional here
+# (zero-setup local runs); migration to a sqlite backend is planned.
+os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
+
 
 class MLflowClientWrapper:
     def __init__(self, tracking_uri: str | None = None, experiment: str | None = None):

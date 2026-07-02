@@ -12,6 +12,11 @@ from mlflow.models.signature import infer_signature
 EXPERIMENT_NAME = os.getenv("MLFLOW_EXPERIMENT_NAME", "ai-architect")
 TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "./.mlruns")
 
+# Recent MLflow releases put the filesystem tracking backend in maintenance mode
+# and raise unless this opt-out is set. The local file store is intentional here
+# (zero-setup local runs); migration to a sqlite backend is planned.
+os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
+
 
 def load_or_generate_data() -> tuple[pd.DataFrame, pd.Series]:
     # Generate small synthetic dataset (binary classification)
