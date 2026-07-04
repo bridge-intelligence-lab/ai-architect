@@ -47,3 +47,9 @@ lint.select = ["E", "F"]
 lint.ignore = ["E501", "F401", "F821", "E401", "E402"]
 
 
+[tool.pytest.ini_options]
+# Surface slow tests on every run; dump stack traces if a test wedges.
+addopts = "--durations=15"
+faulthandler_timeout = 300
+
+

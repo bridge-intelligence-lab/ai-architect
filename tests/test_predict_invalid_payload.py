@@ -15,16 +15,8 @@ def test_predict_rejects_empty_features(monkeypatch, tmp_path):
     assert "features must be a non-empty object" in r.text
 
 
-def test_predict_rejects_non_numeric_values(monkeypatch, tmp_path):
-    # Train a model to reach value validation (so model load passes)
-    monkeypatch.setenv("MLFLOW_TRACKING_URI", str(tmp_path / ".mlruns"))
-    monkeypatch.setenv("MLFLOW_EXPERIMENT_NAME", "ai-architect-test")
-
-    import subprocess
-    import sys
-
-    subprocess.check_call([sys.executable, "ml/train.py"])  # create run/model
-
+def test_predict_rejects_non_numeric_values(model_env):
+    # Trained model available so validation reaches value coercion
     client = TestClient(app)
     bad_payload = {"features": {"f0": "oops", "f1": None}}
     r = client.post("/predict", json=bad_payload, headers={"X-User-Role": "analyst"})

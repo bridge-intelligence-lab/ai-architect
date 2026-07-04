@@ -7,6 +7,10 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    env:
+      # Recent MLflow releases require an explicit opt-in for the local file
+      # store, the intentional zero-setup backend for tests and local runs.
+      MLFLOW_ALLOW_FILE_STORE: "true"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
