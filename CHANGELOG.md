@@ -4,6 +4,8 @@
 
 ### Added
 
+* Judge calibration round 1 (`docs/eval_calibration_2026-07-04.md`): all 26 baseline judgments audited against the codebase; judge prompts gained hard rules (empty answer scores 1 everywhere, truncated snippet fragments are not evidence), a correctness cap when the question goes unanswered, grounding-aware completeness, and question-type-aware actionability. Re-judging the same answers moved completeness 3.85→3.38 and actionability 2.73→3.62. Also surfaced: the RAG corpus retrieves `docs/llm_agent_streaming_prompts.md` (the old test-prompt list) as context for eval questions, and the CI coverage gate is undocumented under docs/.
+
 * LangSmith LLM-judge evaluators and experiment harness (`scripts/langsmith_judges.py`, `scripts/run_langsmith_eval.py`): four 1-5 judges (correctness, groundedness, completeness, actionability) via litellm, judge prompts versioned in code; harness streams `/architect/stream` per dataset example and runs code evaluators + judges through `langsmith.evaluate()` with experiment metadata (agent backend, max tokens). Offline tests in `tests/test_langsmith_harness.py`.
 
 * LangSmith code evaluators (`scripts/langsmith_evaluators.py`): deterministic structural checks for experiment runs, ported from `run_live_eval.py` and extended with dataset-expectation checks (grounded/citations match, keywords, stream well-formedness, token-cap truncation, latency/TTFT). Category-aware: structure checks skip the negative/adversarial prompt set. Offline tests in `tests/test_langsmith_evaluators.py`.
