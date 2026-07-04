@@ -23,7 +23,7 @@ Exported metrics
   - Counter of tokens accounted (prompt + completion) per endpoint.
   - Updated by /query router after responses.
 - app_cost_usd_total{endpoint}
-  - Counter of estimated USD cost per endpoint.
+  - Counter of USD cost per endpoint. LLM calls use real per-model prices from LiteLLM's pricing map; non-LLM endpoints use a crude token estimate priced by the same map (static fallback for unknown models).
   - Updated by /query router after responses.
 
 Where metrics are defined
