@@ -69,9 +69,19 @@ def _parse_decision(text: str) -> Dict[str, Any]:
     return {"action": "final", "summary": raw[:400]}
 
 
+_BUDGET_EXHAUSTED = (
+    "Retrieval budget exhausted; retrieve_docs is no longer available. "
+    'Respond ONLY with the {"action": "final", ...} JSON object now, '
+    "building the plan from the context you already have."
+)
+
+
 def _make_agent_node(llm: LLMClient, llm_model: Optional[str]):
     def agent_node(state: AgentState) -> AgentState:
+        exhausted = state.get("tool_calls", 0) >= MAX_TOOL_CALLS
         messages = [{"role": "system", "content": _SYSTEM}] + state["messages"]
+        if exhausted:
+            messages = messages + [{"role": "user", "content": _BUDGET_EXHAUSTED}]
         kwargs: Dict[str, Any] = {}
         if llm_model:
             kwargs["model"] = llm_model
@@ -90,10 +100,7 @@ def _make_agent_node(llm: LLMClient, llm_model: Optional[str]):
             "messages": state["messages"]
             + [{"role": "assistant", "content": result.get("text") or ""}],
         }
-        if (
-            decision.get("action") == "retrieve_docs"
-            and state.get("tool_calls", 0) < MAX_TOOL_CALLS
-        ):
+        if decision.get("action") == "retrieve_docs" and not exhausted:
             update["pending_query"] = str(
                 decision.get("query") or state["question"]
             )
@@ -169,6 +176,14 @@ def run_langgraph_architect(
     )
 
     plan_data = final.get("plan") or {}
+    if not str(plan_data.get("summary") or "").strip():
+        # A retrieve request converted at the cap, or a final with no content.
+        # Raising here lets run_architect_agent fall back to the builtin
+        # planner instead of streaming an empty plan to the client.
+        raise RuntimeError(
+            f"langgraph agent produced an empty plan after "
+            f"{int(final.get('tool_calls', 0))} tool calls"
+        )
     try:
         plan = ArchitectPlan(**plan_data)
     except Exception:

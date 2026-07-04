@@ -14,6 +14,28 @@ os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
 TRAIN_TIMEOUT_SECONDS = 180
 
 
+@pytest.fixture(autouse=True)
+def _isolate_llm_env(monkeypatch):
+    """Keep the developer's .env out of the test run.
+
+    app/main.py loads .env with override=True at import time (APP_ENV=local),
+    so importing the app anywhere in the session pulls real provider settings
+    and API keys into the process. Without this guard, tests written against
+    the stub provider silently make real, billed OpenAI calls and fail on
+    live output. Tests that need other values monkeypatch.setenv on top.
+    """
+    monkeypatch.setenv("LLM_PROVIDER", "stub")
+    for var in (
+        "AGENT_BACKEND",
+        "RAG_BACKEND",
+        "LLM_MODEL",
+        "OPENAI_API_KEY",
+        "LANGCHAIN_API_KEY",
+        "LANGCHAIN_TRACING_V2",
+    ):
+        monkeypatch.delenv(var, raising=False)
+
+
 @pytest.fixture(scope="session")
 def trained_model(tmp_path_factory):
     """Run ml/train.py once per session and share the tracking store.
