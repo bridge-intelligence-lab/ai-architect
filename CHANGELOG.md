@@ -8,6 +8,11 @@
 * Retire placeholder response paths: grounded `/query` answers are now extractive (built from matched snippets) instead of a hardcoded stub sentence; the fabricated `synthetic` citation fallback is removed; `audit.rag_backend` reports `keyword_scan`.
 * Rewrite `docs/rag.md` to describe the retrieval path that actually exists; the vector backend remains planned work (plan row C).
 
+### Removed
+
+* Delete dead `app/services/prompt_runner.py` (`parse_json_safe` and the `LC_USE_OUTPUT_PARSER` flag); the live structured-output path in `architect_agent` already validates against the `ArchitectPlan` pydantic model (`docs/adr/0006-structured-outputs.md`).
+* Drop the stale `langchain==0.1.11` dependency; `langchain-core` remains the only LangChain dist, used for typed output parsing.
+
 ### Docs
 
 * Add `docs/MODERNIZATION_PLAN.md` and `docs/adr/0004-build-vs-buy.md`, sequencing the 2026 modernization (real vector retrieval, native structured outputs, LiteLLM cost tracking, LangGraph agent, optional MCP) as small per-PR changes with a build-vs-buy rationale per component.

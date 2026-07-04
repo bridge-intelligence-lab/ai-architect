@@ -10,7 +10,7 @@ Operational notes
 Repository map (high level)
 - FastAPI app: app/
   - Routers: app/routers/* (query, research, predict, pii, pii_remediation, risk, memory, metrics, architect, architect_stream, architect_ui, policy)
-  - Services: app/services/* (doc_retriever, router, llm_client, policy_navigator, architect_agent, architect_schema, pii_detector, pii_remediation, mlflow_client, prompt_runner)
+  - Services: app/services/* (doc_retriever, router, llm_client, policy_navigator, architect_agent, architect_schema, pii_detector, pii_remediation, mlflow_client)
   - Utils: app/utils/* (logger, metrics, audit, rbac, cost, prompts, exceptions, retention)
   - Memory backends: app/memory/* (short_memory, long_memory)
   - Schemas: app/schemas/* (research, predict)
