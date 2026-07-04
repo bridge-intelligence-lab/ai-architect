@@ -7,8 +7,14 @@ from app.services.architect_agent import run_architect_agent
 
 
 def _scripted_llm(responses):
-    """Return a fake LLMClient.call that plays back scripted texts."""
-    it = iter(responses)
+    """Return a fake LLMClient.call that plays back scripted texts.
+
+    After the script is exhausted the last response repeats, so a builtin
+    fallback path that makes extra LLM calls does not hit StopIteration.
+    """
+    from itertools import chain, repeat
+
+    it = chain(iter(responses), repeat(responses[-1]))
 
     def _call(self, messages, model=None, **kwargs):
         return {
@@ -90,8 +96,45 @@ def test_langgraph_non_protocol_reply_becomes_summary(monkeypatch):
     assert plan.summary == "Just some prose answer."
 
 
-def test_langgraph_tool_call_cap(monkeypatch, tmp_path):
-    # The agent keeps asking for tools; the loop must stop at the cap.
+def test_langgraph_tool_call_cap_warns_then_finalizes(monkeypatch, tmp_path):
+    # The agent asks for tools until the cap; once told the budget is gone
+    # it must produce a real final plan, not an empty one.
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    (docs / "a.txt").write_text("alpha beta gamma")
+    monkeypatch.setenv("DOCS_PATH", str(docs))
+    monkeypatch.setenv("AGENT_BACKEND", "langgraph")
+
+    seen_prompts = []
+    retrieve = json.dumps({"action": "retrieve_docs", "query": "alpha"})
+    final = json.dumps({"action": "final", "summary": "Plan built from gathered context."})
+    it = iter([retrieve, retrieve, retrieve, final])
+
+    def _call(self, messages, model=None, **kwargs):
+        seen_prompts.append(messages)
+        return {
+            "text": next(it),
+            "provider": "scripted",
+            "model": "unit-test",
+            "tokens_prompt": 10,
+            "tokens_completion": 5,
+            "cost_usd": 0.001,
+        }
+
+    monkeypatch.setattr(llm_mod.LLMClient, "call", _call)
+
+    plan, audit = run_architect_agent("Loop forever?")
+    assert audit["agent_backend"] == "langgraph"
+    assert audit["agent_tool_calls"] == 3  # MAX_TOOL_CALLS
+    assert plan.summary == "Plan built from gathered context."
+    # the 4th LLM turn (post-cap) must carry the budget-exhausted instruction
+    last_turn = seen_prompts[-1]
+    assert any("budget exhausted" in m["content"].lower() for m in last_turn)
+
+
+def test_langgraph_empty_plan_falls_back_to_builtin(monkeypatch, tmp_path):
+    # A model that ignores the budget warning and keeps requesting tools
+    # must not surface an empty plan: the builtin planner takes over.
     docs = tmp_path / "docs"
     docs.mkdir()
     (docs / "a.txt").write_text("alpha beta gamma")
@@ -102,8 +145,21 @@ def test_langgraph_tool_call_cap(monkeypatch, tmp_path):
     monkeypatch.setattr(llm_mod.LLMClient, "call", _scripted_llm(endless))
 
     plan, audit = run_architect_agent("Loop forever?")
-    assert audit["agent_backend"] == "langgraph"
-    assert audit["agent_tool_calls"] == 3  # MAX_TOOL_CALLS
+    # what matters: the empty langgraph plan never reaches the client
+    assert audit["agent_backend"] == "builtin"
+
+
+def test_langgraph_empty_final_summary_falls_back_to_builtin(monkeypatch):
+    # An immediate final with no summary is an empty plan too.
+    monkeypatch.setenv("AGENT_BACKEND", "langgraph")
+    monkeypatch.setattr(
+        llm_mod.LLMClient,
+        "call",
+        _scripted_llm([json.dumps({"action": "final", "summary": ""})]),
+    )
+
+    plan, audit = run_architect_agent("Empty final")
+    assert audit["agent_backend"] == "builtin"
 
 
 def test_default_backend_is_builtin(monkeypatch):
