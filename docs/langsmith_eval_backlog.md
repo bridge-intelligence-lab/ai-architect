@@ -40,7 +40,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ## Epic 2: Golden dataset
 
 ### LS-4a: Curate + refresh prompt set (v2)
-- **Status:** review (draft at `docs/eval_prompt_set_v2.md`)
+- **Status:** done (approved via PR #19)
 - **Effort:** 2-3 hrs
 - **What:** Review of the year-old prompts (2026-07-04) found them factually still valid but coverage-poor: written as a streaming-UI smoke test, zero coverage of post-2025 features (MCP server, Presidio PII, risk scorer, think planner, LangGraph architect), no negative/adversarial cases, and overlap between the md and jsonl sets. v2 set: 10 kept grounded-core + 8 new-features + 8 negative/adversarial = 26 prompts with per-example metadata (category, expect_grounded, expect_citations, keywords).
 - **Acceptance:** Rodrigo approves `docs/eval_prompt_set_v2.md` including its 3 open questions (brainstorm category, Portuguese prompt, B-set gaps).
@@ -48,7 +48,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 - **Note:** The LangGraph architect already shipped behind `AGENT_BACKEND=langgraph` (deterministic planner remains default). Re-run A6-A8 and B7 against both backends once experiments exist (LS-8).
 
 ### LS-4b: Dataset build script
-- **Status:** todo
+- **Status:** review
 - **Effort:** 2-3 hrs
 - **What:** `scripts/build_langsmith_dataset.py`. Consumes the approved v2 set (as jsonl checked into `eval/`, generated from the doc). Creates/updates dataset `ai-architect-golden`. Each example carries `metadata.category` and expected-property flags read by evaluators.
 - **Acceptance:** Running the script twice is idempotent (updates, no duplicates). Dataset visible in LangSmith with 26 examples, categories filterable.
