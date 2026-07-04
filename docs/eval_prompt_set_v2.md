@@ -8,7 +8,7 @@ Each prompt carries metadata the evaluators read:
 - `expect_citations`: should citations be present?
 - `keywords`: terms a correct answer must mention (code evaluator checks these)
 
-Verified against code on 2026-07-04. Prompts 9-11 (fallbacks/planner behavior) will need a revisit when modernization PR F lands the LangGraph agent.
+Verified against code on 2026-07-04. Note: the LangGraph architect is already shipped behind `AGENT_BACKEND=langgraph`; the deterministic planner is the default. A6-A8 and B7 should eventually run against both backends.
 
 ---
 
