@@ -150,3 +150,12 @@ def test_langsmith_adapter_shapes():
     # tolerate empty run/example
     empty = run_code_evaluators(SimpleNamespace(outputs=None), SimpleNamespace(metadata=None))
     assert len(empty) == len(ALL_EVALUATORS)
+
+
+def test_cost_and_tokens_metrics():
+    from langsmith_evaluators import eval_completion_tokens, eval_cost
+
+    outputs = dict(GOOD_OUTPUTS, audit={"llm_cost_usd": 0.004834, "llm_tokens_completion": 118})
+    assert eval_cost(outputs, GROUNDED_META)["score"] == 0.00483
+    assert eval_completion_tokens(outputs, GROUNDED_META)["score"] == 118
+    assert eval_cost(dict(GOOD_OUTPUTS, audit={}), GROUNDED_META)["score"] is None

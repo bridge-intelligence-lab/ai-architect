@@ -80,7 +80,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ## Epic 4: Experiments
 
 ### LS-8: evaluate() harness + first experiment
-- **Status:** todo
+- **Status:** done (see docs/eval_results/2026-07-04-grid-backend-tokens.md; winners = langgraph + 1024, already in .env)
 - **Effort:** half day
 - **What:** `scripts/run_langsmith_eval.py` with a target function that streams `/architect/stream` (SSE) and assembles the final payload. First experiment is a 2x2 grid over two live config questions instead of deciding them upfront (from .env review 2026-07-04): `AGENT_BACKEND` builtin vs langgraph, and `LLM_MAX_TOKENS` 1024 vs 2048. Four experiments x 26 prompts. Verdict metrics: backend axis = correctness/groundedness + latency + cost; token axis = completeness + the LS-5 `truncated` evaluator. Experiments tagged with their config.
 - **Acceptance:** Four experiments comparable side by side in LangSmith; a short writeup answering both config questions with scores, after which .env gets set to the winners.
@@ -89,7 +89,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ### LS-9: RAG flag experiments
 - **Status:** todo
 - **Effort:** half day
-- **What:** Same harness, toggling multi-query and hyDE. Tag experiments with the flag combo.
+- **What:** DESIGN CORRECTED 2026-07-04: multi-query/hyDE flags are no-ops under RAG_BACKEND=vector (they only affect the keyword scan). Round two axes instead: RAG_BACKEND vector vs keyword_scan, and the model shootout gpt-4.1 vs gpt-4.1-mini (judges upgraded via EVAL_JUDGE_MODEL for that run).
 - **Acceptance:** 3-4 experiments tagged by flag combo; findings noted in `docs/live_eval.md` or a new results doc.
 - **Depends on:** LS-8
 

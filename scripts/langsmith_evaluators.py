@@ -170,6 +170,25 @@ def eval_not_truncated(outputs: Dict[str, Any], metadata: Dict[str, Any]) -> Dic
     }
 
 
+def eval_cost(outputs: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str, Any]:
+    """Surface audit.llm_cost_usd as feedback so experiments aggregate cost."""
+    cost = (outputs.get("audit") or {}).get("llm_cost_usd")
+    return {
+        "key": "cost_usd",
+        "score": round(float(cost), 5) if cost is not None else None,
+        "comment": "from audit.llm_cost_usd (LiteLLM pricing map)",
+    }
+
+
+def eval_completion_tokens(outputs: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str, Any]:
+    tokens = (outputs.get("audit") or {}).get("llm_tokens_completion")
+    return {
+        "key": "completion_tokens",
+        "score": int(tokens) if tokens is not None else None,
+        "comment": "from audit.llm_tokens_completion",
+    }
+
+
 def eval_latency(outputs: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str, Any]:
     latency = (outputs.get("timing") or {}).get("latency_s")
     return {
@@ -198,6 +217,8 @@ ALL_EVALUATORS = [
     eval_audit_event_emitted,
     eval_stream_well_formed,
     eval_not_truncated,
+    eval_cost,
+    eval_completion_tokens,
     eval_latency,
     eval_ttft,
 ]
