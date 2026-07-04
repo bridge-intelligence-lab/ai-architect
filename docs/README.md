@@ -26,7 +26,15 @@ Core topics
 - security.md: RBAC, PII, and retention
 - ml.md, mlops_plan.md: MLflow, drift, and lifecycle
 - feature_store_quality.md: vendor-neutral feature store design and data quality checks
-- testing.md: local tests, e2e flows, and CI tips
+- testing.md: local tests, e2e flows, CI tips, and the 75% coverage gate
+
+Evaluation (LangSmith)
+- langsmith_test_plan.md: the eval strategy (dataset, rubric, experiments, online eval)
+- langsmith_eval_backlog.md: work items LS-1..13 with statuses
+- eval_prompt_set_v2.md: the 26-prompt golden dataset (grounded core, new features, adversarial)
+- eval_calibration_2026-07-04.md: judge calibration round 1, with the disagreement table
+- eval_results/: dated experiment writeups with screenshots (first: backend x token grid)
+- live_eval.md: legacy smoke-check script (superseded for quality evaluation)
 
 Artifacts and references
 - data_card.md, model_card.md: documentation templates

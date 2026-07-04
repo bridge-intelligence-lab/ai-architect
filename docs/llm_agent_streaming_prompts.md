@@ -1,5 +1,12 @@
 # LLM Agent Streaming Test Prompts
 
+> **Scope note.** These prompts are for exercising the streaming UI by hand.
+> For evaluation they are superseded by `docs/eval_prompt_set_v2.md` /
+> `eval/architect_prompts_v2.jsonl` (the LangSmith golden dataset). This file
+> is deliberately excluded from the RAG corpus via `RAG_EXCLUDE_FILES` — it
+> contains the eval questions verbatim and would otherwise be retrieved as
+> "context" for them.
+
 Use these prompts to exercise different parts of the system and the streaming UI. They are grouped by scenario. Paste them into the Architect UI or call the streaming endpoint.
 
 Streaming endpoint

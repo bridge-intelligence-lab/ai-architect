@@ -28,9 +28,9 @@ Endpoints and behaviors
   - Audit: step entries with inputs/outputs preview and latency
 - POST /policy_navigator — decomposes question, retrieves citations, and synthesizes a recommendation
   - Flags: POLICY_NAV_ENABLED (default true), POLICY_NAV_MAX_SUBQS
-- POST /pii — deterministic PII detection (regex + heuristics), optional grounded citations
+- POST /pii — PII detection (regex + heuristics baseline, Presidio NER behind PII_BACKEND=presidio), optional grounded citations
   - Request: {text, types?, grounded?}; Response: summary, entities, counts, types_present, audit
-  - Env: PII_TYPES, PII_LOCALES override active detectors
+  - Env: PII_BACKEND (regex|presidio), PII_TYPES, PII_LOCALES override active detectors
 - POST /pii_remediation — synthesizes remediation suggestions for detected PII
   - Flags: PII_REMEDIATION_ENABLED (default true), PII_REMEDIATION_INCLUDE_SNIPPETS
 - POST /predict and GET /predict/schema — MLflow-backed predictions
@@ -100,12 +100,18 @@ Configuration highlights (env)
 - POLICY_NAV_ENABLED, POLICY_NAV_MAX_SUBQS
 - PII_REMEDIATION_ENABLED, PII_REMEDIATION_INCLUDE_SNIPPETS, PII_TYPES, PII_LOCALES
 
+Shipped since this baseline was written (see CHANGELOG for details)
+- MCP server (`app/mcp_server.py`, tools: retrieve_docs, detect_pii, architect_plan)
+- Vector retrieval backend (Chroma, `RAG_BACKEND=vector`)
+- LangGraph tool-loop architect (`AGENT_BACKEND=langgraph`)
+- Presidio PII backend (`PII_BACKEND=presidio`)
+- LangSmith eval pipeline (golden dataset, evaluators, judges, experiment grid)
+
 Out of scope (to design next, separately)
 - PEFT/LoRA/QLoRA fine-tuning and adapter loading
 - RLHF/DPO and bandit-based routing
-- MCP server/client and tool adapters
 - gRPC + streaming RPCs and WebSockets
 - Streaming and batch ingestion pipelines; schedulers (Airflow/Prefect)
 - Feature store (Feast) and data quality (Great Expectations) with lineage (OpenLineage/DataHub)
-- Vector DB backends and hybrid search; rerankers
+- Hybrid search and rerankers; managed vector DB backends (Pinecone)
 - OpenTelemetry tracing, semantic caching, cost governance, multi-tenant isolation
