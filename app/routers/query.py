@@ -138,6 +138,7 @@ def post_query(req: Request, payload: QueryRequest):
             result = answer_with_citations(payload.question, k=3)
             citations = [Citation(**c) for c in result.get("citations", [])]
             answer = result.get("answer") or ""
+            rag_backend = result.get("rag_backend") or rag_backend
             # stash result flags to propagate later (after audit_dict exists)
             rag_flags = {
                 k: result[k]

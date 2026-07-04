@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Added
+
+* Real vector retrieval behind `RAG_BACKEND=vector`: Chroma-backed `app/services/vector_retriever.py` with cosine ranking over chunked documents; `scripts/ingest_docs.py` now actually ingests (chunk + embed + upsert, idempotent ids); keyword scan remains the default and the fallback when the vectorstore is missing or empty; audit `rag_backend` reports the backend actually used.
+* Deterministic `hash` embeddings provider (hashed bag-of-words) for offline golden-query tests; `EMBEDDINGS_PROVIDER=local|hash|stub`.
+* `tests/test_vector_rag.py`: golden-query ranking, determinism, vector→keyword fallback, endpoint audit reporting, and empty-corpus (no fabricated citations) contracts.
+
 ### Changed
 
 * Rename `app/services/langchain_rag.py` → `app/services/doc_retriever.py`; the module is a deterministic keyword-scan retriever and never used LangChain (`docs/adr/0005-doc-retriever-naming.md`).
