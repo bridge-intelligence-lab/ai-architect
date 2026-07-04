@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Tuple
 from langchain_core.output_parsers import PydanticOutputParser
 from app.services.llm_client import LLMClient
 from app.services.architect_schema import ArchitectPlan
-from app.services.langchain_rag import answer_with_citations
+from app.services.doc_retriever import answer_with_citations
 
 # Optional LangSmith tracing (env-gated)
 from app.utils.logger import get_logger as _get_logger

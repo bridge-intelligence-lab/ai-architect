@@ -40,7 +40,7 @@ Endpoints and behaviors
   - Flags: RISK_ML_ENABLED, RISK_THRESHOLD
 
 RAG (grounding) baseline
-- Implementation: app/services/langchain_rag.py
+- Implementation: app/services/doc_retriever.py
   - Deterministic local-docs scanning; honors flags:
     - RAG_MULTI_QUERY_ENABLED (with RAG_MULTI_QUERY_COUNT)
     - RAG_HYDE_ENABLED

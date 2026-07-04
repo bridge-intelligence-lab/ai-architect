@@ -93,7 +93,7 @@ Backward compatibility and fallbacks
 - Tests/CI always pass without network/API keys.
 
 Mapping to current code
-- RAG today: app/services/langchain_rag.py provides answer_with_citations with deterministic behavior and feature flags (multi-query, HyDE). This will become a façade over RAGPort.
+- RAG today: app/services/doc_retriever.py provides answer_with_citations with deterministic behavior and feature flags (multi-query, HyDE). This will become a façade over RAGPort.
 - Query and Architect routes already accept grounded mode and emit citations; they will keep working after we swap the underlying adapter.
 - LLM calls: app/services/llm_client.py already provides a provider-agnostic client with stub fallback; this aligns with the Planner port.
 - Memory: existing short/long memory modules will be wrapped via ToolPort for agent tool calls.

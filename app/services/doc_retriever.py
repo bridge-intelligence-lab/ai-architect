@@ -1,13 +1,18 @@
+"""Deterministic keyword-scan document retriever.
+
+Scans text files under DOCS_PATH, scores them by keyword overlap with the
+question, and returns snippet citations. There are no embeddings, no vector
+store, and no LLM calls; results are fully deterministic, which keeps tests
+and CI reproducible. A real vector-retrieval backend is planned separately
+(see docs/MODERNIZATION_PLAN.md, row C).
+"""
+
 import os
 from typing import Any, Dict, List, Tuple
 
-# This module provides a LangChain RetrievalQA path behind a feature flag.
-# It is safe to import even if langchain is not installed because imports
-# are wrapped inside functions and guarded by the env flag.
-
 
 def is_enabled() -> bool:
-    # LC is always enabled as the sole backend
+    # keyword scan is currently the sole retrieval backend
     return True
 
 
@@ -141,10 +146,11 @@ def _merge_citations(
 
 
 def answer_with_citations(question: str, k: int = 3) -> Dict[str, Any]:
-    """Return an answer and citations using a LangChain RetrievalQA pipeline.
+    """Return citations from a deterministic keyword scan of DOCS_PATH.
 
-    Falls back to a lightweight deterministic response if LangChain is missing
-    or any error occurs, to keep tests stable.
+    The answer is extractive: it is composed from the top-ranked snippets.
+    When nothing matches, citations are empty and the answer says so; no
+    placeholder content is fabricated.
     """
     docs_path = os.getenv("DOCS_PATH", "./examples")
 
@@ -227,20 +233,18 @@ def answer_with_citations(question: str, k: int = 3) -> Dict[str, Any]:
                     "snippet": snippet,
                 }
             ]
-    # As a last resort, synthesize a citation from code to ensure at least one
-    if not citations:
-        try:
-            hy = hyde_snippet(question)
-        except Exception:
-            hy = f"Synthetic context for: {question}"
-        citations = [
-            {
-                "source": "synthetic",
-                "page": None,
-                "snippet": hy[:200].replace("\n", " "),
-            }
-        ]
-    answer = (
-        "This is a stubbed answer. In Phase 4, RAG provides citations from local docs."
-    )
+    if citations:
+        parts = []
+        for c in citations[:k]:
+            src = c.get("source", "unknown")
+            snippet = (c.get("snippet") or "").strip()
+            if snippet:
+                parts.append(f"[{src}] {snippet}")
+        answer = (
+            "Extracted from matching documents:\n" + "\n".join(parts)
+            if parts
+            else "Matching documents found; see citations."
+        )
+    else:
+        answer = f"No documents under {docs_path} matched the question."
     return {"answer": answer, "citations": citations, **meta}

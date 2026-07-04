@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from app.routers.query import Citation
-from app.services.langchain_rag import answer_with_citations
+from app.services.doc_retriever import answer_with_citations
 from app.services.architect_agent import run_architect_agent
 from app.utils.rbac import is_allowed_grounded_query, parse_role
 from app.utils.prompts import load_prompt

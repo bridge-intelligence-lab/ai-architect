@@ -4,7 +4,7 @@ from app.main import app
 
 
 def test_query_langchain_backend_with_flag(monkeypatch, tmp_path):
-    # LC is default now; ensure clean paths
+    # keyword-scan retriever is the default; ensure clean paths
     # Point to a temp docs dir
     docs_dir = tmp_path / "docs"
     docs_dir.mkdir()
@@ -22,5 +22,5 @@ def test_query_langchain_backend_with_flag(monkeypatch, tmp_path):
     data = resp.json()
     assert "answer" in data
     assert isinstance(data["citations"], list)
-    # With LC wrapper scanning DOCS_PATH, we should get at least one citation
+    # With the retriever scanning DOCS_PATH, we should get at least one citation
     assert len(data["citations"]) >= 1

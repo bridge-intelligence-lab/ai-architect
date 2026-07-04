@@ -51,7 +51,7 @@ def post_pii(req: Request, payload: PiiRequest):
     # Optional RAG citations for policy references
     if payload.grounded:
         try:
-            from app.services.langchain_rag import answer_with_citations
+            from app.services.doc_retriever import answer_with_citations
 
             resp = answer_with_citations("PII policy references", k=3)
             _ = resp.get("citations", [])

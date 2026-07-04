@@ -1,13 +1,13 @@
 def test_rag_ingest_idempotent(tmp_path, monkeypatch):
-    # With LC-only path, ensure idempotent doc scan doesn't error and yields stable citations
+    # Ensure idempotent doc scan doesn't error and yields stable citations
     docs_dir = tmp_path / "docs"
     docs_dir.mkdir()
     f = docs_dir / "a.txt"
     f.write_text("hello world")
 
-    # Point DOCS_PATH and query via LC backend to ensure stable behavior
+    # Point DOCS_PATH at temp docs to ensure stable behavior
     monkeypatch.setenv("DOCS_PATH", str(docs_dir))
-    from app.services.langchain_rag import answer_with_citations
+    from app.services.doc_retriever import answer_with_citations
 
     resp1 = answer_with_citations("hello", k=3)
     resp2 = answer_with_citations("hello", k=3)

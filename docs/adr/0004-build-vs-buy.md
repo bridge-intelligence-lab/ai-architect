@@ -50,7 +50,7 @@ which the current code is measured, not fashion.
     outputs / tool-use**. ~150 lines of defensive JSON scraping is exactly
     what provider-native structured output solves; it also lets us drop the
     stale `langchain==0.1.11` pin down to `langchain-core`. (PR D.)
-  - Doc retrieval (`langchain_rag.py`) → **real vector retrieval**. The
+  - Doc retrieval (`doc_retriever.py`, formerly `langchain_rag.py`) → **real vector retrieval**. The
     current implementation is a deterministic keyword baseline; Chroma +
     sentence-transformers are already dependencies, so the vector path is the
     natural next step. The module is renamed to match what it does. (PRs B, C.)
