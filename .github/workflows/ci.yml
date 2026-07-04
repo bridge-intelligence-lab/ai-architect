@@ -26,10 +26,10 @@ jobs:
         run: |
           . .venv/bin/activate
           ruff check .
-      - name: Run tests
+      - name: Run tests (coverage gate ≥75%)
         run: |
           . .venv/bin/activate
-          pytest -q
+          pytest -q --cov=app --cov=scripts --cov-report=term --cov-fail-under=75
       - name: Export OpenAPI
         run: |
           . .venv/bin/activate

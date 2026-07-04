@@ -4,7 +4,7 @@
 
 ---
 
-[![CI](https://github.com/bridge-intelligence-lab/ai-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/bridge-intelligence-lab/ai-architect/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml) [![Docs](https://img.shields.io/badge/docs-index-blue)](docs/README.md)[![Ruff](https://img.shields.io/badge/lint-ruff-46aef7.svg)](https://github.com/astral-sh/ruff) [![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688.svg)](https://fastapi.tiangolo.com)
+[![CI](https://github.com/bridge-intelligence-lab/ai-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/bridge-intelligence-lab/ai-architect/actions/workflows/ci.yml) [![Coverage gate](https://img.shields.io/badge/coverage-%E2%89%A575%25-brightgreen.svg)](.github/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml) [![Docs](https://img.shields.io/badge/docs-index-blue)](docs/README.md)[![Ruff](https://img.shields.io/badge/lint-ruff-46aef7.svg)](https://github.com/astral-sh/ruff) [![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688.svg)](https://fastapi.tiangolo.com)
 
 ![Hero](docs/images/hero.png)
 
@@ -197,7 +197,8 @@ Full details → `docs/observability.md`, `docs/security.md`
 | 7–8 | Memory (short + long term) | ✅ Done |
 | 9 | Architect agent on LangGraph (`AGENT_BACKEND=langgraph`) | ✅ Done |
 | 10 | Real vector retrieval (`RAG_BACKEND=vector`), LiteLLM cost tracking, MCP server | ✅ Done |
-| 11+ | Presidio PII backend, coverage gate, Pinecone backend | 🧩 Planned |
+| 11 | Presidio PII backend, CI coverage gate | ✅ Done |
+| 12+ | Pinecone backend, role-scoped MCP, memory in the LangGraph loop | 🧩 Planned |
 
 > Full roadmap and build-vs-buy rationale: [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md), [ADR-0004](docs/adr/0004-build-vs-buy.md).
 

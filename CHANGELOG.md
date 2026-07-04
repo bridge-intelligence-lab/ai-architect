@@ -4,6 +4,8 @@
 
 ### Added
 
+* CI coverage gate: tests run with `pytest-cov` and fail under 75% line coverage (current baseline: 79%); coverage config in `pyproject.toml`, gate badge in the README.
+
 * Presidio PII backend behind `PII_BACKEND=presidio` (`app/services/pii_presidio.py`): NER + pattern recognizers with per-entity confidence scores (`PII_PRESIDIO_THRESHOLD`, `PII_SPACY_MODEL`); optional install via `pip install .[presidio]`; regex baseline stays the default and the fallback, and results report `pii_backend` = backend actually used (`docs/adr/0009-presidio-pii-backend.md`).
 
 * MCP server (`app/mcp_server.py`, console script `ai-architect-mcp`): exposes `retrieve_docs`, `detect_pii`, and `architect_plan` over the Model Context Protocol via the official SDK's FastMCP on stdio; backend flags (`RAG_BACKEND`, `AGENT_BACKEND`, `LLM_PROVIDER`) apply unchanged and audit metadata rides along in tool results (`docs/adr/0008-mcp-server.md`).
