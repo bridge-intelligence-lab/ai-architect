@@ -1,4 +1,5 @@
 import subprocess
+import sys
 
 import pandas as pd
 
@@ -13,7 +14,7 @@ def test_drift_script(tmp_path):
 
     res = subprocess.run(
         [
-            "python",
+            sys.executable,
             "ml/drift.py",
             "--baseline",
             str(base),
@@ -24,6 +25,7 @@ def test_drift_script(tmp_path):
         ],
         capture_output=True,
         text=True,
+        timeout=60,
     )
     # Threshold 0.0 guarantees non-zero exit (drift)
     assert res.returncode != 0

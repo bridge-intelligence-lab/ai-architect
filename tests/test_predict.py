@@ -3,18 +3,7 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 
-def test_predict_after_train(tmp_path, monkeypatch):
-    # Train a model to ensure something to load
-    monkeypatch.setenv("MLFLOW_TRACKING_URI", str(tmp_path / ".mlruns"))
-    monkeypatch.setenv("MLFLOW_EXPERIMENT_NAME", "ai-architect-test")
-
-    import subprocess
-    import sys
-
-    subprocess.check_call(
-        [sys.executable, "ml/train.py"]
-    )  # should create a run and model artifact
-
+def test_predict_after_train(model_env):
     client = TestClient(app)
     # Features: we don't know the exact order; our predict sorts keys alphabetically
     payload = {
