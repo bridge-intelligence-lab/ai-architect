@@ -40,9 +40,25 @@ METRICS_TOKEN=secret \
 ## Keyword expression
 .venv/bin/python -m pytest -k "rag and idempotent"
 
-## Coverage (optional)
+## Coverage (enforced in CI)
+CI runs the suite with a hard coverage gate: line coverage of `app/` and
+`scripts/` must be at least **75%** or the build fails
+(`pytest -q --cov=app --cov=scripts --cov-fail-under=75`, see
+`.github/workflows/ci.yml`). To reproduce locally:
+
 pip install pytest-cov
-.venv/bin/python -m pytest --cov=app --cov=ml --cov=db --cov-report=term-missing
+.venv/bin/python -m pytest --cov=app --cov=scripts --cov-report=term-missing --cov-fail-under=75
+
+## Offline by default
+`tests/conftest.py` pins the stub LLM provider (and related env) for every
+test, so a populated local `.env` cannot leak a real provider key into the
+suite. Test runs make no billed API calls; keep new tests deterministic and
+offline.
+
+## Quality evaluation (separate from unit tests)
+Answer-quality regression is handled by the LangSmith eval pipeline (golden
+dataset + code evaluators + calibrated LLM judges), not pytest. See
+`docs/langsmith_test_plan.md` and `docs/eval_results/`.
 
 ## Lint/format (optional)
 pip install ruff

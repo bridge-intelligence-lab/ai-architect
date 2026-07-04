@@ -25,14 +25,23 @@ no placeholder content is fabricated.
 ## Ingestion (vector backend)
 
 1. Place `.md`/`.txt`/`.pdf` files under `DOCS_PATH`
-2. Run `python scripts/ingest_docs.py` (chunks of 1000 chars with 200
-   overlap; idempotent, ids derive from path + offset)
+2. Run `python scripts/ingest_docs.py` or `make ingest` (chunks of 1000 chars
+   with 200 overlap; idempotent, ids derive from path + offset; files in
+   `RAG_EXCLUDE_FILES` are skipped)
 3. Set `RAG_BACKEND=vector` and query with `grounded=true`
 
 ## Environment flags
 
 - `RAG_BACKEND=keyword_scan|vector` (default: `keyword_scan`)
-- `DOCS_PATH=./docs` — corpus root
+- `DOCS_PATH` — corpus root. Careful: the keyword-scan query path defaults to
+  `./examples` while `scripts/ingest_docs.py` defaults to `./docs`; set it
+  explicitly so both paths agree
+- `RAG_EXCLUDE_FILES` — comma-separated basenames never used as grounding
+  context. The default excludes the eval/test-prompt docs (they contain the
+  eval questions verbatim and would otherwise be retrieved as "context" for
+  them). Enforced at all three paths: keyword scan, vector query (over-fetches
+  2x then drops excluded chunks, so an already-built store behaves), and
+  ingestion
 - `VECTORSTORE_PATH=./.local/vectorstore` — Chroma persistence dir
 - `RAG_COLLECTION=docs` — Chroma collection name
 - `EMBEDDINGS_PROVIDER=local|hash|stub` — `local` uses
@@ -45,7 +54,8 @@ no placeholder content is fabricated.
   (keyword-scan path)
 
 The audit record reports `rag_backend` as the backend actually used
-(`keyword_scan` or `vector`), plus the query-expansion flags.
+(`keyword_scan` or `vector`). The query-expansion flags are reported only when
+the keyword-scan path runs (they are no-ops under `vector`).
 
 ## Testing
 

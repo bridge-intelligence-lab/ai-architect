@@ -1,5 +1,11 @@
 # Live Evaluation for Architect (HTTP + httpx)
 
+> **Superseded for quality evaluation.** This script (`run_live_eval.py`) is the
+> legacy smoke-check path. Systematic quality evaluation now runs through the
+> LangSmith pipeline: golden dataset, code evaluators, calibrated LLM judges,
+> and experiments — see `docs/langsmith_test_plan.md` and `docs/eval_results/`.
+> This doc remains valid for a quick local smoke run.
+
 This guide shows how to run a live evaluation of the Architect agent using the real OpenAI API and your running service. It streams from the `/architect/stream` endpoint (SSE), measures simple quality metrics, and optionally logs runs to LangSmith for observability.
 
 ## Prerequisites

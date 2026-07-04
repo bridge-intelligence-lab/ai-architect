@@ -122,6 +122,10 @@ Request: { question: str, grounded?: bool, user_id?: str, session_id?: str, inte
   - Defaults: steps defaults to [search, fetch, summarize, risk_check]
   - Flags: AGENT_LIVE_MODE, AGENT_URL_ALLOWLIST, DENYLIST
   - See docs/agents.md for step details
+- POST /think — think planner: structured intermediate reasoning ahead of an
+  Architect plan (analyst/admin)
+  - Request: { request_type: "ThinkRequest"|"ToolResult", ... }
+  - Response: planner output plus audit (tokens/cost/latency)
 
 ## Router Agent
 

@@ -13,10 +13,11 @@
 
 - **Transparent** by design — audit logs, hashed request/response pairs.
 - **Observable** — Prometheus `/metrics` + Grafana dashboards.
-- **Cost-aware** — per-request token accounting and FinOps metrics (real per-model $ cost via LiteLLM is on the roadmap).
+- **Cost-aware** — per-request token accounting and FinOps metrics, with real per-model $ cost from LiteLLM's pricing map.
+- **Evaluated** — a LangSmith golden dataset, 11 code evaluators + 4 calibrated LLM judges, and config decisions made by experiment (see [Evaluation](#-evaluation)).
 - **Governed** — RBAC, retention sweeps, and prompt registries.
 
-> **Project status:** a reference implementation you can run locally. Out of the box the LLM runs in a deterministic offline **stub** unless a provider key is set; retrieval ships a **keyword/deterministic baseline** (vector retrieval is next on the roadmap); the architect runs a structured **deterministic planner** (a LangGraph tool-loop agent is on the roadmap). Shipped vs planned lives in [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md).
+> **Project status:** a reference implementation you can run locally. Out of the box the LLM runs in a deterministic offline **stub** unless a provider key is set; retrieval defaults to a **keyword/deterministic baseline** with real **vector retrieval** (Chroma) behind `RAG_BACKEND=vector`; the architect defaults to a structured **deterministic planner** with a **LangGraph tool-loop agent** behind `AGENT_BACKEND=langgraph` (the measured winner on groundedness and latency — see [docs/eval_results/](docs/eval_results/2026-07-04-grid-backend-tokens.md)). Shipped vs planned lives in [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md).
 
 ---
 
@@ -75,8 +76,8 @@ python3 -m venv .venv
 . .venv/bin/activate
 pip install -e .
 
-# 2) Optional: ingest docs for RAG
-python scripts/ingest_docs.py
+# 2) Optional: vector RAG (ingest feeds the Chroma store used by RAG_BACKEND=vector)
+python scripts/ingest_docs.py   # then set RAG_BACKEND=vector in .env
 
 # 3) Run locally
 uvicorn app.main:app --host 0.0.0.0 --port 8000
@@ -115,7 +116,8 @@ Backend flags apply unchanged (`RAG_BACKEND`, `AGENT_BACKEND`,
 | `app/utils/` | Audit, RBAC, cost tracking, prompt registry |
 | `db/` | SQLAlchemy models and migrations |
 | `ml/` | ML training, drift, and registry scripts |
-| `scripts/` | Utilities (ingestion, retention sweep, OpenAPI export) |
+| `scripts/` | Utilities (ingestion, retention sweep, OpenAPI export) and the eval pipeline (dataset sync, evaluators, judges, experiment grid) |
+| `eval/` | Golden prompt dataset (`architect_prompts_v2.jsonl`, 26 prompts) |
 | `docs/` | System and feature documentation |
 
 Complete file map → `docs/components.md`
@@ -177,6 +179,20 @@ flowchart LR
 
 ---
 
+## 🧪 Evaluation
+
+Quality is measured, not assumed. The eval stack (all in-repo, reproducible):
+
+- **Golden dataset** — 26 prompts in three sets (grounded core, new features, negative/adversarial hallucination baits), synced idempotently to LangSmith by `scripts/build_langsmith_dataset.py` with per-example expectations as metadata.
+- **Rubric** — 11 deterministic code evaluators (`scripts/langsmith_evaluators.py`: structure, citations-match-expectations, truncation, latency) plus 4 LLM judges (`scripts/langsmith_judges.py`: correctness, groundedness, completeness, actionability), calibrated against the codebase ([calibration note](docs/eval_calibration_2026-07-04.md)).
+- **Experiments** — `scripts/run_experiment_grid.py` A/B-tests config axes on the same dataset. First grid settled `AGENT_BACKEND` and `LLM_MAX_TOKENS` by measurement: [results + screenshots](docs/eval_results/2026-07-04-grid-backend-tokens.md).
+
+The eval loop has already paid for itself: it caught (and verified the fix for) a LangGraph tool-budget bug that silently returned empty plans, and a retrieval self-pollution bug where eval docs were retrieved as grounding context.
+
+Plan and backlog: [docs/langsmith_test_plan.md](docs/langsmith_test_plan.md), [docs/langsmith_eval_backlog.md](docs/langsmith_eval_backlog.md).
+
+---
+
 ## 🔒 Governance & Observability
 - **Audit rows** per request (role, hashes, latency, flags)
 - **RBAC** via `X-User-Role` (`guest`, `analyst`, `admin`)
@@ -193,7 +209,7 @@ Full details → `docs/observability.md`, `docs/security.md`
 |-------|--------|--------|
 | 0–2 | Core APIs, retrieval (keyword baseline), Audit, Metrics | ✅ Done |
 | 3–4 | Orchestration (deterministic planner), RBAC, Grafana, Deploy Recipes | ✅ Done |
-| 5–6 | PII detection, Risk ML integration, Router v2 | 🚧 In Progress |
+| 5–6 | PII detection, Risk ML integration, Router v2 | ✅ Done |
 | 7–8 | Memory (short + long term) | ✅ Done |
 | 9 | Architect agent on LangGraph (`AGENT_BACKEND=langgraph`) | ✅ Done |
 | 10 | Real vector retrieval (`RAG_BACKEND=vector`), LiteLLM cost tracking, MCP server | ✅ Done |

@@ -10,7 +10,7 @@ Prerequisites
 Quickstart (local)
 ```bash
 # 0) Clone & env
-git clone https://github.com/rodrigo-fonseca-oliveira/ai-architect
+git clone https://github.com/bridge-intelligence-lab/ai-architect
 cd ai-architect
 cp .env.example .env  # fill in only if using hosted LLMs; local defaults work
 
@@ -19,9 +19,11 @@ python -m venv .venv
 . .venv/bin/activate
 pip install -e .
 
-# 2) (Optional) Ingest docs for RAG (LangChain mode)
-# Place .md/.txt/.pdf into DOCS_PATH (defaults to ./docs)
+# 2) (Optional) Vector RAG: ingest docs into the Chroma store
+# Place .md/.txt/.pdf into DOCS_PATH (ingest defaults to ./docs; note the
+# keyword-scan query path defaults to ./examples, so set DOCS_PATH explicitly)
 python scripts/ingest_docs.py
+# then set RAG_BACKEND=vector in .env to use the ingested store
 
 # 3) Run API
 uvicorn app.main:app --host 0.0.0.0 --port 8000
@@ -38,8 +40,8 @@ Architect UI
 - Architect-first experience with streaming and debug panel
 
 RAG basics
-- Default in tests/CI: deterministic retriever (no embeddings network calls)
-- To use LangChain locally: set LC_RAG_BACKEND=langchain and run scripts/ingest_docs.py
+- Default in tests/CI: deterministic keyword-scan retriever (no embeddings network calls)
+- For vector retrieval locally: run scripts/ingest_docs.py, then set RAG_BACKEND=vector
 - See docs/rag.md and docs/rag_vector_backends.md for flags and backends
 
 Observability stack (optional)
@@ -56,28 +58,20 @@ make test
 ```
 
 Troubleshooting
-- Missing citations in deterministic mode: ensure DOCS_PATH points to your docs folder and files are .md/.txt/.pdf
-- Vector store not found in LangChain mode: check VECTORSTORE_PATH and re-run scripts/ingest_docs.py
+- Missing citations in deterministic mode: ensure DOCS_PATH points to your docs folder and files are .md/.txt/.pdf (the keyword-scan path defaults to ./examples when DOCS_PATH is unset)
+- Vector store not found with RAG_BACKEND=vector: check VECTORSTORE_PATH and re-run scripts/ingest_docs.py (retrieval falls back to keyword scan when the store is missing or empty)
 - Protected endpoints (RBAC): use X-User-Role: analyst for grounded /query and admin-only routes
 
-LiteLLM gateway (OpenAI-compatible)
-- To route LLM calls via LiteLLM, set:
-  - LLM_PROVIDER=openai
-  - OPENAI_BASE_URL=http://<your-litellm-host>:<port>/v1
-  - LLM_API_KEY=<token-if-required>
-  - LLM_MODEL=<alias-configured-in-LiteLLM>
-  - EMBEDDINGS_PROVIDER=openai (if embeddings proxied)
-  - EMBEDDINGS_MODEL=<embeddings-alias>
-- Docker Compose snippet:
-  services:
-    app:
-      environment:
-        - LLM_PROVIDER=openai
-        - OPENAI_BASE_URL=http://litellm:4000/v1
-        - LLM_API_KEY=sk-litellm-any
-        - LLM_MODEL=gpt-4o-mini
-        - EMBEDDINGS_PROVIDER=openai
-        - EMBEDDINGS_MODEL=text-embedding-3-small
+LLM providers (via LiteLLM)
+- All real providers route through the LiteLLM library natively; there is no
+  separate gateway to configure. Set:
+  - LLM_PROVIDER=openai (or another LiteLLM-supported provider; `stub` = offline default)
+  - LLM_MODEL=<model name, e.g. gpt-4.1-mini>
+  - OPENAI_API_KEY=<your key> (provider keys are read by LiteLLM at call time)
+- Embeddings are configured separately: EMBEDDINGS_PROVIDER=local|openai|hash|stub,
+  with LOCAL_EMBEDDING_MODEL (default all-MiniLM-L6-v2) or OPENAI_EMBEDDING_MODEL
+  (default text-embedding-ada-002)
+- Per-request cost comes from LiteLLM's pricing map and lands in audit rows and /metrics
 
 Next steps
 - Explore the API: docs/api.md

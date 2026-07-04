@@ -15,10 +15,18 @@ The `/architect` endpoints run one of two backends, selected by
   LLM decides each turn whether to call the `retrieve_docs` tool (backed by
   `doc_retriever`, so `RAG_BACKEND=vector` applies) or finalize the plan.
   Tool observations feed back into the next turn; the loop is capped at 3
-  tool calls. Tokens and cost accumulate across turns into the audit, which
-  also reports `agent_backend` and `agent_tool_calls`. Any failure falls
-  back to the builtin planner. Memory read/write integration is
-  builtin-only for now (ADR 0007).
+  tool calls. When the budget is exhausted the agent receives an explicit
+  finalize-now instruction, and a plan that still comes back empty raises so
+  the builtin fallback fires instead of streaming an empty plan. Tokens and
+  cost accumulate across turns into the audit, which also reports
+  `agent_backend` and `agent_tool_calls`. Any failure falls back to the
+  builtin planner. Memory read/write integration is builtin-only for now
+  (ADR 0007).
+
+In a measured comparison on the golden eval dataset, `langgraph` beat
+`builtin` on groundedness, correctness, completeness AND latency, so the
+default is the offline-safe choice, not necessarily the recommended one.
+See `docs/eval_results/2026-07-04-grid-backend-tokens.md`.
 
 Architect agent and community loop
 - The Architect agent can propose features when it detects gaps between a user goal and current capabilities (e.g., a new endpoint or a router rule).

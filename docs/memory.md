@@ -27,6 +27,11 @@ Integration in /query
 - Retrieved long-term facts are added as a contextual preamble
 - After answering, writes user and assistant turns; ingests long facts into long-term memory
 
+Integration in /architect
+- The builtin architect backend integrates the same way (same flags, same
+  memory_* audit counters); see docs/agents.md
+- The langgraph backend currently bypasses memory entirely (counters report 0)
+
 Configuration
 - MEMORY_SHORT_ENABLED: false
 - MEMORY_DB_PATH: ./data/memory_short.db
