@@ -4,6 +4,8 @@
 
 ### Added
 
+* LangSmith LLM-judge evaluators and experiment harness (`scripts/langsmith_judges.py`, `scripts/run_langsmith_eval.py`): four 1-5 judges (correctness, groundedness, completeness, actionability) via litellm, judge prompts versioned in code; harness streams `/architect/stream` per dataset example and runs code evaluators + judges through `langsmith.evaluate()` with experiment metadata (agent backend, max tokens). Offline tests in `tests/test_langsmith_harness.py`.
+
 * LangSmith code evaluators (`scripts/langsmith_evaluators.py`): deterministic structural checks for experiment runs, ported from `run_live_eval.py` and extended with dataset-expectation checks (grounded/citations match, keywords, stream well-formedness, token-cap truncation, latency/TTFT). Category-aware: structure checks skip the negative/adversarial prompt set. Offline tests in `tests/test_langsmith_evaluators.py`.
 
 * LangSmith golden dataset tooling (`scripts/build_langsmith_dataset.py`): idempotent sync of `eval/architect_prompts_v2.jsonl` (26 prompts: grounded-core, new-features, negative/adversarial) into the `ai-architect-golden` dataset, keyed by example id with create/update/delete and `--dry-run`. Prompt set reviewed in `docs/eval_prompt_set_v2.md`; plan and backlog in `docs/langsmith_test_plan.md` / `docs/langsmith_eval_backlog.md`.
