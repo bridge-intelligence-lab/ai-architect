@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Docs
+
+* Add `docs/MODERNIZATION_PLAN.md` and `docs/adr/0004-build-vs-buy.md`, sequencing the 2026 modernization (real vector retrieval, native structured outputs, LiteLLM cost tracking, LangGraph agent, optional MCP) as small per-PR changes with a build-vs-buy rationale per component.
+* Scope the repo to its single purpose — a reference implementation for running LLM/agent services with production controls — and remove the standalone Mandala design documents from HEAD (preserved in git history).
+* Refresh the README: scope statement, per-component shipped-vs-planned roadmap, and badge/URL updates for the `bridge-intelligence-lab` org.
+
 ## [0.9.0] - 2025-10-07
 
 ### Added

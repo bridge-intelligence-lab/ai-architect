@@ -4,17 +4,19 @@
 
 ---
 
-[![CI](https://github.com/rodrigo-fonseca-oliveira/ai-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/rodrigo-fonseca-oliveira/ai-architect/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/rodrigo-fonseca-oliveira/ai-architect/branch/main/graph/badge.svg)](https://codecov.io/gh/rodrigo-fonseca-oliveira/ai-architect) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml) [![Docs](https://img.shields.io/badge/docs-index-blue)](docs/README.md)[![Ruff](https://img.shields.io/badge/lint-ruff-46aef7.svg)](https://github.com/astral-sh/ruff) [![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688.svg)](https://fastapi.tiangolo.com)
+[![CI](https://github.com/bridge-intelligence-lab/ai-architect/actions/workflows/ci.yml/badge.svg)](https://github.com/bridge-intelligence-lab/ai-architect/actions/workflows/ci.yml) [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE) [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](pyproject.toml) [![Docs](https://img.shields.io/badge/docs-index-blue)](docs/README.md)[![Ruff](https://img.shields.io/badge/lint-ruff-46aef7.svg)](https://github.com/astral-sh/ruff) [![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688.svg)](https://fastapi.tiangolo.com)
 
 ![Hero](docs/images/hero.png)
 
 ## Why AI Architect
-**AI Architect** demonstrates how to build LLM-driven systems with **governance, observability, and FinOps** built-in. It merges **RAG**, **agentic workflows**, and **MLflow** into a production-grade reference architecture.
+**AI Architect** is a reference implementation for running LLM and agent services with **production controls**: RBAC, audit trails, cost/FinOps metrics, retrieval, and MLOps, on a FastAPI + ports-and-adapters core. Most portfolio projects show what an LLM service can do; this one focuses on how to **operate** one — who's allowed, what it cost, what it did, and how to prove it.
 
 - **Transparent** by design — audit logs, hashed request/response pairs.
 - **Observable** — Prometheus `/metrics` + Grafana dashboards.
-- **Cost-aware** — token and cost tracking per user/day.
+- **Cost-aware** — per-request token accounting and FinOps metrics (real per-model $ cost via LiteLLM is on the roadmap).
 - **Governed** — RBAC, retention sweeps, and prompt registries.
+
+> **Project status:** a reference implementation you can run locally. Out of the box the LLM runs in a deterministic offline **stub** unless a provider key is set; retrieval ships a **keyword/deterministic baseline** (vector retrieval is next on the roadmap); the architect runs a structured **deterministic planner** (a LangGraph tool-loop agent is on the roadmap). Shipped vs planned lives in [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md).
 
 ---
 
@@ -63,7 +65,7 @@ flowchart TD
 ## ⚡ Quickstart
 ```bash
 # 0) Setup
-git clone https://github.com/rodrigo-fonseca-oliveira/ai-architect
+git clone https://github.com/bridge-intelligence-lab/ai-architect
 cd ai-architect
 cp .env.example .env
 # If you skip .env, export PROJECT_GUIDE_ENABLED=true to enable /architect
@@ -110,7 +112,6 @@ Complete file map → `docs/components.md`
 ---
 
 ## 📚 Documentation
-- Mandala integration: [docs/mandala-architecture.md](docs/mandala-architecture.md), [docs/mandala-Implementation-plan.md](docs/mandala-Implementation-plan.md)
 - [Docs index](docs/README.md)
 - [Getting started](docs/getting_started.md)
 - [API](docs/api.md)
@@ -179,12 +180,14 @@ Full details → `docs/observability.md`, `docs/security.md`
 ## 🗺️ Roadmap (Condensed)
 | Phase | Focus | Status |
 |-------|--------|--------|
-| 0–2 | Core APIs, RAG, Audit, Metrics | ✅ Done |
-| 3–4 | Agents, RBAC, Grafana, Deploy Recipes | ✅ Done |
+| 0–2 | Core APIs, retrieval (keyword baseline), Audit, Metrics | ✅ Done |
+| 3–4 | Orchestration (deterministic planner), RBAC, Grafana, Deploy Recipes | ✅ Done |
 | 5–6 | PII detection, Risk ML integration, Router v2 | 🚧 In Progress |
-| 7–8 | Memory & Advanced Agents | ✅ Done |
-| 9 | Architect deterministic mode (LangGraph) | ✅ Done |
-| 10+ | New sub-agents (FinOps, Drift Monitor, Router Preview) | 🧩 Planned |
+| 7–8 | Memory (short + long term) | ✅ Done |
+| 9 | Architect agent on LangGraph | 🧩 Planned |
+| 10+ | Real vector retrieval, LiteLLM cost tracking, MCP surface | 🧩 Planned |
+
+> Full roadmap and build-vs-buy rationale: [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md), [ADR-0004](docs/adr/0004-build-vs-buy.md).
 
 ---
 
