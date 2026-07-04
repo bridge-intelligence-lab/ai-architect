@@ -4,6 +4,8 @@
 
 ### Added
 
+* LangSmith golden dataset tooling (`scripts/build_langsmith_dataset.py`): idempotent sync of `eval/architect_prompts_v2.jsonl` (26 prompts: grounded-core, new-features, negative/adversarial) into the `ai-architect-golden` dataset, keyed by example id with create/update/delete and `--dry-run`. Prompt set reviewed in `docs/eval_prompt_set_v2.md`; plan and backlog in `docs/langsmith_test_plan.md` / `docs/langsmith_eval_backlog.md`.
+
 * CI coverage gate: tests run with `pytest-cov` and fail under 75% line coverage (current baseline: 79%); coverage config in `pyproject.toml`, gate badge in the README.
 
 * Presidio PII backend behind `PII_BACKEND=presidio` (`app/services/pii_presidio.py`): NER + pattern recognizers with per-entity confidence scores (`PII_PRESIDIO_THRESHOLD`, `PII_SPACY_MODEL`); optional install via `pip install .[presidio]`; regex baseline stays the default and the fallback, and results report `pii_backend` = backend actually used (`docs/adr/0009-presidio-pii-backend.md`).
