@@ -94,6 +94,17 @@ curl -sX POST localhost:8000/architect \
 **UI:** http://localhost:8000/architect/ui
 Note: /architect is feature-gated. Ensure PROJECT_GUIDE_ENABLED=true (in .env or environment) before calling it.
 
+**MCP:** the same capabilities are exposed over the Model Context Protocol
+for Claude Desktop / Claude Code / any MCP client — tools `architect_plan`,
+`retrieve_docs`, `detect_pii`:
+
+```bash
+ai-architect-mcp        # stdio server (or: python -m app.mcp_server)
+```
+
+Backend flags apply unchanged (`RAG_BACKEND`, `AGENT_BACKEND`,
+`LLM_PROVIDER`). See [ADR-0008](docs/adr/0008-mcp-server.md).
+
 ---
 
 ## 🧱 Repository Layout
@@ -184,8 +195,9 @@ Full details → `docs/observability.md`, `docs/security.md`
 | 3–4 | Orchestration (deterministic planner), RBAC, Grafana, Deploy Recipes | ✅ Done |
 | 5–6 | PII detection, Risk ML integration, Router v2 | 🚧 In Progress |
 | 7–8 | Memory (short + long term) | ✅ Done |
-| 9 | Architect agent on LangGraph | 🧩 Planned |
-| 10+ | Real vector retrieval, LiteLLM cost tracking, MCP surface | 🧩 Planned |
+| 9 | Architect agent on LangGraph (`AGENT_BACKEND=langgraph`) | ✅ Done |
+| 10 | Real vector retrieval (`RAG_BACKEND=vector`), LiteLLM cost tracking, MCP server | ✅ Done |
+| 11+ | Presidio PII backend, coverage gate, Pinecone backend | 🧩 Planned |
 
 > Full roadmap and build-vs-buy rationale: [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md), [ADR-0004](docs/adr/0004-build-vs-buy.md).
 
