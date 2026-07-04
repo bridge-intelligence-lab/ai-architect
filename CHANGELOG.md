@@ -28,6 +28,8 @@
 
 ### Fixed
 
+* RAG corpus exclusions (`RAG_EXCLUDE_FILES`): eval/test-prompt docs (the v1 streaming prompt list and the LangSmith eval docs) are excluded from grounding by default across the keyword scan, its fallbacks, vector ingestion, and vector query (query-time filter catches stale chunks). Found during judge calibration: eval questions retrieved the question list itself as context. Tests in `tests/test_rag_exclusions.py`.
+
 * LangGraph architect no longer returns empty plans when it hits the tool-call cap: the agent is told the retrieval budget is exhausted and must finalize; if the plan still has no summary the builtin planner takes over (found by LangSmith eval baseline: 8/18 grounded prompts affected).
 * Tests no longer inherit the developer's `.env` (loaded with `override=True` by `app/main.py` at import): an autouse fixture pins the stub provider and clears provider/tracing keys, ending silent live OpenAI calls from the suite.
 
