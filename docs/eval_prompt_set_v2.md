@@ -10,6 +10,10 @@ Each prompt carries metadata the evaluators read:
 
 Verified against code on 2026-07-04. Note: the LangGraph architect is already shipped behind `AGENT_BACKEND=langgraph`; the deterministic planner is the default. A6-A8 and B7 should eventually run against both backends.
 
+As uploaded to LangSmith (`scripts/build_langsmith_dataset.py`), each prompt is a dataset example carrying this metadata:
+
+![The ai-architect-golden dataset in LangSmith: 26 examples with category and expectation metadata](eval_results/img/dataset-golden-examples.png)
+
 ---
 
 ## A. Grounded core (kept from v1, verified against current code)
