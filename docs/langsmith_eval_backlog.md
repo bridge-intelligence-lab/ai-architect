@@ -59,7 +59,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ### LS-5: Code evaluators
 - **Status:** todo
 - **Effort:** half day
-- **What:** Port heuristics from `scripts/run_live_eval.py` into LangSmith evaluator functions: has_summary (>= 40 chars), steps_count (>= 2), step_quality (>= 20 chars each), citations_present_when_grounded (reads example metadata), audit_event_emitted, stream_well_formed (meta, summary, steps, citations, audit all arrived), latency + TTFT from trace timings.
+- **What:** Port heuristics from `scripts/run_live_eval.py` into LangSmith evaluator functions: has_summary (>= 40 chars), steps_count (>= 2), step_quality (>= 20 chars each), citations_present_when_grounded (reads example metadata), audit_event_emitted, stream_well_formed (meta, summary, steps, citations, audit all arrived), truncated (output cut by max_tokens: finish_reason or malformed-JSON tail; needed so LS-8 axis 2 shows truncation as a named cause, not mystery low completeness), latency + TTFT from trace timings.
 - **Acceptance:** Each evaluator returns a named score; a test run over 3 examples shows scores in the experiment view.
 - **Depends on:** LS-4b
 
@@ -82,8 +82,8 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ### LS-8: evaluate() harness + first experiment
 - **Status:** todo
 - **Effort:** half day
-- **What:** `scripts/run_langsmith_eval.py` with a target function that streams `/architect/stream` (SSE) and assembles the final payload. Run the golden dataset through two configs (e.g. gpt-4o-mini vs a larger model) as two experiments.
-- **Acceptance:** Two experiments comparable side by side in LangSmith; a one-paragraph writeup of which won and why.
+- **What:** `scripts/run_langsmith_eval.py` with a target function that streams `/architect/stream` (SSE) and assembles the final payload. First experiment is a 2x2 grid over two live config questions instead of deciding them upfront (from .env review 2026-07-04): `AGENT_BACKEND` builtin vs langgraph, and `LLM_MAX_TOKENS` 1024 vs 2048. Four experiments x 26 prompts. Verdict metrics: backend axis = correctness/groundedness + latency + cost; token axis = completeness + the LS-5 `truncated` evaluator. Experiments tagged with their config.
+- **Acceptance:** Four experiments comparable side by side in LangSmith; a short writeup answering both config questions with scores, after which .env gets set to the winners.
 - **Depends on:** LS-5, LS-6
 
 ### LS-9: RAG flag experiments
