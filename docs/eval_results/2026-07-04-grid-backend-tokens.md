@@ -27,6 +27,10 @@ Every cell's `audit.agent_backend` was verified against the intended config.
 | latency_s (avg) | 22.5 | 20.6 | **13.5** | 15.7 |
 | cost_usd (avg/request) | ~equal across cells (fractions of a cent) | | | |
 
+![LangSmith comparison of the four grid cells: groundedness, latency, completeness per prompt](img/grid-2x2-comparison.png)
+
+*LangSmith comparison view of the four cells (A = grid-langgraph-2048, B = grid-langgraph-1024, C = grid-builtin-2048, D = grid-builtin-1024). Column B takes groundedness (3.96) and latency (13.49s) row by row, not just on the averages; completeness barely moves across the token axis.*
+
 ## Verdict
 
 **Backend axis: langgraph wins, decisively.** Better on groundedness
@@ -62,3 +66,15 @@ what it already was; the config survives, now with evidence instead of vibes.
 - Grid mechanics: `scripts/run_experiment_grid.py` cycles .env per cell
   (touch app/main.py to trip the uvicorn reloader), waits for /healthz, and
   verifies each experiment's audit backend. .env is restored afterwards.
+
+## Appendix: the empty-plan fix, before/after (PR #21)
+
+Same dataset, same evaluators, pre-fix baseline
+(`baseline-langgraph-1024-d56ebd31`) vs post-fix
+(`baseline-fixed-v3-3def7580`). The "No feedback" cells in column A are the
+empty plans themselves: 8 of 18 structured prompts came back with no summary
+and no steps because the LangGraph agent exhausted its tool budget and
+finalized silently. Post-fix, has_summary and stream_well_formed hit 1.00
+across the board.
+
+![Before/after the empty-plan fix: has_summary 0.56 to 1.00, stream_well_formed 0.69 to 1.00, judge_completeness 2.69 to 3.85](img/bugfix-before-after.png)

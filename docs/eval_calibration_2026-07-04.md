@@ -5,6 +5,19 @@ runs of experiment `baseline-fixed-v3-3def7580` (answers + judge reasoning),
 verify disputed claims against the actual codebase (not opinion vs opinion),
 fix the judge prompts, re-judge the same 26 answers, compare.
 
+What a judged run looks like in LangSmith (run B5, the exhibit for
+disagreement #2 below): the answer *sounds* thorough and completeness said 5,
+while groundedness said 2 because the claims aren't in the retrieved context.
+
+![Judged run detail: feedback chips plus the groundedness judge's written reasoning](eval_results/img/judged-run-detail.png)
+
+And the C-set doing its job on C1 (Redis-cache bait, a feature that doesn't
+exist): the deterministic evaluators fail it (`grounded_matches_expectation`
+0, `citations_expectation` 0) and the judge's reasoning names the invented
+details.
+
+![C1 hallucination bait: code evaluators and judge both catching invented Redis configuration](eval_results/img/hallucination-bait-c1.png)
+
 ## Disagreements found (pre-calibration)
 
 | # | Case | Judge said | Verified fact | Verdict |
