@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Changed
+
+* Rename `app/services/langchain_rag.py` → `app/services/doc_retriever.py`; the module is a deterministic keyword-scan retriever and never used LangChain (`docs/adr/0005-doc-retriever-naming.md`).
+* Retire placeholder response paths: grounded `/query` answers are now extractive (built from matched snippets) instead of a hardcoded stub sentence; the fabricated `synthetic` citation fallback is removed; `audit.rag_backend` reports `keyword_scan`.
+* Rewrite `docs/rag.md` to describe the retrieval path that actually exists; the vector backend remains planned work (plan row C).
+
 ### Docs
 
 * Add `docs/MODERNIZATION_PLAN.md` and `docs/adr/0004-build-vs-buy.md`, sequencing the 2026 modernization (real vector retrieval, native structured outputs, LiteLLM cost tracking, LangGraph agent, optional MCP) as small per-PR changes with a build-vs-buy rationale per component.

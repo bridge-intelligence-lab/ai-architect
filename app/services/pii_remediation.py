@@ -41,7 +41,7 @@ def _retrieve_guidance(query: str, k: int = 2) -> List[Dict[str, Any]]:
     # provider preserved for future selection; no-op for now to avoid unused warning
     os.getenv("EMBEDDINGS_PROVIDER", os.getenv("LLM_PROVIDER", "local"))
     try:
-        from app.services.langchain_rag import answer_with_citations
+        from app.services.doc_retriever import answer_with_citations
 
         resp = answer_with_citations(query, k=k)
         return resp.get("citations", [])

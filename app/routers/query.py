@@ -5,7 +5,7 @@ from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
-# legacy RAGRetriever removed; using LangChain-only path
+# legacy RAGRetriever removed; using the keyword-scan doc_retriever
 from app.utils.rbac import is_allowed_grounded_query, parse_role
 from db.session import get_session
 
@@ -86,7 +86,7 @@ def post_query(req: Request, payload: QueryRequest):
 
     # Initialize citations and backend marker
     citations: List[Citation] = []
-    rag_backend = "langchain"
+    rag_backend = "keyword_scan"
     # Initialize answer early; branches may set it. Fallback applied later if still empty.
     answer: str = ""
 
@@ -127,83 +127,17 @@ def post_query(req: Request, payload: QueryRequest):
             raise HTTPException(
                 status_code=403, detail="grounded query not allowed for this role"
             )
-        # LangChain-only RetrievalQA path
+        # Deterministic keyword-scan retrieval; the retriever handles its own
+        # filename-match / first-file fallbacks, so no safety net is needed here.
         try:
-            from app.services.langchain_rag import answer_with_citations
+            from app.services.doc_retriever import answer_with_citations
 
             # Ensure DOCS_PATH exists; if not, point to examples
             docs_path = os.getenv("DOCS_PATH") or "./examples"
             os.environ["DOCS_PATH"] = docs_path
             result = answer_with_citations(payload.question, k=3)
             citations = [Citation(**c) for c in result.get("citations", [])]
-            # Final safety net: ensure at least one citation for grounded QA
-            if not citations:
-                docs_path = os.getenv("DOCS_PATH", "./examples")
-                # try filename match
-                try:
-                    terms = [
-                        t.strip(".,:;!?()[]{}\"'`").lower()
-                        for t in payload.question.split()
-                    ]
-                    chosen = None
-                    if os.path.isdir(docs_path):
-                        for root, _, files in os.walk(docs_path):
-                            for fn in files:
-                                fn_low = fn.lower()
-                                if any(t and t in fn_low for t in terms):
-                                    chosen = os.path.join(root, fn)
-                                    break
-                            if chosen:
-                                break
-                        if not chosen:
-                            for root, _, files in os.walk(docs_path):
-                                text_files = [
-                                    f
-                                    for f in files
-                                    if f.lower().endswith((".txt", ".md"))
-                                ]
-                                search_list = text_files if text_files else files
-                                for fn in search_list:
-                                    p = os.path.join(root, fn)
-                                    if os.path.isfile(p):
-                                        chosen = p
-                                        break
-                                if chosen:
-                                    break
-                    if chosen:
-                        try:
-                            with open(
-                                chosen, "r", encoding="utf-8", errors="ignore"
-                            ) as f:
-                                text = f.read()
-                        except Exception:
-                            text = ""
-                        citations = [
-                            Citation(
-                                source=os.path.relpath(chosen, docs_path),
-                                page=None,
-                                snippet=(
-                                    text[:200] if isinstance(text, str) else ""
-                                ).replace("\n", " "),
-                            )
-                        ]
-                    else:
-                        # synth fallback
-                        citations = [
-                            Citation(
-                                source="synthetic",
-                                page=None,
-                                snippet=f"Synthetic context for: {payload.question}",
-                            )
-                        ]
-                except Exception:
-                    citations = [
-                        Citation(
-                            source="synthetic",
-                            page=None,
-                            snippet=f"Synthetic context for: {payload.question}",
-                        )
-                    ]
+            answer = result.get("answer") or ""
             # stash result flags to propagate later (after audit_dict exists)
             rag_flags = {
                 k: result[k]
@@ -254,9 +188,9 @@ def post_query(req: Request, payload: QueryRequest):
         llm_tokens_completion = pr.get("tokens_completion") or pr.get("llm_tokens_completion")
         llm_cost_usd = pr.get("cost_usd") or pr.get("llm_cost_usd")
 
-    # Stub answer baseline; branches may override earlier (e.g., pii_detect)
+    # Fallback when no branch produced an answer (LLM disabled, ungrounded query)
     if not answer:
-        answer = "This is a stubbed answer. In Phase 1, RAG provides citations from local docs."
+        answer = "No answer generated: LLM synthesis is disabled and the query was not grounded."
     # Ensure a single long sentence to trigger long-memory ingestion when enabled
     try:
         if long_enabled:

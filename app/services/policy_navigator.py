@@ -22,9 +22,9 @@ def decompose(question: str, max_subqs: int | None = None) -> List[str]:
 
 
 def retrieve(subq: str, k: int = 3) -> List[Dict[str, Any]]:
-    # Use LC-backed retrieval wrapper
+    # Use the keyword-scan retriever
     try:
-        from app.services.langchain_rag import answer_with_citations
+        from app.services.doc_retriever import answer_with_citations
 
         resp = answer_with_citations(subq, k=k)
         return resp.get("citations", [])

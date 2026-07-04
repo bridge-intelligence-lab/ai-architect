@@ -1,7 +1,7 @@
 # Component map
 
 - app/routers/query.py: core /query with router integration and RAG wiring
-- app/services/langchain_rag.py: retrieval/citations and RAG flags propagation
+- app/services/doc_retriever.py: retrieval/citations and RAG flags propagation
 - app/services/router.py: rules v2 backend, ENV-configurable
 - app/routers/pii.py, app/services/pii_detector.py: PII detection logic and endpoint
 - app/routers/risk.py, app/services/risk_scorer.py: Risk endpoint and heuristic scorer

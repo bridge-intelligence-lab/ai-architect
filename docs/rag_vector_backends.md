@@ -38,7 +38,7 @@ Operational notes
 
 Migration plan (later)
 1) Introduce LC_VECTOR_BACKEND with default chroma and optional pinecone.
-2) Add Pinecone wiring in app/services/langchain_rag.py behind env flags.
+2) Add Pinecone wiring in app/services/doc_retriever.py behind env flags.
 3) Extend scripts/ingest_docs.py to support Pinecone.
 4) Provide a diagnostic route or script to list collection/index counts across backends.
 

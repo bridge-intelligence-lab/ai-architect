@@ -1,37 +1,48 @@
-# Retrieval and RAG Configuration
+# Retrieval Configuration
 
-Overview
-- The project supports two retrieval paths:
-  1) Deterministic retriever (default in tests/CI): scans DOCS_PATH files and merges snippets for reproducible citations with no network calls.
-  2) LangChain retriever (opt-in for local/prod): persistent vector store with embeddings (Chroma by default), powered by scripts/ingest_docs.py.
-- Tests are written to be deterministic by default; production setups may enable LangChain.
+## What exists today
 
-Key environment flags
-- LC_RAG_BACKEND=deterministic|langchain (default: deterministic for CI stability)
-- DOCS_PATH=./docs (or another folder with .md/.txt/.pdf)
-- VECTORSTORE_PATH=./.local/vectorstore (Chroma persistence when using LangChain)
-- EMBEDDINGS_PROVIDER=stub|local|openai (stub/local recommended for determinism)
-- RAG_MULTI_QUERY_ENABLED=false (experimental; defaults shown)
-- RAG_MULTI_QUERY_COUNT=3
-- RAG_HYDE_ENABLED=false
+There is one retrieval path: a deterministic keyword scan implemented in
+`app/services/doc_retriever.py` (renamed from `langchain_rag.py`, which never
+used LangChain).
 
-Today’s defaults
-- Deterministic retriever is the default to keep tests and local dev reproducible.
-- If you explicitly set LC_RAG_BACKEND=langchain, Chroma is used by default for persistence.
+How it works:
 
-Ingestion workflow (LangChain mode)
-1) Place .md/.txt/.pdf files under DOCS_PATH
-2) Run: `python scripts/ingest_docs.py`
-3) Start the API: `uvicorn app.main:app --reload`
-4) Query with grounding and expect citations when relevant: see docs/api.md or README for curl examples.
+1. The question is normalized into keyword terms (stopwords removed,
+   domain terms like `gdpr`/`pii` preserved).
+2. Every `.md`/`.txt` file under `DOCS_PATH` is scanned and scored by term
+   overlap.
+3. Top-scoring files are returned as citations with a 200-character snippet.
+4. The answer is extractive, composed from the returned snippets. When
+   nothing matches, citations are empty and the answer says so; no
+   placeholder content is fabricated.
 
-Determinism notes
-- CI and unit tests assume deterministic retrieval; avoid changing defaults that would fetch embeddings over the network.
-- If credentials or vector stores are missing in LangChain mode, the system should gracefully fall back to deterministic retrieval.
+There are no embeddings, no vector store, and no LLM calls in this path.
+That is deliberate for now: results are fully deterministic, which keeps
+tests and CI reproducible and offline.
 
-Roadmap and backends
-- For Pinecone and other managed vector DBs, see rag_vector_backends.md for the plan and additional env flags (LC_VECTOR_BACKEND=pinecone, etc.).
+## Environment flags
 
-See also
-- ports_and_adapters.md: RAGPort design, backends, capabilities, and fallbacks
-- related_projects.md: ecosystem projects (LangChain, LlamaIndex, Haystack, SK) and how we integrate
+- `DOCS_PATH=./docs` — corpus root (`.md`/`.txt`; `scripts/ingest_docs.py`
+  can extract text from PDFs)
+- `RAG_MULTI_QUERY_ENABLED=false` — expand the question into deterministic
+  variants before scanning
+- `RAG_MULTI_QUERY_COUNT=3` — number of variants when enabled
+- `RAG_HYDE_ENABLED=false` — add a deterministic hypothetical-snippet variant
+
+These flags are propagated into the audit record (`rag_multi_query`,
+`rag_multi_count`, `rag_hyde`), and the audit reports
+`rag_backend=keyword_scan`.
+
+## What is planned
+
+Real vector retrieval (sentence-transformers embeddings + Chroma behind a
+`RAG_BACKEND` flag, with the keyword scan kept as the deterministic
+fallback) is row C of [MODERNIZATION_PLAN.md](MODERNIZATION_PLAN.md). Until
+that lands, this repo does not do semantic retrieval, and docs should not
+claim it does. See `rag_vector_backends.md` for the backend plan.
+
+## See also
+
+- `ports_and_adapters.md`: RAGPort design and how backends will plug in
+- `docs/adr/0005-doc-retriever-naming.md`: why the module was renamed
