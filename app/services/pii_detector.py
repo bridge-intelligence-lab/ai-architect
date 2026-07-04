@@ -108,6 +108,19 @@ def _compile_active_patterns(types_override: list[str] | None = None, locales_ov
 
 
 def detect_pii(text: str, types: list[str] | None = None, locales: list[str] | None = None) -> Dict[str, Any]:
+    # Optional Presidio backend (PII_BACKEND=presidio); the regex baseline
+    # below stays the default and the fallback when Presidio is not
+    # installed or fails (e.g. missing spaCy model).
+    if os.getenv("PII_BACKEND", "regex").lower() == "presidio":
+        try:
+            from app.services.pii_presidio import detect_pii_presidio
+
+            result = detect_pii_presidio(text, types=types)
+            result["pii_backend"] = "presidio"
+            return result
+        except Exception:
+            pass
+
     entities: List[Dict[str, Any]] = []
     counts: Dict[str, int] = {}
 
@@ -139,4 +152,5 @@ def detect_pii(text: str, types: list[str] | None = None, locales: list[str] | N
         "types_present": types_present,
         "counts": counts,
         "total": len(entities),
+        "pii_backend": "regex",
     }
