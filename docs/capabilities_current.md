@@ -14,7 +14,7 @@ Endpoints and behaviors
   - Intents: auto|qa|pii_detect|risk_score (router optional; default falls back to qa)
   - grounded=true: RAG path with citations; records rag flags (multi_query, hyde)
   - ungrouded (or grounded with optional LLM): optional LLM synthesis when LLM_ENABLE_QUERY=true
-  - Audit: tokens/cost estimates, router_backend and router_intent, rag_backend ("langchain" today), PII extras when pii_detect intent
+  - Audit: tokens/cost estimates, router_backend and router_intent, rag_backend (keyword_scan or vector), PII extras when pii_detect intent
 - POST /architect (requires PROJECT_GUIDE_ENABLED=true)
   - Structured plan generation via Architect Agent when LLM_ENABLE_ARCHITECT=true
   - When grounded, uses same RAG path for citations
