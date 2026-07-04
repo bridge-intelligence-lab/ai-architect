@@ -1,11 +1,25 @@
 # PII detection and configuration
 
-This project includes a simple, deterministic PII detector based on regex and heuristics. It returns masked previews, counts, and a list of detected types without external calls.
+Two detection backends, selected by `PII_BACKEND`:
+
+- **`regex` (default).** Simple, deterministic detector based on regex and
+  heuristics. Masked previews, counts, and detected types, no external
+  calls; this is what tests and CI exercise.
+- **`presidio`.** Microsoft Presidio's AnalyzerEngine (NER + pattern
+  recognizers) in `app/services/pii_presidio.py`, same result shape plus a
+  per-entity `score`. Optional install: `pip install .[presidio]` and a
+  spaCy model (`python -m spacy download en_core_web_sm`; override with
+  `PII_SPACY_MODEL`). Confidence cutoff via `PII_PRESIDIO_THRESHOLD`
+  (default 0.5). If Presidio is missing or fails, detection falls back to
+  the regex baseline; results report `pii_backend` = backend actually used.
 
 Environment variables
+- PII_BACKEND: regex (default) | presidio
+- PII_PRESIDIO_THRESHOLD: minimum Presidio confidence score (default 0.5)
+- PII_SPACY_MODEL: spaCy model for the Presidio NLP engine (default en_core_web_sm)
 - PII_TYPES: comma-separated base types to enable. Default: email,phone,ssn,credit_card,ipv4
   - Additional base types available: ipv6, iban, passport
-- PII_LOCALES: comma-separated locales to enable locale-specific patterns (e.g., US,UK,CA,DE)
+- PII_LOCALES: comma-separated locales to enable locale-specific patterns (e.g., US,UK,CA,DE); regex backend only
 
 Request-level filtering
 - The /pii endpoint accepts an optional types array in the request body to override enabled base types for that request only (e.g., ["ssn"]). Locales remain configured via PII_LOCALES.

@@ -4,6 +4,8 @@
 
 ### Added
 
+* Presidio PII backend behind `PII_BACKEND=presidio` (`app/services/pii_presidio.py`): NER + pattern recognizers with per-entity confidence scores (`PII_PRESIDIO_THRESHOLD`, `PII_SPACY_MODEL`); optional install via `pip install .[presidio]`; regex baseline stays the default and the fallback, and results report `pii_backend` = backend actually used (`docs/adr/0009-presidio-pii-backend.md`).
+
 * MCP server (`app/mcp_server.py`, console script `ai-architect-mcp`): exposes `retrieve_docs`, `detect_pii`, and `architect_plan` over the Model Context Protocol via the official SDK's FastMCP on stdio; backend flags (`RAG_BACKEND`, `AGENT_BACKEND`, `LLM_PROVIDER`) apply unchanged and audit metadata rides along in tool results (`docs/adr/0008-mcp-server.md`).
 
 * Real LangGraph tool-loop architect behind `AGENT_BACKEND=langgraph` (`app/services/langgraph_architect.py`): the LLM decides per turn between calling `retrieve_docs` (via `doc_retriever`, vector backend applies) and finalizing; capped at 3 tool calls; tokens/cost accumulate across turns; audit reports `agent_backend` and `agent_tool_calls`. The deterministic builtin planner stays the default and the fallback on any failure (`docs/adr/0007-langgraph-architect.md`).

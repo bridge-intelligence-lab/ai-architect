@@ -43,6 +43,10 @@ dependencies = [
 ]
 
 
+[project.optional-dependencies]
+presidio = ["presidio-analyzer>=2.2"]
+
+
 [project.scripts]
 ai-architect-mcp = "app.mcp_server:main"
 
