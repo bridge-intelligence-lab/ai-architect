@@ -20,6 +20,11 @@
 * Deterministic `hash` embeddings provider (hashed bag-of-words) for offline golden-query tests; `EMBEDDINGS_PROVIDER=local|hash|stub`.
 * `tests/test_vector_rag.py`: golden-query ranking, determinism, vector→keyword fallback, endpoint audit reporting, and empty-corpus (no fabricated citations) contracts.
 
+### Fixed
+
+* LangGraph architect no longer returns empty plans when it hits the tool-call cap: the agent is told the retrieval budget is exhausted and must finalize; if the plan still has no summary the builtin planner takes over (found by LangSmith eval baseline: 8/18 grounded prompts affected).
+* Tests no longer inherit the developer's `.env` (loaded with `override=True` by `app/main.py` at import): an autouse fixture pins the stub provider and clears provider/tracing keys, ending silent live OpenAI calls from the suite.
+
 ### Changed
 
 * Rename `app/services/langchain_rag.py` → `app/services/doc_retriever.py`; the module is a deterministic keyword-scan retriever and never used LangChain (`docs/adr/0005-doc-retriever-naming.md`).
