@@ -94,8 +94,11 @@ Quality and governance
 - Privacy: PII redaction gates before embedding/indexing.
 
 Rollout plan
+- Shipped (outside this plan): scripts/ingest_docs.py is the real batch
+  ingestion CLI today — chunking (1000/200), idempotent path+offset ids,
+  Chroma upserts, RAG_EXCLUDE_FILES skip, `make ingest` entry point.
 - Phase 1: Documentation (this file) and align with ports_and_adapters.md.
-- Phase 2: CLI scaffolding:
+- Phase 2: CLI scaffolding (not yet built):
   - scripts/batch_ingest_docs.py (JSONL/Parquet artifacts, optional local vector store upserts)
   - scripts/stream_worker.py (local dir queue; optional Kafka/NATS if configured)
 - Phase 3: Adapters and metrics: add Bus adapters, MetadataStore (SQLite/Postgres), Prom metrics, DLQ handling.

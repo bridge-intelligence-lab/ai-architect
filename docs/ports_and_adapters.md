@@ -28,10 +28,11 @@ Key ports (initial focus first, others later)
   - LlamaIndexAdapter (planned/optional): QueryEngines, HyDE, rerank, rich metadata
   - HaystackAdapter (planned/optional): Pipelines with BM25+dense, rankers, evaluation
 - Selection env
-  - Preferred: RAG_BACKEND=deterministic|langchain|llamaindex|haystack
-  - Back-compat alias: LC_RAG_BACKEND (if set, it maps to RAG_BACKEND)
+  - Shipped: RAG_BACKEND=keyword_scan|vector (Chroma; see rag.md). The
+    langchain/llamaindex/haystack adapter values and the LC_RAG_BACKEND alias
+    described in this design were never implemented.
 - Default behavior
-  - DeterministicAdapter in CI/tests for stability; production may opt into LangChain or others.
+  - Keyword-scan adapter in CI/tests for stability; production may opt into the vector backend.
 
 2) AgentPlannerPort (architect/policy planning)
 - Responsibilities
@@ -71,11 +72,10 @@ Key ports (initial focus first, others later)
 7) MemoryPort (optional wrapper)
 - Thin wrapper around existing short/long memory so agents can call memory uniformly via ToolPort.
 
-Env/config conventions
-- RAG_BACKEND: deterministic|langchain|llamaindex|haystack (preferred)
-- LC_RAG_BACKEND: legacy alias; mapped into RAG_BACKEND if present
-- AGENT_BACKEND: builtin|langchain|semantic_kernel|crewai (default: builtin)
-- EMBEDDINGS_PROVIDER: stub|local|openai (default: stub/local for determinism)
+Env/config conventions (as shipped; this design doc predates implementation)
+- RAG_BACKEND: keyword_scan|vector (default: keyword_scan)
+- AGENT_BACKEND: builtin|langgraph (default: builtin)
+- EMBEDDINGS_PROVIDER: local|openai|hash|stub (default: local)
 - VECTORSTORE_BACKEND (future): chroma|faiss|pinecone|pgvector|weaviate
 - TRACE_BACKEND: none|langsmith|otel
 - Flags used by RAG options: RAG_MULTI_QUERY_ENABLED, RAG_MULTI_QUERY_COUNT, RAG_HYDE_ENABLED

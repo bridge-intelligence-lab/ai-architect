@@ -1,5 +1,11 @@
 # Architect Deterministic Mode (LangGraph)
 
+> **Historical proposal — superseded.** LangGraph shipped as a different
+> design: an opt-in tool-loop agent behind `AGENT_BACKEND=langgraph` (see
+> docs/agents.md and ADR-0007), not the concurrent-pipeline mode described
+> here. The `/architect/final` endpoint proposed below was never built. Kept
+> for design history.
+
 Problem
 - Current SSE streaming delivers partial content (summary, steps, flags, citations) as events arrive. It can feel disjointed and requires UI tricks (typing, buffering) to appear coherent.
 - We want a mode that executes sub-tasks concurrently but returns a single cohesive deliverable at the end.

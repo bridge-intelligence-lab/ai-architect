@@ -1,5 +1,12 @@
 # Project Guide RAG and Solution Architect Mode
 
+> **Status: largely shipped.** Phases A-C below landed: the guide is the
+> `/architect` endpoint gated by `PROJECT_GUIDE_ENABLED` (there is no
+> `guide=true` payload flag), brainstorm is a UI mode, and docs ingestion
+> shipped via `scripts/ingest_docs.py` with eval docs excluded through
+> `RAG_EXCLUDE_FILES`. The implementation-plan sections are kept as design
+> history.
+
 Note: For the MLOps roadmap (model registry, data and model drift, and serving), see docs/mlops_plan.md.
 
 Purpose
