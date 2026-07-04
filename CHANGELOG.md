@@ -4,6 +4,8 @@
 
 ### Added
 
+* Real LangGraph tool-loop architect behind `AGENT_BACKEND=langgraph` (`app/services/langgraph_architect.py`): the LLM decides per turn between calling `retrieve_docs` (via `doc_retriever`, vector backend applies) and finalizing; capped at 3 tool calls; tokens/cost accumulate across turns; audit reports `agent_backend` and `agent_tool_calls`. The deterministic builtin planner stays the default and the fallback on any failure (`docs/adr/0007-langgraph-architect.md`).
+
 * LiteLLM-backed `LLMClient`: all real providers route through `litellm.completion` (the hand-rolled openai/openrouter/azure branches are gone); the deterministic offline `stub` provider stays the default and the fallback on any provider error. `cost_usd` is now real, from LiteLLM's per-model pricing map, and `app/utils/cost.py` prices its estimates from the same map (static table only as fallback). Tests: `tests/test_llm_cost.py`.
 
 * Real vector retrieval behind `RAG_BACKEND=vector`: Chroma-backed `app/services/vector_retriever.py` with cosine ranking over chunked documents; `scripts/ingest_docs.py` now actually ingests (chunk + embed + upsert, idempotent ids); keyword scan remains the default and the fallback when the vectorstore is missing or empty; audit `rag_backend` reports the backend actually used.

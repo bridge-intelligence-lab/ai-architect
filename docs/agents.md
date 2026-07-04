@@ -1,5 +1,25 @@
 # Agents
 
+## Architect backends (AGENT_BACKEND)
+
+The `/architect` endpoints run one of two backends, selected by
+`AGENT_BACKEND`:
+
+- **`builtin` (default).** Deterministic linear pipeline in
+  `app/services/architect_agent.py`: memory read → retrieval → one LLM call
+  with `PydanticOutputParser` format instructions → validated
+  `ArchitectPlan` → memory write. Fully offline with the stub LLM; this is
+  what tests and CI exercise.
+- **`langgraph`.** Real tool-loop agent in
+  `app/services/langgraph_architect.py`: a LangGraph `StateGraph` where the
+  LLM decides each turn whether to call the `retrieve_docs` tool (backed by
+  `doc_retriever`, so `RAG_BACKEND=vector` applies) or finalize the plan.
+  Tool observations feed back into the next turn; the loop is capped at 3
+  tool calls. Tokens and cost accumulate across turns into the audit, which
+  also reports `agent_backend` and `agent_tool_calls`. Any failure falls
+  back to the builtin planner. Memory read/write integration is
+  builtin-only for now (ADR 0007).
+
 Architect agent and community loop
 - The Architect agent can propose features when it detects gaps between a user goal and current capabilities (e.g., a new endpoint or a router rule).
 - Users can copy the proposal (summary, steps, flags) into a GitHub issue; see docs/llm_agent_streaming_prompts.md for a ready-to-use prompt set.

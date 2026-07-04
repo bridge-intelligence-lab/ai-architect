@@ -44,6 +44,22 @@ def _build_messages(question: str, plan_parser: PydanticOutputParser, context_bl
 
 
 def run_architect_agent(question: str, session_id: str | None = None, user_id: str | None = None, llm_model: str | None = None) -> Tuple[ArchitectPlan, Dict[str, Any]]:
+    # Optional LangGraph tool-loop backend (AGENT_BACKEND=langgraph); the
+    # deterministic builtin planner below stays the default, and any failure
+    # in the LangGraph path falls back to it.
+    if os.getenv("AGENT_BACKEND", "builtin").lower() == "langgraph":
+        try:
+            from app.services.langgraph_architect import run_langgraph_architect
+
+            return run_langgraph_architect(
+                question, session_id=session_id, user_id=user_id, llm_model=llm_model
+            )
+        except Exception as e:
+            _arch_logger.warning(
+                "langgraph backend failed; using builtin",
+                extra={"extra": {"error": str(e)}},
+            )
+
     # Initialize memory flags and counters
     short_enabled = os.getenv("MEMORY_SHORT_ENABLED", "false").lower() in ("1", "true", "yes", "on")
     long_enabled = os.getenv("MEMORY_LONG_ENABLED", "false").lower() in ("1", "true", "yes", "on")
@@ -278,6 +294,7 @@ def run_architect_agent(question: str, session_id: str | None = None, user_id: s
 
     # 7) Build audit fields with memory counters
     audit: Dict[str, Any] = {
+        "agent_backend": "builtin",
         "llm_provider": result.get("provider"),
         "llm_model": result.get("model"),
         "llm_tokens_prompt": result.get("tokens_prompt"),
