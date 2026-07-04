@@ -45,7 +45,6 @@ def test_architect_llm_json_parse_and_fallback(monkeypatch):
     # Enable architect and LLM for it
     monkeypatch.setenv("PROJECT_GUIDE_ENABLED", "true")
     monkeypatch.setenv("LLM_ENABLE_ARCHITECT", "true")
-    monkeypatch.setenv("LC_USE_OUTPUT_PARSER", "true")
     # Deterministic docs path
     monkeypatch.setenv("DOCS_PATH", os.path.join(os.getcwd(), "e2e_docs"))
 
