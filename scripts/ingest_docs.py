@@ -45,8 +45,13 @@ def chunk_text(text: str, size: int = 1000, overlap: int = 200):
 
 
 def iter_documents(docs_path: str):
+    from app.services.doc_retriever import is_excluded
+
     for root, _, files in os.walk(docs_path):
         for fn in sorted(files):
+            if is_excluded(fn):
+                print(f"exclude {os.path.join(root, fn)} (RAG_EXCLUDE_FILES)")
+                continue
             path = os.path.join(root, fn)
             low = fn.lower()
             try:

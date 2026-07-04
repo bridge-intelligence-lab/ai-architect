@@ -11,6 +11,30 @@ is missing or empty).
 import os
 from typing import Any, Dict, List, Tuple
 
+# Files under DOCS_PATH that must never be used as grounding context.
+# Default excludes the eval/test-prompt docs: their entries match eval and
+# user questions nearly verbatim, so retrieval returns the question list
+# itself as "context" (found during judge calibration, 2026-07-04; the v2
+# prompt doc reproduced the problem the moment the v1 file was excluded).
+_DEFAULT_EXCLUDES = ",".join(
+    [
+        "llm_agent_streaming_prompts.md",
+        "eval_prompt_set_v2.md",
+        "langsmith_test_plan.md",
+        "langsmith_eval_backlog.md",
+        "eval_calibration_2026-07-04.md",
+    ]
+)
+
+
+def excluded_files() -> set:
+    raw = os.getenv("RAG_EXCLUDE_FILES", _DEFAULT_EXCLUDES)
+    return {f.strip().lower() for f in raw.split(",") if f.strip()}
+
+
+def is_excluded(filename: str) -> bool:
+    return os.path.basename(filename).lower() in excluded_files()
+
 
 def is_enabled() -> bool:
     # keyword scan is currently the sole retrieval backend
@@ -69,7 +93,7 @@ def _scan_docs_for_terms(docs_path: str, terms: List[str]) -> List[Dict[str, Any
         return citations
     for root, _, files in os.walk(docs_path):
         for fn in files:
-            if fn.lower().endswith((".txt", ".md")):
+            if fn.lower().endswith((".txt", ".md")) and not is_excluded(fn):
                 path = os.path.join(root, fn)
                 try:
                     with open(path, "r", encoding="utf-8", errors="ignore") as f:
@@ -219,6 +243,8 @@ def answer_with_citations(question: str, k: int = 3) -> Dict[str, Any]:
         fname_match_path = None
         for root, _, files in os.walk(docs_path):
             for fn in files:
+                if is_excluded(fn):
+                    continue
                 fn_low = fn.lower()
                 if any(t in fn_low for t in norm_terms):
                     p = os.path.join(root, fn)
@@ -231,8 +257,9 @@ def answer_with_citations(question: str, k: int = 3) -> Dict[str, Any]:
         # 2) If no filename match, fall back to first text-like file (or any file)
         if not target_path:
             for root, _, files in os.walk(docs_path):
-                text_files = [f for f in files if f.lower().endswith((".txt", ".md"))]
-                search_list = text_files if text_files else files
+                candidates = [f for f in files if not is_excluded(f)]
+                text_files = [f for f in candidates if f.lower().endswith((".txt", ".md"))]
+                search_list = text_files if text_files else candidates
                 for fn in search_list:
                     p = os.path.join(root, fn)
                     if os.path.isfile(p):

@@ -90,11 +90,15 @@ def query(question: str, k: int = 3) -> List[Dict[str, Any]]:
 
     Raises on any backend failure; the caller decides whether to fall back.
     """
+    from app.services.doc_retriever import is_excluded
+
     col = get_collection()
     emb = get_embedder().embed([question])[0]
+    # Over-fetch so query-time exclusion (stale chunks from files that were
+    # ingested before landing on RAG_EXCLUDE_FILES) still yields k results.
     res = col.query(
         query_embeddings=[emb],
-        n_results=max(1, k),
+        n_results=max(1, k) * 2,
         include=["documents", "metadatas", "distances"],
     )
     citations: List[Dict[str, Any]] = []
@@ -103,7 +107,11 @@ def query(question: str, k: int = 3) -> List[Dict[str, Any]]:
     metas = (res.get("metadatas") or [[]])[0]
     dists = (res.get("distances") or [[]])[0]
     for i in range(len(ids[0])):
+        if len(citations) >= max(1, k):
+            break
         meta = metas[i] if i < len(metas) else {}
+        if is_excluded(str((meta or {}).get("source", ""))):
+            continue
         snippet = (docs[i] if i < len(docs) else "")[:200].replace("\n", " ")
         citations.append(
             {
