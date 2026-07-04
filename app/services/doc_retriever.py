@@ -1,10 +1,11 @@
-"""Deterministic keyword-scan document retriever.
+"""Document retrieval facade: keyword scan plus optional vector backend.
 
-Scans text files under DOCS_PATH, scores them by keyword overlap with the
-question, and returns snippet citations. There are no embeddings, no vector
-store, and no LLM calls; results are fully deterministic, which keeps tests
-and CI reproducible. A real vector-retrieval backend is planned separately
-(see docs/MODERNIZATION_PLAN.md, row C).
+The default path scans text files under DOCS_PATH, scores them by keyword
+overlap with the question, and returns snippet citations, with no
+embeddings and no LLM calls, so tests and CI stay deterministic. With
+RAG_BACKEND=vector, retrieval is delegated to the Chroma-backed
+vector_retriever (falling back to the keyword scan when the vectorstore
+is missing or empty).
 """
 
 import os
@@ -146,7 +147,13 @@ def _merge_citations(
 
 
 def answer_with_citations(question: str, k: int = 3) -> Dict[str, Any]:
-    """Return citations from a deterministic keyword scan of DOCS_PATH.
+    """Return citations from the configured retrieval backend.
+
+    RAG_BACKEND=vector uses Chroma vector retrieval (see vector_retriever);
+    anything else (default: keyword_scan) uses the deterministic keyword
+    scan of DOCS_PATH. The vector path falls back to the keyword scan when
+    the vectorstore is missing or empty, and the result reports the backend
+    actually used under the "rag_backend" key.
 
     The answer is extractive: it is composed from the top-ranked snippets.
     When nothing matches, citations are empty and the answer says so; no
@@ -154,8 +161,22 @@ def answer_with_citations(question: str, k: int = 3) -> Dict[str, Any]:
     """
     docs_path = os.getenv("DOCS_PATH", "./examples")
 
+    if os.getenv("RAG_BACKEND", "keyword_scan").lower() == "vector":
+        try:
+            from app.services import vector_retriever
+
+            if vector_retriever.is_ready():
+                citations = vector_retriever.query(question, k=k)
+                return {
+                    "answer": _extractive_answer(citations, k, docs_path),
+                    "citations": citations,
+                    "rag_backend": "vector",
+                }
+        except Exception:
+            pass  # fall back to the keyword scan below
+
     citations: List[Dict[str, Any]] = []
-    meta: Dict[str, Any] = {}
+    meta: Dict[str, Any] = {"rag_backend": "keyword_scan"}
     try:
         multi = os.getenv("RAG_MULTI_QUERY_ENABLED", "false").lower() in (
             "1",
@@ -233,18 +254,22 @@ def answer_with_citations(question: str, k: int = 3) -> Dict[str, Any]:
                     "snippet": snippet,
                 }
             ]
-    if citations:
-        parts = []
-        for c in citations[:k]:
-            src = c.get("source", "unknown")
-            snippet = (c.get("snippet") or "").strip()
-            if snippet:
-                parts.append(f"[{src}] {snippet}")
-        answer = (
-            "Extracted from matching documents:\n" + "\n".join(parts)
-            if parts
-            else "Matching documents found; see citations."
-        )
-    else:
-        answer = f"No documents under {docs_path} matched the question."
-    return {"answer": answer, "citations": citations, **meta}
+    return {
+        "answer": _extractive_answer(citations, k, docs_path),
+        "citations": citations,
+        **meta,
+    }
+
+
+def _extractive_answer(citations: List[Dict[str, Any]], k: int, docs_path: str) -> str:
+    if not citations:
+        return f"No documents under {docs_path} matched the question."
+    parts = []
+    for c in citations[:k]:
+        src = c.get("source", "unknown")
+        snippet = (c.get("snippet") or "").strip()
+        if snippet:
+            parts.append(f"[{src}] {snippet}")
+    if not parts:
+        return "Matching documents found; see citations."
+    return "Extracted from matching documents:\n" + "\n".join(parts)
