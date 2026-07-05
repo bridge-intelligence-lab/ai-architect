@@ -187,7 +187,8 @@ curl -sS -X POST localhost:8000/pii \
 - pii.types_present contains email and phone
 - masked previews in entities
 
-Optional locales
+### Optional locales
+
 ```bash
 export PII_LOCALES="US,UK,CA"
 ```
