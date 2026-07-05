@@ -1,10 +1,16 @@
+---
+title: ADR 0008: Expose architect capabilities over MCP
+status: current
+module: architecture
+last_reviewed: 2026-07-05
+decision_date: 2026-07-04
+adr_status: Accepted
+---
+
 # ADR 0008: Expose architect capabilities over MCP
 
-Date: 2026-07-04
+## Context
 
-Status: Accepted
-
-Context
 - ADR-0004 identified MCP as the connective tissue of the 2026 agent
   ecosystem and the highest-signal gap in this repo: every capability was
   reachable only through the bespoke HTTP API, so agent hosts (Claude
@@ -14,7 +20,8 @@ Context
   (doc_retriever, pii_detector, architect_agent), so an MCP surface can sit
   beside FastAPI without touching request handling.
 
-Decision
+## Decision
+
 - Add `app/mcp_server.py` using the official `mcp` SDK's FastMCP, run over
   stdio via the `ai-architect-mcp` console script (or
   `python -m app.mcp_server`).
@@ -29,7 +36,8 @@ Decision
   full MCP round-trip (list_tools, call_tool, error surfacing) is covered
   offline with no subprocess.
 
-Consequences
+## Consequences
+
 - Any MCP client can now call the platform's governed capabilities; audit
   metadata travels with results, keeping the FinOps/observability story
   intact outside HTTP.
