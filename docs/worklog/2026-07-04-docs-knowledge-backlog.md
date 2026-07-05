@@ -23,9 +23,16 @@ file is the first entry.
 - Plan: `git log -p` over prompt files to bisect, fix, then add 2-3 golden prompts + an
   evaluator check so it is regression-gated.
 
-### 3. Baseline eval run
-- Run current config against golden dataset, tag as pre-cleanup baseline in LangSmith.
-- Everything after this is measured against it. Effectively LS-13 arriving early.
+### 3. Baseline eval run [DONE 2026-07-04]
+- Experiment: `baseline-post-pr27-8b06c0ad` (26/26 examples, post-PR-#27 config:
+  langgraph + memory parity, gpt-4.1, 1024 tokens, vector RAG).
+- Key numbers to diff after the docs overhaul:
+  judge_groundedness 3.346, judge_correctness 3.308, judge_completeness 2.885,
+  judge_actionability 2.923, citations_expectation 0.833,
+  grounded_matches_expectation 0.846, keywords_present 0.833,
+  latency mean 10.6s (max 33.2s), cost $0.006/prompt, not_truncated 1.0.
+- ttft equals latency by design for now: the SSE status ack is excluded from ttft and
+  content events arrive only after the agent completes (no token streaming yet).
 
 ### 4. Docs overhaul PR (one sweep, one corpus change)
 - Delete: building-with-ai-vs-no-code-dev.md, mlflow-rag-orchestration-idea-from-eric.md,
