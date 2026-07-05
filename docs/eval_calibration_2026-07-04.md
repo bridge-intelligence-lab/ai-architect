@@ -1,3 +1,12 @@
+---
+title: Judge calibration note, 2026-07-04 (LS-7)
+status: historical
+module: eval
+last_reviewed: 2026-07-04
+source:
+  - scripts/langsmith_judges.py
+---
+
 # Judge calibration note, 2026-07-04 (LS-7)
 
 Calibrator: Hue (claude-fable-5), delegated by Rodrigo. Method: read all 26

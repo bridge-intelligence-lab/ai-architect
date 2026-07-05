@@ -1,3 +1,10 @@
+---
+title: Manual End-to-End Test Plan
+status: current
+module: testing
+last_reviewed: 2026-07-04
+---
+
 # Manual End-to-End Test Plan
 
 This guide walks you through a comprehensive, reproducible end-to-end (E2E) test of the AI Architect. It combines manual validation with scripted commands (curl/Python) and optional stress testing.

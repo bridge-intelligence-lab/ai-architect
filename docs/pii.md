@@ -1,3 +1,13 @@
+---
+title: PII detection and configuration
+status: current
+module: governance
+last_reviewed: 2026-07-04
+source:
+  - app/services/pii_detector.py
+  - app/services/pii_presidio.py
+---
+
 # PII detection and configuration
 
 Two detection backends, selected by `PII_BACKEND`:

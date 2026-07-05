@@ -1,3 +1,12 @@
+---
+title: Project Guide RAG and Solution Architect Mode
+status: current
+module: rag
+last_reviewed: 2026-07-04
+source:
+  - app/routers/architect.py
+---
+
 # Project Guide RAG and Solution Architect Mode
 
 > **Status: largely shipped.** Phases A-C below landed: the guide is the

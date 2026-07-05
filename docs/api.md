@@ -1,3 +1,12 @@
+---
+title: API Overview
+status: current
+module: api
+last_reviewed: 2026-07-04
+source:
+  - app/routers/
+---
+
 # API Overview
 
 This service is a FastAPI application for AI risk, compliance, and observability.

@@ -1,3 +1,10 @@
+---
+title: LLM Agent Streaming Test Prompts
+status: historical
+module: community
+last_reviewed: 2026-07-04
+---
+
 # LLM Agent Streaming Test Prompts
 
 > **Scope note.** These prompts are for exercising the streaming UI by hand.

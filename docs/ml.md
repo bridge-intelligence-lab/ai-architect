@@ -1,3 +1,13 @@
+---
+title: ML and Drift
+status: current
+module: ml
+last_reviewed: 2026-07-04
+source:
+  - ml/
+  - app/services/mlflow_client.py
+---
+
 # ML and Drift
 
 ## Training

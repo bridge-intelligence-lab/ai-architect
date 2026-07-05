@@ -1,3 +1,10 @@
+---
+title: Architecture index
+status: current
+module: architecture
+last_reviewed: 2026-07-04
+---
+
 # Architecture index
 
 This document orients the Architect use case by linking core components, endpoints, env flags, and flows.

@@ -1,3 +1,10 @@
+---
+title: Current Capabilities (Baseline)
+status: current
+module: overview
+last_reviewed: 2026-07-04
+---
+
 # Current Capabilities (Baseline)
 
 This document captures what is implemented today in AI Architect so we can design new capabilities in isolation on top of a clear baseline.
@@ -20,7 +27,7 @@ Endpoints and behaviors
   - When grounded, uses same RAG path for citations
   - Audit includes LLM metadata (provider/model/tokens/cost) and RAG flags when present
 - GET /architect/stream — Server-Sent Events (SSE)
-  - Events: meta, summary, steps, flags, citations, feature, audit
+  - Events: status (immediate ack), meta, summary, steps, flags, citations, feature, audit; error on failure
   - meta includes provider/model/grounded_used; includes memory_* reads when enabled
 - GET /architect/ui and GET/POST /ui — HTML UI for Architect/Query/Research
 - POST /research — agent pipeline with steps [search, fetch, summarize, risk_check]; per-step RBAC

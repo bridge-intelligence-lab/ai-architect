@@ -1,3 +1,12 @@
+---
+title: Router rules (v2)
+status: current
+module: router
+last_reviewed: 2026-07-04
+source:
+  - app/services/router.py
+---
+
 # Router rules (v2)
 
 The router decides which intent to execute: qa, pii_detect, risk_score, policy_navigator, pii_remediation, other.

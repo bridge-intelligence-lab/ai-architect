@@ -1,3 +1,10 @@
+---
+title: Backlog: LangSmith Eval Setup for AI Architect
+status: current
+module: eval
+last_reviewed: 2026-07-04
+---
+
 # Backlog: LangSmith Eval Setup for AI Architect
 
 Companion to `docs/langsmith_test_plan.md`. Work items in dependency order. Nothing starts until this doc is reviewed.

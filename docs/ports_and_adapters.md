@@ -1,3 +1,12 @@
+---
+title: Ports and Adapters Strategy (Library-Agnostic Design)
+status: current
+module: architecture
+last_reviewed: 2026-07-04
+source:
+  - app/services/doc_retriever.py
+---
+
 # Ports and Adapters Strategy (Library-Agnostic Design)
 
 Purpose

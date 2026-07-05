@@ -1,3 +1,10 @@
+---
+title: Component map
+status: current
+module: architecture
+last_reviewed: 2026-07-04
+---
+
 # Component map
 
 - app/routers/query.py: core /query with router integration and RAG wiring

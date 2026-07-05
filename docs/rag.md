@@ -1,3 +1,14 @@
+---
+title: Retrieval Configuration
+status: current
+module: rag
+last_reviewed: 2026-07-04
+source:
+  - app/services/doc_retriever.py
+  - app/services/vector_retriever.py
+  - scripts/ingest_docs.py
+---
+
 # Retrieval Configuration
 
 ## Two retrieval backends

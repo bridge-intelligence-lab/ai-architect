@@ -1,3 +1,10 @@
+---
+title: Feature Store and Data Quality (Vendor‑Neutral)
+status: current
+module: ml
+last_reviewed: 2026-07-04
+---
+
 # Feature Store and Data Quality (Vendor‑Neutral)
 
 Purpose

@@ -1,3 +1,13 @@
+---
+title: Memory (Phase 7)
+status: current
+module: memory
+last_reviewed: 2026-07-04
+source:
+  - app/memory/short_memory.py
+  - app/memory/long_memory.py
+---
+
 # Memory (Phase 7)
 
 This service supports short-term conversation memory and long-term semantic memory.

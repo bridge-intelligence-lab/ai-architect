@@ -1,3 +1,10 @@
+---
+title: Related Open-Source Projects (Complementary Landscape)
+status: current
+module: overview
+last_reviewed: 2026-07-04
+---
+
 # Related Open-Source Projects (Complementary Landscape)
 
 Purpose

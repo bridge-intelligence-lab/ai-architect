@@ -1,3 +1,12 @@
+---
+title: Observability notes (Architect memory)
+status: current
+module: governance
+last_reviewed: 2026-07-04
+source:
+  - app/utils/metrics.py
+---
+
 # Observability notes (Architect memory)
 
 - SSE meta event now includes memory read stats when memory flags are enabled:

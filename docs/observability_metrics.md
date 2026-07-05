@@ -1,3 +1,12 @@
+---
+title: Observability: Prometheus Metrics and Grafana
+status: current
+module: governance
+last_reviewed: 2026-07-04
+source:
+  - app/utils/metrics.py
+---
+
 # Observability: Prometheus Metrics and Grafana
 
 This page documents the metrics exported by the service, how they are updated, and how to visualize them in Grafana.

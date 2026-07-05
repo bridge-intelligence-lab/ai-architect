@@ -1,3 +1,12 @@
+---
+title: Router configuration
+status: current
+module: router
+last_reviewed: 2026-07-04
+source:
+  - app/services/router.py
+---
+
 # Router configuration
 
 The Router selects an intent for /query: qa, pii_detect, risk_score, policy_navigator, pii_remediation, or other.

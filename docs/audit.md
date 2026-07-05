@@ -1,3 +1,13 @@
+---
+title: Auditing & Retention
+status: current
+module: governance
+last_reviewed: 2026-07-04
+source:
+  - app/utils/audit.py
+  - app/db/
+---
+
 # Auditing & Retention
 
 ## Audit writes

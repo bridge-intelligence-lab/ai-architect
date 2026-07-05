@@ -1,3 +1,12 @@
+---
+title: Configuration
+status: current
+module: ops
+last_reviewed: 2026-07-04
+source:
+  - .env.example
+---
+
 # Configuration
 
 Environment variables (selected). Defaults shown are the code defaults when the
@@ -56,7 +65,8 @@ variable is unset; `.env.example` documents a working local setup.
 - SHORT_MEMORY_RETENTION_DAYS, SHORT_MEMORY_MAX_TURNS_PER_SESSION (default: 0=disabled)
 - MEMORY_LONG_ENABLED (default: false), MEMORY_COLLECTION_PREFIX (default: memory)
 - MEMORY_LONG_RETENTION_DAYS, MEMORY_LONG_MAX_FACTS (default: 0=disabled)
-- Note: memory integrates with /query and the builtin architect; the langgraph backend currently bypasses it
+- Note: memory integrates with /query and /architect; for /architect it is
+  backend-agnostic (both builtin and langgraph read/write it)
 
 ## Research agent safety
 

@@ -1,3 +1,14 @@
+---
+title: Agents
+status: current
+module: agents
+last_reviewed: 2026-07-04
+source:
+  - app/services/architect_agent.py
+  - app/services/langgraph_architect.py
+  - app/routers/architect.py
+---
+
 # Agents
 
 ## Architect backends (AGENT_BACKEND)

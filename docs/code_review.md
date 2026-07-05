@@ -1,3 +1,10 @@
+---
+title: code_review
+status: current
+module: process
+last_reviewed: 2026-07-04
+---
+
 AI Architect — Code Review (Session 1)
 
 Overview and scope

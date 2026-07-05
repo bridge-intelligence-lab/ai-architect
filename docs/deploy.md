@@ -1,3 +1,12 @@
+---
+title: Deployment quick notes
+status: current
+module: ops
+last_reviewed: 2026-07-04
+source:
+  - docker-compose.yml
+---
+
 # Deployment quick notes
 
 This project is designed to run locally or on simple PaaS setups. Below are minimal notes; tailor for your platform.

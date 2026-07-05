@@ -1,3 +1,12 @@
+---
+title: Ingestion Pipelines: Streaming and Batch (Vendor‑Neutral)
+status: current
+module: rag
+last_reviewed: 2026-07-04
+source:
+  - scripts/ingest_docs.py
+---
+
 # Ingestion Pipelines: Streaming and Batch (Vendor‑Neutral)
 
 Purpose

@@ -1,3 +1,10 @@
+---
+title: LangSmith Test Plan for AI Architect
+status: current
+module: eval
+last_reviewed: 2026-07-04
+---
+
 # LangSmith Test Plan for AI Architect
 
 Goal: go from "traces are flowing, eyeballing outputs" to a repeatable eval setup with a real rubric, experiments, and regression gates.

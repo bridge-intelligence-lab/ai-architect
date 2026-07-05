@@ -1,3 +1,10 @@
+---
+title: Getting Started
+status: current
+module: overview
+last_reviewed: 2026-07-04
+---
+
 # Getting Started
 
 This guide helps you install, run, and explore AI Architect locally. For a product overview, see the root README. For deeper topics, see the docs index.
