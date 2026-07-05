@@ -50,8 +50,8 @@ Scope: Architect-first OSS launch with engaging chat UI, structured agent, and s
   - event: audit → full audit dict
 
 ## GitHub Issue CTA (MVP)
-- Repo: rodrigo-fonseca-oliveira/ai-architect (or update to this repo if preferred)
-- Link template: https://github.com/rodrigo-fonseca-oliveira/ai-architect/issues/new?title=<encoded>&body=<encoded>
+- Repo: bridge-intelligence-lab/ai-architect (or update to this repo if preferred)
+- Link template: https://github.com/bridge-intelligence-lab/ai-architect/issues/new?title=<encoded>&body=<encoded>
 - Include summary, steps, flags, and user question in body.
 - OAuth/device flow deferred post-launch.
 

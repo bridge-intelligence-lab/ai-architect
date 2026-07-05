@@ -2,6 +2,7 @@ import os
 from typing import AsyncGenerator, Dict, Any
 from fastapi import APIRouter, Request, Query
 from fastapi.responses import StreamingResponse
+from starlette.concurrency import run_in_threadpool
 
 from app.services.architect_agent import run_architect_agent
 
@@ -61,7 +62,21 @@ async def stream_architect(request: Request, question: str | None = None, sessio
             yield b"event: meta\ndata: {}\n\n"
         return StreamingResponse(_empty(), media_type="text/event-stream")
 
-    plan_obj, audit = run_architect_agent(q, session_id=session_id, user_id=user_id, llm_model=llm_model)
-    # Convert plan to dict for streaming
-    plan: Dict[str, Any] = plan_obj.model_dump() if hasattr(plan_obj, "model_dump") else dict(plan_obj)
-    return StreamingResponse(_gen_sse(plan, audit), media_type="text/event-stream")
+    # Run the agent inside the generator so the client gets an immediate
+    # status event instead of a silent connection for the whole agent run.
+    async def _run() -> AsyncGenerator[bytes, None]:
+        import json
+
+        yield b'event: status\ndata: "planning"\n\n'
+        try:
+            plan_obj, audit = await run_in_threadpool(
+                run_architect_agent, q, session_id, user_id, llm_model
+            )
+        except Exception as e:
+            yield f"event: error\ndata: {json.dumps(str(e))}\n\n".encode()
+            return
+        plan: Dict[str, Any] = plan_obj.model_dump() if hasattr(plan_obj, "model_dump") else dict(plan_obj)
+        async for chunk in _gen_sse(plan, audit):
+            yield chunk
+
+    return StreamingResponse(_run(), media_type="text/event-stream")

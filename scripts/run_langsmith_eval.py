@@ -23,6 +23,7 @@ import json
 import os
 import sys
 import time
+import uuid
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -39,9 +40,16 @@ def stream_architect(question: str, url: str, timeout: float, max_tokens: Option
     start = time.monotonic()
     ttft: Optional[float] = None
 
+    # Fresh session per example: with backend-agnostic memory, sharing the
+    # implicit "default" session would leak conversation context across
+    # dataset examples and contaminate groundedness.
+    session_id = f"eval-{uuid.uuid4().hex[:12]}"
     with httpx.Client(timeout=timeout) as client:
         with client.stream(
-            "GET", url, params={"question": question}, headers={"Accept": "text/event-stream"}
+            "GET",
+            url,
+            params={"question": question, "session_id": session_id},
+            headers={"Accept": "text/event-stream"},
         ) as resp:
             resp.raise_for_status()
             current_event: Optional[str] = None
@@ -50,7 +58,8 @@ def stream_architect(question: str, url: str, timeout: float, max_tokens: Option
                 line = (line or "").strip()
                 if line == "":
                     if current_event and data_buf:
-                        if ttft is None:
+                        # ttft = first content event; "status" is an instant ack
+                        if ttft is None and current_event != "status":
                             ttft = time.monotonic() - start
                         events_seen.append(current_event)
                         try:

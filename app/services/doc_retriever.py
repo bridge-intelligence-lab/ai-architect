@@ -27,13 +27,27 @@ _DEFAULT_EXCLUDES = ",".join(
 )
 
 
+# docs/worklog/ holds dated work records (backlogs, review reports, approach
+# docs), not descriptions of the system: excluded from the corpus by default
+# so they are never retrieved as grounding context.
+_DEFAULT_EXCLUDE_DIRS = "worklog"
+
+
 def excluded_files() -> set:
     raw = os.getenv("RAG_EXCLUDE_FILES", _DEFAULT_EXCLUDES)
     return {f.strip().lower() for f in raw.split(",") if f.strip()}
 
 
+def excluded_dirs() -> set:
+    raw = os.getenv("RAG_EXCLUDE_DIRS", _DEFAULT_EXCLUDE_DIRS)
+    return {d.strip().lower() for d in raw.split(",") if d.strip()}
+
+
 def is_excluded(filename: str) -> bool:
-    return os.path.basename(filename).lower() in excluded_files()
+    parts = [p.lower() for p in os.path.normpath(str(filename)).split(os.sep)]
+    if any(p in excluded_dirs() for p in parts[:-1]):
+        return True
+    return parts[-1] in excluded_files()
 
 
 def is_enabled() -> bool:
@@ -93,7 +107,7 @@ def _scan_docs_for_terms(docs_path: str, terms: List[str]) -> List[Dict[str, Any
         return citations
     for root, _, files in os.walk(docs_path):
         for fn in files:
-            if fn.lower().endswith((".txt", ".md")) and not is_excluded(fn):
+            if fn.lower().endswith((".txt", ".md")) and not is_excluded(os.path.join(root, fn)):
                 path = os.path.join(root, fn)
                 try:
                     with open(path, "r", encoding="utf-8", errors="ignore") as f:
@@ -243,7 +257,7 @@ def answer_with_citations(question: str, k: int = 3) -> Dict[str, Any]:
         fname_match_path = None
         for root, _, files in os.walk(docs_path):
             for fn in files:
-                if is_excluded(fn):
+                if is_excluded(os.path.join(root, fn)):
                     continue
                 fn_low = fn.lower()
                 if any(t in fn_low for t in norm_terms):
@@ -257,7 +271,7 @@ def answer_with_citations(question: str, k: int = 3) -> Dict[str, Any]:
         # 2) If no filename match, fall back to first text-like file (or any file)
         if not target_path:
             for root, _, files in os.walk(docs_path):
-                candidates = [f for f in files if not is_excluded(f)]
+                candidates = [f for f in files if not is_excluded(os.path.join(root, f))]
                 text_files = [f for f in candidates if f.lower().endswith((".txt", ".md"))]
                 search_list = text_files if text_files else candidates
                 for fn in search_list:
