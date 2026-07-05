@@ -1,5 +1,5 @@
 ---
-title: Backlog: LangSmith Eval Setup for AI Architect
+title: "Backlog: LangSmith Eval Setup for AI Architect"
 status: current
 module: eval
 last_reviewed: 2026-07-04

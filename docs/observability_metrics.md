@@ -1,5 +1,5 @@
 ---
-title: Observability: Prometheus Metrics and Grafana
+title: "Observability: Prometheus Metrics and Grafana"
 status: current
 module: governance
 last_reviewed: 2026-07-04

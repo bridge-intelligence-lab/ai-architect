@@ -1,9 +1,11 @@
 ---
-title: 0) Clean up any leftovers
+title: Local LLMs setup (single-box vLLM + Ollama)
 status: current
 module: ops
 last_reviewed: 2026-07-04
 ---
+
+# Local LLMs setup (single-box vLLM + Ollama)
 
 Perfect. We'll run **everything on one box (`tensorbook`, 3080 Ti)** for now, and leave **`jarvis` (1080 Ti)** unused until you want to split loads later.
 

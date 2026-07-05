@@ -1,5 +1,5 @@
 ---
-title: Ingestion Pipelines: Streaming and Batch (Vendor-Neutral)
+title: "Ingestion Pipelines: Streaming and Batch (Vendor-Neutral)"
 status: current
 module: rag
 last_reviewed: 2026-07-04
