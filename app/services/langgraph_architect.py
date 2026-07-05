@@ -160,13 +160,21 @@ def run_langgraph_architect(
     session_id: str | None = None,
     user_id: str | None = None,
     llm_model: str | None = None,
+    context_blocks: List[str] | None = None,
 ) -> Tuple[ArchitectPlan, Dict[str, Any]]:
     llm = LLMClient()
     app = build_graph(llm, llm_model)
+    # Memory context (loaded by run_architect_agent) rides in as a system
+    # message so the tool loop sees conversation history and known facts.
+    messages: List[Dict[str, str]] = []
+    if context_blocks:
+        ctx = "\n\n".join(context_blocks[:3])
+        messages.append({"role": "system", "content": f"Context (for grounding):\n{ctx}"})
+    messages.append({"role": "user", "content": question})
     final: AgentState = app.invoke(
         {
             "question": question,
-            "messages": [{"role": "user", "content": question}],
+            "messages": messages,
             "citations": [],
             "tool_calls": 0,
             "tokens_prompt": 0,
@@ -201,14 +209,7 @@ def run_langgraph_architect(
         "llm_tokens_prompt": int(final.get("tokens_prompt", 0)),
         "llm_tokens_completion": int(final.get("tokens_completion", 0)),
         "llm_cost_usd": float(final.get("cost_usd", 0.0)),
-        # Memory integration is builtin-only for now (see ADR 0007).
-        "memory_short_reads": 0,
-        "memory_short_writes": 0,
-        "memory_short_pruned": 0,
-        "summary_updated": False,
-        "memory_long_reads": 0,
-        "memory_long_writes": 0,
-        "memory_long_pruned": 0,
+        # Memory counters are owned by run_architect_agent (backend-agnostic).
     }
     _logger.info(
         "langgraph architect run",

@@ -49,8 +49,8 @@ def iter_documents(docs_path: str):
 
     for root, _, files in os.walk(docs_path):
         for fn in sorted(files):
-            if is_excluded(fn):
-                print(f"exclude {os.path.join(root, fn)} (RAG_EXCLUDE_FILES)")
+            if is_excluded(os.path.join(root, fn)):
+                print(f"exclude {os.path.join(root, fn)} (RAG_EXCLUDE_FILES/DIRS)")
                 continue
             path = os.path.join(root, fn)
             low = fn.lower()

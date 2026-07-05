@@ -3,6 +3,7 @@ import asyncio
 import argparse
 import json
 import os
+import uuid
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
@@ -43,7 +44,9 @@ def load_prompts(path: str) -> List[str]:
 
 
 async def stream_architect(question: str, url: str, timeout: float = 60.0, llm_model: Optional[str] = None) -> Dict[str, Any]:
-    params = {"question": question}
+    # Fresh session per example so backend memory cannot leak context
+    # between eval questions (see run_langsmith_eval.py).
+    params = {"question": question, "session_id": f"eval-{uuid.uuid4().hex[:12]}"}
     if llm_model:
         params["llm_model"] = llm_model
     meta: Dict[str, Any] = {}

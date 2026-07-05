@@ -43,85 +43,167 @@ def _build_messages(question: str, plan_parser: PydanticOutputParser, context_bl
     return messages
 
 
-def run_architect_agent(question: str, session_id: str | None = None, user_id: str | None = None, llm_model: str | None = None) -> Tuple[ArchitectPlan, Dict[str, Any]]:
-    # Optional LangGraph tool-loop backend (AGENT_BACKEND=langgraph); the
-    # deterministic builtin planner below stays the default, and any failure
-    # in the LangGraph path falls back to it.
-    if os.getenv("AGENT_BACKEND", "builtin").lower() == "langgraph":
+def _memory_debug(e: Exception) -> None:
+    if os.getenv("MEMORY_DEBUG", "").lower() in ("1", "true", "yes", "on"):
         try:
-            from app.services.langgraph_architect import run_langgraph_architect
+            print(f"[MEMORY_DEBUG] memory op error: {e}")
+        except Exception:
+            pass
 
-            return run_langgraph_architect(
-                question, session_id=session_id, user_id=user_id, llm_model=llm_model
-            )
-        except Exception as e:
-            _arch_logger.warning(
-                "langgraph backend failed; using builtin",
-                extra={"extra": {"error": str(e)}},
-            )
 
-    # Initialize memory flags and counters
-    short_enabled = os.getenv("MEMORY_SHORT_ENABLED", "false").lower() in ("1", "true", "yes", "on")
-    long_enabled = os.getenv("MEMORY_LONG_ENABLED", "false").lower() in ("1", "true", "yes", "on")
+def _load_memory_context(
+    uid: str, sid: str, question: str, short_enabled: bool, long_enabled: bool
+) -> Tuple[List[str], Dict[str, int]]:
+    """Load short/long memory into context blocks. Backend-agnostic."""
+    blocks: List[str] = []
+    counters = {
+        "memory_short_reads": 0,
+        "memory_short_pruned": 0,
+        "memory_long_reads": 0,
+        "memory_long_pruned": 0,
+    }
 
-    memory_short_reads = 0
-    memory_short_writes = 0
-    memory_short_pruned = 0
-    summary_updated = False
-    memory_long_reads = 0
-    memory_long_writes = 0
-    memory_long_pruned = 0
-
-    uid = user_id or "anonymous"
-    sid = session_id or "default"
-
-    # Keep original question; build separate context blocks for memory
-    original_question = question
-    memory_context_block: str | None = None
-    facts_context_block: str | None = None
-
-    # 1a) Short-term memory: load conversation history
     if short_enabled:
         try:
             from app.memory.short_memory import init_short_memory, load_summary, load_turns
 
             init_short_memory()
             turns = load_turns(uid, sid)
-            memory_short_reads = len(turns)
-            memory_short_pruned = int(getattr(load_turns, "_last_pruned", 0))
+            counters["memory_short_reads"] = len(turns)
+            counters["memory_short_pruned"] = int(getattr(load_turns, "_last_pruned", 0))
             prefix = load_summary(uid, sid) or "\n".join(f"{r}: {c}" for r, c in turns[-5:])  # last 5 turns
             if prefix:
-                memory_context_block = f"Conversation context:\n{prefix}"
-            # Note: do not bump router-level globals from service; keep metrics in audit only
+                blocks.append(f"Conversation context:\n{prefix}")
         except Exception as e:
-            if os.getenv("MEMORY_DEBUG", "").lower() in ("1","true","yes","on"):
-                try:
-                    print(f"[MEMORY_DEBUG] memory op error: {e}")
-                except Exception:
-                    pass
-            pass
+            _memory_debug(e)
 
-    # 1b) Long-term memory: retrieve relevant facts
     if long_enabled:
         try:
             from app.memory.long_memory import retrieve_facts
 
-            facts = retrieve_facts(uid, original_question, top_k=5)
-            memory_long_reads = len(facts)
-            memory_long_pruned = int(getattr(retrieve_facts, "_last_pruned", 0))
+            facts = retrieve_facts(uid, question, top_k=5)
+            counters["memory_long_reads"] = len(facts)
+            counters["memory_long_pruned"] = int(getattr(retrieve_facts, "_last_pruned", 0))
             if facts:
                 snippet = "\n".join(f"- {f['text']}" for f in facts)
-                facts_context_block = f"Relevant background facts:\n{snippet}"
-            # Note: do not bump router-level globals from service; keep metrics in audit only
+                blocks.append(f"Relevant background facts:\n{snippet}")
         except Exception as e:
-            if os.getenv("MEMORY_DEBUG", "").lower() in ("1","true","yes","on"):
-                try:
-                    print(f"[MEMORY_DEBUG] memory op error: {e}")
-                except Exception:
-                    pass
-            pass
+            _memory_debug(e)
 
-    # 2) Retrieval
+    return blocks, counters
+
+
+def _save_memory(
+    uid: str, sid: str, question: str, plan: ArchitectPlan, short_enabled: bool, long_enabled: bool
+) -> Dict[str, Any]:
+    """Persist the turn to short/long memory. Backend-agnostic."""
+    counters: Dict[str, Any] = {
+        "memory_short_writes": 0,
+        "summary_updated": False,
+        "memory_long_writes": 0,
+    }
+
+    if short_enabled:
+        try:
+            from app.memory.short_memory import save_turn, update_summary_if_needed
+
+            save_turn(uid, sid, "user", question)
+            assistant_response = plan.summary or "Generated architecture plan."
+            save_turn(uid, sid, "assistant", assistant_response)
+            counters["memory_short_writes"] = 2
+            counters["summary_updated"] = update_summary_if_needed(uid, sid)
+        except Exception as e:
+            _memory_debug(e)
+
+    if long_enabled:
+        try:
+            from app.memory.long_memory import ingest_fact
+
+            if plan.summary and len(plan.summary) > 50:
+                ingest_fact(uid, plan.summary)
+                counters["memory_long_writes"] += 1
+            for step in (plan.suggested_steps or []):
+                if len(step) > 50:
+                    ingest_fact(uid, step)
+                    counters["memory_long_writes"] += 1
+            if plan.feature_request and len(plan.feature_request) > 50:
+                ingest_fact(uid, plan.feature_request)
+                counters["memory_long_writes"] += 1
+        except Exception as e:
+            _memory_debug(e)
+
+    return counters
+
+
+def _apply_feature_heuristic(plan: ArchitectPlan, question: str) -> None:
+    """Suggest opening a feature request when the ask sounds like new work and
+    the plan came back thin or ungrounded. Backend-agnostic."""
+    try:
+        ql = (question or "").lower()
+        needs = any(w in ql for w in ("feature", "support", "integrate", "add", "roadmap"))
+        sparse = len(plan.suggested_steps or []) == 0 and len(plan.suggested_env_flags or []) == 0
+        grounded_used = bool(getattr(plan, "grounded_used", False))
+        if (sparse or not grounded_used) and needs:
+            plan.suggest_feature = True
+            plan.feature_request = plan.feature_request or (
+                f"Request: {question[:60]}" if question else "Feature request"
+            )
+            plan.tone_hint = plan.tone_hint or ("exploratory" if not grounded_used else "actionable")
+    except Exception as e:
+        _memory_debug(e)
+
+
+def run_architect_agent(question: str, session_id: str | None = None, user_id: str | None = None, llm_model: str | None = None) -> Tuple[ArchitectPlan, Dict[str, Any]]:
+    """Backend-agnostic entrypoint: memory load/save and the feature-request
+    heuristic live here so every backend gets them; only planning is
+    backend-specific (AGENT_BACKEND=builtin|langgraph, builtin the default
+    and the fallback on any langgraph failure)."""
+    short_enabled = os.getenv("MEMORY_SHORT_ENABLED", "false").lower() in ("1", "true", "yes", "on")
+    long_enabled = os.getenv("MEMORY_LONG_ENABLED", "false").lower() in ("1", "true", "yes", "on")
+    uid = user_id or "anonymous"
+    sid = session_id or "default"
+
+    memory_blocks, read_counters = _load_memory_context(uid, sid, question, short_enabled, long_enabled)
+
+    plan = None
+    audit: Dict[str, Any] = {}
+    if os.getenv("AGENT_BACKEND", "builtin").lower() == "langgraph":
+        try:
+            from app.services.langgraph_architect import run_langgraph_architect
+
+            plan, audit = run_langgraph_architect(
+                question,
+                session_id=session_id,
+                user_id=user_id,
+                llm_model=llm_model,
+                context_blocks=memory_blocks or None,
+            )
+        except Exception as e:
+            _arch_logger.warning(
+                "langgraph backend failed; using builtin",
+                extra={"extra": {"error": str(e)}},
+            )
+            plan = None
+
+    if plan is None:
+        plan, audit = _run_builtin_planner(question, memory_blocks, llm_model, read_counters)
+
+    _apply_feature_heuristic(plan, question)
+    write_counters = _save_memory(uid, sid, question, plan, short_enabled, long_enabled)
+    audit.update(read_counters)
+    audit.update(write_counters)
+    return plan, audit
+
+
+def _run_builtin_planner(
+    question: str,
+    memory_blocks: List[str],
+    llm_model: str | None,
+    read_counters: Dict[str, int],
+) -> Tuple[ArchitectPlan, Dict[str, Any]]:
+    original_question = question
+
+    # 1) Retrieval
     citations: List[Dict[str, Any]] = []
     rag_meta: Dict[str, Any] = {}
 
@@ -144,12 +226,8 @@ def run_architect_agent(question: str, session_id: str | None = None, user_id: s
                 snippet = snippet[:400]
             rag_lines.append(f"- {title}: {snippet}")
 
-    # Build final context blocks: memory (short), facts (long), then RAG
-    final_context: List[str] = []
-    if memory_context_block:
-        final_context.append(memory_context_block)
-    if facts_context_block:
-        final_context.append(facts_context_block)
+    # Build final context blocks: memory (short + long), then RAG
+    final_context: List[str] = list(memory_blocks)
     if grounded_used and rag_lines:
         final_context.append("Grounding:\n" + "\n".join(rag_lines))
 
@@ -218,8 +296,8 @@ def run_architect_agent(question: str, session_id: str | None = None, user_id: s
                 "citations": plan.citations,
                 "audit": {
                     "llm_model": llm_model or llm.model,
-                    "memory_short_reads": memory_short_reads,
-                    "memory_long_reads": memory_long_reads,
+                    "memory_short_reads": read_counters.get("memory_short_reads", 0),
+                    "memory_long_reads": read_counters.get("memory_long_reads", 0),
                 },
             }
             ls_run.end(outputs=ls_outputs, end_time=datetime.now(timezone.utc))
@@ -227,72 +305,7 @@ def run_architect_agent(question: str, session_id: str | None = None, user_id: s
         except Exception as _e:
             _arch_logger.info("ls.run_tree end failed", extra={"extra": {"error": str(_e), "run_id": ls_run_id}})
 
-    # Light heuristic for feature suggestion
-    try:
-        ql = (question or "").lower()
-        needs = any(w in ql for w in ("feature", "support", "integrate", "add", "roadmap"))
-        sparse = len(plan.suggested_steps or []) == 0 and len(plan.suggested_env_flags or []) == 0
-        if (sparse or not grounded_used) and needs:
-            plan.suggest_feature = True
-            plan.feature_request = plan.feature_request or (
-                f"Request: {question[:60]}" if question else "Feature request"
-            )
-            plan.tone_hint = plan.tone_hint or ("exploratory" if not grounded_used else "actionable")
-    except Exception as e:
-            if os.getenv("MEMORY_DEBUG", "").lower() in ("1","true","yes","on"):
-                try:
-                    print(f"[MEMORY_DEBUG] memory op error: {e}")
-                except Exception:
-                    pass
-            pass
-
-    # 6) Save to memory after generating plan
-    if short_enabled:
-        try:
-            from app.memory.short_memory import save_turn, update_summary_if_needed
-
-            save_turn(uid, sid, "user", original_question)
-            # Save plan summary as assistant response
-            assistant_response = plan.summary or "Generated architecture plan."
-            save_turn(uid, sid, "assistant", assistant_response)
-            memory_short_writes = 2
-            summary_updated = update_summary_if_needed(uid, sid)
-        except Exception as e:
-            if os.getenv("MEMORY_DEBUG", "").lower() in ("1","true","yes","on"):
-                try:
-                    print(f"[MEMORY_DEBUG] memory op error: {e}")
-                except Exception:
-                    pass
-            pass
-
-    if long_enabled:
-        try:
-            from app.memory.long_memory import ingest_fact
-
-            # Ingest summary
-            if plan.summary and len(plan.summary) > 50:
-                ingest_fact(uid, plan.summary)
-                memory_long_writes += 1
-
-            # Ingest suggested steps
-            for step in (plan.suggested_steps or []):
-                if len(step) > 50:
-                    ingest_fact(uid, step)
-                    memory_long_writes += 1
-
-            # Ingest feature request if present
-            if plan.feature_request and len(plan.feature_request) > 50:
-                ingest_fact(uid, plan.feature_request)
-                memory_long_writes += 1
-        except Exception as e:
-            if os.getenv("MEMORY_DEBUG", "").lower() in ("1","true","yes","on"):
-                try:
-                    print(f"[MEMORY_DEBUG] memory op error: {e}")
-                except Exception:
-                    pass
-            pass
-
-    # 7) Build audit fields with memory counters
+    # 6) Build audit fields (memory counters are added by run_architect_agent)
     audit: Dict[str, Any] = {
         "agent_backend": "builtin",
         "llm_provider": result.get("provider"),
@@ -301,13 +314,6 @@ def run_architect_agent(question: str, session_id: str | None = None, user_id: s
         "llm_tokens_completion": result.get("tokens_completion"),
         "llm_cost_usd": result.get("cost_usd"),
         **rag_meta,
-        "memory_short_reads": int(memory_short_reads or 0),
-        "memory_short_writes": int(memory_short_writes or 0),
-        "memory_short_pruned": int(memory_short_pruned or 0),
-        "summary_updated": bool(summary_updated),
-        "memory_long_reads": int(memory_long_reads or 0),
-        "memory_long_writes": int(memory_long_writes or 0),
-        "memory_long_pruned": int(memory_long_pruned or 0),
     }
 
     return plan, audit

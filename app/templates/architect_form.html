@@ -156,7 +156,25 @@
         let planStepsEl = null;
         let flagsBubble = null;
         const streamingBadge = document.getElementById('streamingBadge');
+        let statusBubble = null;
+        function clearStatusBubble(){ if (statusBubble && statusBubble.parentElement) { statusBubble.parentElement.removeChild(statusBubble); } statusBubble = null; }
 
+        es.addEventListener('status', () => {
+          if (!statusBubble) {
+            statusBubble = document.createElement('div');
+            statusBubble.className = 'bubble agent';
+            statusBubble.textContent = 'planning...';
+            chatEl.appendChild(statusBubble);
+            chatEl.scrollTop = chatEl.scrollHeight;
+          }
+        });
+        es.addEventListener('error', (e) => {
+          // Server-sent error event (has data); connection errors go to es.onerror
+          if (!e || typeof e.data === 'undefined') { return; }
+          clearStatusBubble();
+          try { addBubble(`error: ${JSON.parse(e.data)}`, 'agent'); } catch (_) {}
+          es.close(); isStreaming = false; updateSendState();
+        });
         es.addEventListener('meta', (e) => {
           const meta = JSON.parse(e.data);
           providerEl.textContent = meta.provider || '-';
@@ -164,6 +182,7 @@
           groundedBadge.textContent = `grounded: ${meta.grounded_used ? 'yes' : 'no'}`;
         });
         es.addEventListener('summary', (e) => {
+          clearStatusBubble();
           const s = JSON.parse(e.data);
           if (!s || (typeof s === 'string' && s.trim().length === 0)) { return; }
           if (!planBubble) {
@@ -296,7 +315,7 @@
           const body = lines.join('\n');
 
           function enc(s){ return encodeURIComponent(s); }
-          const issueUrl = `https://github.com/rodrigo-fonseca-oliveira/ai-architect/issues/new?title=${enc(title)}&body=${enc(body)}`;
+          const issueUrl = `https://github.com/bridge-intelligence-lab/ai-architect/issues/new?title=${enc(title)}&body=${enc(body)}`;
           ghIssue.href = issueUrl;
 
           copyTemplate.onclick = () => {
@@ -310,6 +329,7 @@
           };
         });
         es.addEventListener('audit', (e) => {
+          clearStatusBubble();
           audit = JSON.parse(e.data);
           auditJsonEl.textContent = JSON.stringify(audit, null, 2);
           const tokens = [audit.llm_tokens_prompt, audit.llm_tokens_completion].filter(x=>x!=null).join(' + ');
