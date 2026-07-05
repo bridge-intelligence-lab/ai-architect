@@ -10,7 +10,8 @@
 - For each capability: define value, ports/interfaces, options, phased plan, success metrics, dependencies, fallbacks, and ADR triggers.
 - Keep domain-specific examples generic (e.g., "time-series signals" or "sequential decision-making").
 
-1) Protocols and interop
+## 1) Protocols and interop
+
 - Value: low-latency, language-agnostic clients; interactive sessions.
 - Ports/Interfaces: gRPC services for Query/Predict/Architect (unary + stream), WebSockets for bi-directional chat; interceptors for auth/trace.
 - Options: grpcio + grpc-gateway; FastAPI WebSockets; SSE remains for simplicity.
@@ -21,7 +22,8 @@
 - Success: p95 latency under target; feature parity with REST; robust cancellation.
 - ADRs: gRPC service design; WebSockets event model.
 
-2) Feature store and data quality
+## 2) Feature store and data quality
+
 - Value: consistent online/offline features; reduce training-serving skew.
 - Ports: FeatureStorePort; QualityCheckPort.
 - Options: Feast (online/offline), sqlite/parquet default; Great Expectations or Soda.
@@ -32,7 +34,8 @@
 - Success: feature hit ratio > 99% in tests; freshness SLO; expectation pass rate.
 - ADRs: feature store selection; expectation policy (block vs warn).
 
-3) Vector backends and hybrid search
+## 3) Vector backends and hybrid search
+
 - Value: scalable retrieval; portability.
 - Ports: VectorStorePort; EmbeddingsPort (exists conceptually).
 - Options: FAISS/Chroma default; pgvector, Qdrant, Weaviate, Milvus; hybrid BM25 + dense; rerankers.
@@ -43,7 +46,8 @@
 - Success: retrieval quality on golden queries; ingestion idempotency; latency SLOs.
 - ADRs: backend choices; migration strategy.
 
-4) Model adaptation and serving performance
+## 4) Model adaptation and serving performance
+
 - Value: align models with domain; improve latency/cost.
 - Ports: AdapterLoaderPort; ServingPort.
 - Options: PEFT/LoRA/QLoRA; vLLM/TensorRT-LLM; OpenAI/Azure/AWS endpoints.
@@ -54,7 +58,8 @@
 - Success: quality uplift vs baseline; latency/cost reductions.
 - ADRs: adapter loading strategy; eval/rollback policy.
 
-5) Sequential decision-making (generic)
+## 5) Sequential decision-making (generic)
+
 - Value: adapt retrieval/tool choices and resources under uncertainty.
 - Ports: PolicyPort; FeedbackPort.
 - Options: contextual bandits for reranking/query reformulation/tool selection; offline evaluation first; online shadow.
@@ -65,14 +70,16 @@
 - Success: improved metrics (citation correctness, cost, latency) on A/B; safe rollback.
 - ADRs: policy selection scope; metrics and guardrails.
 
-6) Ingestion (reference)
+## 6) Ingestion (reference)
+
 - Value: scalable streaming/batch; deterministic CI.
 - Ports: SourcePort, StreamBusPort, ComputePort, FeatureStorePort, VectorStorePort, MetadataStorePort, OrchestratorPort (see ingestion_pipelines.md).
 - Phases: per ingestion_pipelines.md (P1 docs → P4 optional integrations).
 - Success: idempotent upserts; measurable lag and error budgets.
 - ADRs: ingestion architecture (ADR 0002 exists), adapters as needed.
 
-7) Observability and tracing
+## 7) Observability and tracing
+
 - Value: diagnose latency/cost/hallucination/drift fast; correlate across services.
 - Ports: TracePort; Metrics registry; Log sink.
 - Options: OpenTelemetry; LangSmith; Prometheus/Grafana (exists); structured logs (exists).
@@ -83,7 +90,8 @@
 - Success: end-to-end trace coverage > 80% in staging; low overhead.
 - ADRs: tracing backend and sampling policy.
 
-8) Security and governance
+## 8) Security and governance
+
 - Value: safe multi-tenant operation and compliance.
 - Ports: AuthZPort (OPA/Cerbos), SecretsPort (KMS/Vault), RetentionPort.
 - Options: OPA/Cerbos; Vault/KMS; encrypted vector stores; DP options.
@@ -94,7 +102,8 @@
 - Success: policy coverage; least privilege; retention verified in tests.
 - ADRs: ABAC engine; data retention model.
 
-9) Evaluation and feedback
+## 9) Evaluation and feedback
+
 - Value: measurable quality and safe iteration.
 - Ports: EvalPort; FeedbackPort.
 - Options: golden sets; citation correctness; hallucination metrics; Argilla/Label Studio.
@@ -105,7 +114,8 @@
 - Success: CI eval gates; online improvements without regressions.
 - ADRs: metric definitions; promotion criteria.
 
-10) Deployment and DevX
+## 10) Deployment and DevX
+
 - Value: reproducible deployments and smooth developer experience.
 - Ports: CLI; IaC; CodegenPort.
 - Options: Helm/TF; OpenAPI/proto codegen; Make targets; local sandbox.
