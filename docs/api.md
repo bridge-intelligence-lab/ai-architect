@@ -22,29 +22,25 @@ This service is a FastAPI application for AI risk, compliance, and observability
   - Override header name via REQUEST_ID_HEADER (default: X-Request-ID).
   - Response includes the same header and logs include request_id.
 
-- Error responses (JSON)
-  - All errors use a consistent JSON shape:
-    {
-      "status": <int>,
-      "error": <string>,
-      "detail": <any>,
-      "request_id": <string|null>
-    }
-  - Examples:
-    - 422 Validation Error
-      {
-        "status": 422,
-        "error": "Validation error",
-        "detail": [{"loc": ["body", "field"], "msg": "...", "type": "..."}],
-        "request_id": "..."
-      }
-    - 403 Forbidden
-      {
-        "status": 403,
-        "error": "forbidden",
-        "detail": "forbidden",
-        "request_id": "..."
-      }
+- Error responses (JSON): all errors use a consistent shape.
+
+  ```json
+  {
+    "status": 422,
+    "error": "Validation error",
+    "detail": [{"loc": ["body", "field"], "msg": "...", "type": "..."}],
+    "request_id": "..."
+  }
+  ```
+
+  ```json
+  {
+    "status": 403,
+    "error": "forbidden",
+    "detail": "forbidden",
+    "request_id": "..."
+  }
+  ```
 
 - RBAC
   - Header: X-User-Role with one of: guest, analyst, admin (default: guest if missing/unknown).
@@ -69,11 +65,20 @@ This service is a FastAPI application for AI risk, compliance, and observability
   - Response: { features: [string], run_id: string, experiment: string }
   - Notes: Artifacts names configurable via MLFLOW_MODEL_ARTIFACT_PATH and MLFLOW_FEATURE_ORDER_ARTIFACT; MLFLOW_MODEL_URI can override model selection; MLFLOW_MODEL_CACHE_TTL enables in-process caching.
 - POST /query
-
-Request: { question: str, grounded?: bool, user_id?: str, session_id?: str, intent?: str }
+  - Request: { question: str, grounded?: bool, user_id?: str, session_id?: str, intent?: str }
   - Response: { answer, citations?, audit }
   - Notes: session_id enables short-term memory grouping when MEMORY_SHORT_ENABLED=true
   - Config: ROUTER_ENABLED (intent routing)
+  - Feature flags:
+    - ROUTER_ENABLED: routes intents (qa, pii_detect, risk_score, other) using simple rules
+  - Request fields:
+    - question: string (min 3)
+    - grounded: boolean (default false)
+    - user_id: optional string
+    - intent: optional ("auto"|"qa"|"pii_detect"|"risk_score"|"other"); default "auto"
+  - Audit (when memory flags enabled):
+    - memory_short_reads, memory_short_writes, summary_updated, memory_short_pruned
+    - memory_long_reads, memory_long_writes, memory_long_pruned
 - POST /risk — Risk scoring endpoint (analyst/admin)
   - Request: { text: string }
   - Response: { label: "low|medium|high", value: number in [0,1], rationale: string, audit: { ... } }
@@ -85,7 +90,7 @@ Request: { question: str, grounded?: bool, user_id?: str, session_id?: str, inte
     - When ML is enabled, audit.risk_score_method == "ml" and label/value are derived from the pseudo-ML signal
   - Audit enrichment:
     - audit.risk_score_label, audit.risk_score_value, audit.risk_score_method
-- POST /policy_navigator — Policy Navigator Agent (analyst/admin) — Policy Navigator Agent (analyst/admin)
+- POST /policy_navigator — Policy Navigator Agent (analyst/admin)
   - Request: { question: string, max_subqs?: number }
   - Response: { recommendation: string, citations: [{source, snippet, page?}], audit: { steps[] } }
 - POST /pii_remediation — PII Remediation Agent (analyst/admin)
@@ -114,17 +119,6 @@ Request: { question: str, grounded?: bool, user_id?: str, session_id?: str, inte
 - GET /memory/status — memory status (admin only)
   - Response: { config: {...}, short_memory: { sessions: [{user_id, session_id, turns, summary}], db_ok }, long_memory: { users: [{user_id, facts}], store_ok }, counters: { memory_short_pruned_total, memory_long_pruned_total }, audit: {...} }
 
-- /query audit includes memory counters when flags enabled:
-  - memory_short_reads, memory_short_writes, summary_updated, memory_short_pruned
-  - memory_long_reads, memory_long_writes, memory_long_pruned
-
-  - Feature flags:
-    - ROUTER_ENABLED: routes intents (qa, pii_detect, risk_score, other) using simple rules
-  - Request fields:
-    - question: string (min 3)
-    - grounded: boolean (default false)
-    - user_id: optional string
-    - intent: optional ("auto"|"qa"|"pii_detect"|"risk_score"|"other"); default "auto"
 - POST /research — multi-step research pipeline with auditing; step RBAC applies
   - Request: { topic: string, steps?: ["search","fetch","summarize","risk_check"], user_id?: string }
   - Response: { findings: [...], sources: [...], steps: [{name,inputs,outputs,latency_ms,hash,timestamp}], audit: {...} }
