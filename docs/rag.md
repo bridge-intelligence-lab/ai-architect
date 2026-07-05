@@ -38,7 +38,9 @@ no placeholder content is fabricated.
 1. Place `.md`/`.txt`/`.pdf` files under `DOCS_PATH`
 2. Run `python scripts/ingest_docs.py` or `make ingest` (chunks of 1000 chars
    with 200 overlap; idempotent, ids derive from path + offset; files in
-   `RAG_EXCLUDE_FILES` and directories in `RAG_EXCLUDE_DIRS` are skipped)
+   `RAG_EXCLUDE_FILES` and directories in `RAG_EXCLUDE_DIRS` are skipped).
+   Note: ingestion adds/updates but never deletes — after removing or renaming
+   docs, wipe `VECTORSTORE_PATH` and re-ingest or stale chunks stay retrievable
 3. Set `RAG_BACKEND=vector` and query with `grounded=true`
 
 ## Environment flags
