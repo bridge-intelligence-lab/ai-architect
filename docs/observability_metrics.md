@@ -11,13 +11,15 @@ source:
 
 This page documents the metrics exported by the service, how they are updated, and how to visualize them in Grafana.
 
-Overview
+## Overview
+
 - Endpoint: GET /metrics
 - Content type: Prometheus exposition format (runtime uses precise Prometheus content type; OpenAPI advertises text/plain)
 - Protection: Open by default. If METRICS_TOKEN is set, callers must send header X-Metrics-Token: $METRICS_TOKEN
 - Scrape exclusion: /metrics itself is excluded from request counters to avoid scrape feedback.
 
-Exported metrics
+## Exported metrics
+
 - app_requests_total{endpoint, status}
   - Counter of HTTP requests processed.
   - Labels: endpoint (path), status (HTTP status code)
@@ -35,14 +37,16 @@ Exported metrics
   - Counter of USD cost per endpoint. LLM calls use real per-model prices from LiteLLM's pricing map; non-LLM endpoints use a crude token estimate priced by the same map (static fallback for unknown models).
   - Updated by /query router after responses.
 
-Where metrics are defined
+## Where metrics are defined
+
 - Code: app/utils/metrics.py defines the CollectorRegistry and metric instruments.
 - Emission:
   - request_count and request_latency are updated in app/main.py middleware.
   - tokens_total and cost_usd_total are updated in app/routers/query.py.
 - Exposure: app/routers/metrics.py serves the registry at /metrics with optional token protection.
 
-Prometheus configuration
+## Prometheus configuration
+
 A minimal scrape job (prometheus.yml):
 
 scrape_configs:
@@ -55,7 +59,8 @@ scrape_configs:
     # headers:
     #   X-Metrics-Token: ${METRICS_TOKEN}
 
-Grafana
+## Grafana
+
 - Default: http://localhost:3000 (admin/admin)
 - Datasource: Prometheus at http://prometheus:9090 (provisioned via grafana/provisioning)
 - Dashboard: grafana/dashboards/ai-monitor-dashboard.json (also mirrored under docs/grafana)
@@ -66,15 +71,18 @@ Grafana
     - sum by (endpoint) (rate(app_tokens_total[1m]))
     - sum by (endpoint) (rate(app_cost_usd_total[1m]))
 
-Quick verification
+## Quick verification
+
 - curl -sS http://localhost:8000/metrics | head -n 50
 - After a few requests, you should see app_requests_total, app_request_latency_seconds_*, app_tokens_total, and app_cost_usd_total.
 
-Behavioral notes
+## Behavioral notes
+
 - /metrics is not counted in app_requests_total to avoid scrape amplification.
 - When METRICS_TOKEN is set, /metrics returns 403 unless the header X-Metrics-Token matches.
 
-Changes since v0.9.0
+## Changes since v0.9.0
+
 - No metrics were removed. The following remain unchanged:
   - app_requests_total, app_request_latency_seconds, app_tokens_total, app_cost_usd_total
 - Improvements since v0.9.0:
@@ -82,7 +90,8 @@ Changes since v0.9.0
   - Test coverage added to ensure /metrics is excluded from request counters
   - Documentation was reshuffled; this page restores a complete metrics reference
 
-See also
+## See also
+
 - docs/api.md (token protection note for /metrics)
 - docs/manual_e2e_test.md (end-to-end validation steps)
 - grafana/provisioning for automated datasource/dashboard setup

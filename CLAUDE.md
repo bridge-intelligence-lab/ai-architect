@@ -43,6 +43,10 @@ via `RAG_EXCLUDE_FILES`. Consequences:
 - Kept docs carry frontmatter (title, status, module, last_reviewed, source).
   Touch a doc → update last_reviewed; change code a doc's `source` points at →
   review the doc.
+- Heading discipline: one H1 right after the frontmatter, real `##`/`###`
+  sections (no plain-text label lines acting as headings), no skipped levels.
+  Chunkers split on headings, so structure is retrieval quality, not just
+  readability.
 
 ## Process
 

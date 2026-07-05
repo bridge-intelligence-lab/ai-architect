@@ -43,7 +43,8 @@ In a measured comparison on the golden eval dataset, `langgraph` beat
 default is the offline-safe choice, not necessarily the recommended one.
 See `docs/eval_results/2026-07-04-grid-backend-tokens.md`.
 
-Architect agent and community loop
+## Architect agent and community loop
+
 - The Architect agent can propose features when it detects gaps between a user goal and current capabilities (e.g., a new endpoint or a router rule).
 - Users can copy the proposal (summary, steps, flags) into a GitHub issue; see docs/llm_agent_streaming_prompts.md for a ready-to-use prompt set.
 - This closes the loop between learning, brainstorming, and contribution, keeping the repo a living reference architecture.
@@ -130,6 +131,7 @@ Architect agent and community loop
 
 ---
 
-See also
+## See also
+
 - ports_and_adapters.md: interface-first architecture and planner/RAG backends
 - related_projects.md: curated ecosystem overview and how this project complements it

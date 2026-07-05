@@ -13,20 +13,23 @@ The router decides which intent to execute: qa, pii_detect, risk_score, policy_n
 
 By default, the router uses a rules backend (v2) that can be configured via JSON. If no rules are configured or no rule matches, builtin heuristics are used as a fallback so common cases (PII, risk) still work out of the box.
 
-Environment variables
+## Environment variables
+
 - ROUTER_ENABLED=true|false
 - ROUTER_BACKEND=rules (default)
 - ROUTER_RULES_JSON='{"rules": [...], "default_intent": "qa"}'
 - ROUTER_RULES_PATH=/path/to/rules.json
 
-Rules schema
+## Rules schema
+
 - rules: array of rule objects
   - intent: one of [qa, pii_detect, risk_score, policy_navigator, pii_remediation, other]
   - keywords_any: array of lowercase substrings to match (case-insensitive)
   - priority: integer; higher wins
 - default_intent: string; used when no rule matches (qa recommended)
 
-Example (inline JSON)
+## Example (inline JSON)
+
 ```
 {
   "rules": [
@@ -38,7 +41,8 @@ Example (inline JSON)
 }
 ```
 
-Loading from a file
+## Loading from a file
+
 ```
 echo '{
   "rules": [
@@ -49,7 +53,8 @@ echo '{
 export ROUTER_RULES_PATH=$PWD/router_rules.json
 ```
 
-Behavior notes
+## Behavior notes
+
 - Grounded queries (grounded=true) always route to qa; endpoint RBAC applies.
 - Priority determines which rule wins when multiple rules match.
 - If rules are not provided or no rule matches, builtin heuristics still run to preserve sensible defaults:
@@ -58,12 +63,14 @@ Behavior notes
   - policy_navigator for policy/regulation/gdpr/hipaa/compliance
   - Otherwise qa
 
-Intent names and aliases
+## Intent names and aliases
+
 - Canonical: qa, pii_detect, risk_score, policy_navigator, pii_remediation, other.
 - Alias: some tests/docs may use the shorthand policy_nav; the router emits policy_navigator in audit.router_intent.
 - When ROUTER_ENABLED=false, builtin heuristics are used and audit.router_backend is "simple".
 
-Troubleshooting
+## Troubleshooting
+
 - Matching is case-insensitive substring-based; include stems for broader matches (e.g., "anonymiz" catches anonymize/anonymization).
 - Validate JSON: echo $ROUTER_RULES_JSON | python -m json.tool
 - If audit.router_intent is qa unexpectedly:
@@ -71,5 +78,6 @@ Troubleshooting
   - Ensure rules are loaded (check ROUTER_RULES_JSON/PATH)
   - Remember builtin fallback may still choose qa if no strong signals are present
 
-Security considerations
+## Security considerations
+
 - The router only selects intent; it doesn’t bypass endpoint RBAC. Grounded QA still requires analyst/admin.
