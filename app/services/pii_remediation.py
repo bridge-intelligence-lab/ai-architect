@@ -1,3 +1,4 @@
+"""PII remediation synthesis: per-type policies and optional doc-grounded guidance."""
 import os
 from typing import Any, Dict, List
 
@@ -52,6 +53,7 @@ def _retrieve_guidance(query: str, k: int = 2) -> List[Dict[str, Any]]:
 def synthesize_remediation(
     entities: List[Dict[str, Any]], include_snippets: bool, grounded: bool
 ) -> Dict[str, Any]:
+    """Build per-type remediation policies; optionally retrieve doc-grounded guidance."""
     remediations = _default_remediations()
     per_type: Dict[str, Dict[str, Any]] = {}
     citations: List[Dict[str, Any]] = []

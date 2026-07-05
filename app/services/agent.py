@@ -1,3 +1,4 @@
+"""Autonomous agent: search, fetch, summarize, risk-check; audit-instrumented."""
 import os
 import time
 from typing import Any, Dict, List, Tuple
@@ -8,6 +9,7 @@ from app.utils.audit import make_hash
 
 
 class Agent:
+    """Stubbed deterministic agent with offline and live modes."""
     def __init__(self):
         self.live_mode = os.getenv("AGENT_LIVE_MODE", "false").lower() == "true"
         # Optional allowlist for safety
@@ -28,6 +30,7 @@ class Agent:
         }
 
     def search(self, topic: str) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+        """Return deterministic stub search results and audit step."""
         start = time.perf_counter()
         # Stubbed deterministic search results for offline/CI
         results = [
@@ -38,6 +41,7 @@ class Agent:
         return results, step
 
     def fetch(self, urls: List[str]) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+        """Fetch content from URLs (live mode) or return stubs; respect AGENT_URL_ALLOWLIST."""
         start = time.perf_counter()
         contents: List[Dict[str, Any]] = []
         if self.live_mode:
@@ -64,6 +68,7 @@ class Agent:
     def summarize(
         self, docs: List[Dict[str, Any]]
     ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+        """Produce stub summaries from doc texts."""
         start = time.perf_counter()
         findings = []
         for d in docs[:3]:
@@ -80,6 +85,7 @@ class Agent:
     def risk_check(
         self, topic: str, findings: List[Dict[str, Any]]
     ) -> Tuple[bool, Dict[str, Any]]:
+        """Check if content matches DENYLIST keywords; return (flagged, audit_step)."""
         start = time.perf_counter()
         denylist = [
             s.strip().lower() for s in os.getenv("DENYLIST", "").split(",") if s.strip()
@@ -96,6 +102,7 @@ class Agent:
     def run(
         self, topic: str, steps: List[str]
     ) -> Tuple[List[Dict[str, Any]], List[str], List[Dict[str, Any]], bool]:
+        """Execute named steps (search, fetch, summarize, risk_check); return (findings, sources, audit_steps, flagged)."""
         audit_steps: List[Dict[str, Any]] = []
         sources: List[str] = []
         findings: List[Dict[str, Any]] = []

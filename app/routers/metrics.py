@@ -1,3 +1,5 @@
+"""Metrics and health endpoints: Prometheus /metrics and /healthz."""
+
 import os
 
 from fastapi import APIRouter, Header, HTTPException, Response, status
@@ -14,6 +16,7 @@ METRICS_TOKEN = os.getenv("METRICS_TOKEN", "").strip()
 
 @router.get("/healthz")
 def healthz():
+    """Liveness check: returns ok when the process is up."""
     return {"status": "ok"}
 
 
@@ -31,6 +34,7 @@ def healthz():
 def metrics(
     x_metrics_token: str | None = Header(default=None, alias="X-Metrics-Token")
 ):
+    """Prometheus metrics export (text/plain). Token required if METRICS_TOKEN env set."""
     # If a token is configured, enforce it; otherwise allow open access
     if METRICS_TOKEN:
         if not x_metrics_token or x_metrics_token != METRICS_TOKEN:

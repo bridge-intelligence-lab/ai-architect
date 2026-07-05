@@ -1,3 +1,4 @@
+"""Intent router: keyword rules + builtin heuristics to classify user queries."""
 import json
 import os
 from typing import Any, Dict, List, Literal
@@ -125,6 +126,10 @@ def _route_builtin(question: str, grounded: bool) -> Intent:
 
 
 def route_intent(question: str, grounded: bool) -> Intent:
+    """Classify question as QA, PII detection, risk scoring, policy navigation, or remediation.
+
+    Uses ROUTER_BACKEND (rules or builtin); grounded queries always map to QA.
+    """
     backend = os.getenv("ROUTER_BACKEND", _BACKEND_NAME).lower()
     try:
         if backend == "rules":
@@ -144,4 +149,5 @@ def route_intent(question: str, grounded: bool) -> Intent:
 
 
 def get_backend_meta() -> str:
+    """Return router backend name and version."""
     return f"{_BACKEND_NAME}_{_BACKEND_VERSION}"

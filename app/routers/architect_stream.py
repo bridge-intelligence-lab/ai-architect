@@ -1,3 +1,5 @@
+"""Architect streaming endpoint: SSE output of plan generation."""
+
 import os
 from typing import AsyncGenerator, Dict, Any
 from fastapi import APIRouter, Request, Query
@@ -55,6 +57,10 @@ async def _gen_sse(plan: Dict[str, Any], audit: Dict[str, Any]) -> AsyncGenerato
     },
 )
 async def stream_architect(request: Request, question: str | None = None, session_id: str | None = None, user_id: str | None = None, llm_model: str | None = None):
+    """Stream the architect plan as SSE events: status first (immediate ack),
+    then meta, summary, steps, flags, citations, optional feature, final audit;
+    a server-side failure emits an error event. Questions under 3 characters get
+    an empty stream (single bare meta event), not an HTTP error."""
     # Defensive guard: no-op stream for empty/short questions
     q = (question or "").strip()
     if len(q) < 3:

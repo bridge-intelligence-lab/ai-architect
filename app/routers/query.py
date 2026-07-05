@@ -1,3 +1,5 @@
+"""Query endpoints: QA with optional grounding, router-based intent dispatch, memory integration."""
+
 import os
 import time
 from typing import List, Optional
@@ -68,6 +70,10 @@ class QueryResponse(BaseModel):
 
 @router.post("/query", response_model=QueryResponse)
 def post_query(req: Request, payload: QueryRequest):
+    """Answer questions with optional grounding, PII detection, or risk scoring via router.
+
+    Integrates short/long memory when enabled. Router dispatches intent dynamically.
+    Audit includes LLM usage, memory ops, and compliance flags."""
     start = time.perf_counter()
 
     # Denylist (Phase 1: env-based)

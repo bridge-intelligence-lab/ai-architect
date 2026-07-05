@@ -1,3 +1,5 @@
+"""UI endpoints: HTML forms for architect, query, and research endpoints."""
+
 from typing import List, Optional
 import os
 
@@ -21,6 +23,7 @@ def _api_url() -> str:
 
 @router.get("/ui", response_class=HTMLResponse, tags=["UI"])
 def get_ui(request: Request):
+    """Serve tabbed UI form (architect/query/research); default tab from query param."""
     # Read optional tab query param
     tab = request.query_params.get("tab") or "architect"
     if tab not in ("architect", "query", "research"):
@@ -45,6 +48,7 @@ def ui_architect(
     grounded: Optional[str] = Form(None),
     role: Optional[str] = Form(None),
 ):
+    """Form handler: POST question to /architect and render UI with response."""
     payload = {"question": question, "mode": mode}
     headers = {"Content-Type": "application/json"}
     if role:
@@ -73,6 +77,7 @@ def ui_query(
     grounded: Optional[str] = Form(None),
     role: Optional[str] = Form(None),
 ):
+    """Form handler: POST question to /query and render UI with response."""
     payload = {"question": question, "grounded": grounded == "on"}
     headers = {"Content-Type": "application/json"}
     if role:
@@ -99,6 +104,7 @@ def ui_research(
     steps: List[str] = Form(DEFAULT_STEPS),
     role: Optional[str] = Form(None),
 ):
+    """Form handler: POST topic and steps to /research and render UI with response."""
     payload = {"topic": topic, "steps": steps}
     headers = {"Content-Type": "application/json"}
     if role:

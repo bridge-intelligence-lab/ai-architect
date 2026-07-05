@@ -1,3 +1,4 @@
+"""Short-term conversation memory: SQLite-backed turns and rolling summaries per user+session."""
 import os
 import sqlite3
 from datetime import datetime
@@ -58,6 +59,10 @@ def init_short_memory(db_path: str | None = None):
 
 
 def load_turns(user_id: str, session_id: str) -> List[Tuple[str, str]]:
+    """Load conversation turns for user+session, pruned by retention days and max-per-session.
+
+    Attaches pruned count to load_turns._last_pruned for downstream visibility.
+    """
     init_short_memory()
     conn = sqlite3.connect(get_db_path(), check_same_thread=False)
     c = conn.cursor()
@@ -137,6 +142,7 @@ def load_turns(user_id: str, session_id: str) -> List[Tuple[str, str]]:
 
 
 def load_summary(user_id: str, session_id: str) -> str:
+    """Retrieve stored summary for user+session; empty string if none exists."""
     init_short_memory()
     conn = sqlite3.connect(get_db_path(), check_same_thread=False)
     c = conn.cursor()
@@ -153,6 +159,7 @@ def load_summary(user_id: str, session_id: str) -> str:
 
 
 def save_turn(user_id: str, session_id: str, role: str, content: str):
+    """Store a single conversation turn (role, content) with timestamp."""
     init_short_memory()
     conn = sqlite3.connect(get_db_path(), check_same_thread=False)
     c = conn.cursor()
@@ -173,6 +180,7 @@ def summarize_context(turns: List[Tuple[str, str]]) -> str:
 
 
 def update_summary_if_needed(user_id: str, session_id: str) -> bool:
+    """Persist rolling summary if turn count exceeds threshold; return True if written."""
     turns = load_turns(user_id, session_id)
     max_turns = get_summary_max_turns()
     if len(turns) > max_turns:
@@ -193,6 +201,7 @@ def update_summary_if_needed(user_id: str, session_id: str) -> bool:
 
 
 def clear_short_memory(user_id: str, session_id: str) -> None:
+    """Delete all turns and summary for user+session."""
     init_short_memory()
     conn = sqlite3.connect(get_db_path(), check_same_thread=False)
     c = conn.cursor()

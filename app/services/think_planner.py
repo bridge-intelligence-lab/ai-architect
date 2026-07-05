@@ -1,3 +1,4 @@
+"""Router for think/tool-result requests: adapts payload to architect agent."""
 import os
 from typing import Any, Dict, Tuple
 

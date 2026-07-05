@@ -1,3 +1,4 @@
+"""Simple, deterministic PII detector: regex + optional Presidio backend."""
 import os
 import re
 from typing import Any, Dict, List
@@ -108,6 +109,10 @@ def _compile_active_patterns(types_override: list[str] | None = None, locales_ov
 
 
 def detect_pii(text: str, types: list[str] | None = None, locales: list[str] | None = None) -> Dict[str, Any]:
+    """Detect PII in text using Presidio (if PII_BACKEND=presidio) or regex baseline.
+
+    Returns entities (type, masked value, span), type counts, and detected types.
+    """
     # Optional Presidio backend (PII_BACKEND=presidio); the regex baseline
     # below stays the default and the fallback when Presidio is not
     # installed or fails (e.g. missing spaCy model).

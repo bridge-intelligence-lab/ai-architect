@@ -1,3 +1,4 @@
+"""Solution architect agent: memory orchestration, feature heuristics, builtin + LangGraph backends."""
 import os
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Tuple
@@ -23,6 +24,7 @@ except Exception:
 
 
 def _build_messages(question: str, plan_parser: PydanticOutputParser, context_blocks: List[str] | None = None) -> List[Dict[str, str]]:
+    """Construct system + context + user messages for LLM with structured output instructions."""
     context_blocks = context_blocks or []
     fmt = plan_parser.get_format_instructions()
     system = (
@@ -44,6 +46,7 @@ def _build_messages(question: str, plan_parser: PydanticOutputParser, context_bl
 
 
 def _memory_debug(e: Exception) -> None:
+    """Print memory operation errors if MEMORY_DEBUG is set."""
     if os.getenv("MEMORY_DEBUG", "").lower() in ("1", "true", "yes", "on"):
         try:
             print(f"[MEMORY_DEBUG] memory op error: {e}")
@@ -184,6 +187,10 @@ def _apply_feature_heuristic(plan: ArchitectPlan, question: str) -> None:
 
 
 def run_architect_agent(question: str, session_id: str | None = None, user_id: str | None = None, llm_model: str | None = None) -> Tuple[ArchitectPlan, Dict[str, Any]]:
+    """Orchestrate memory load/save and run planner (LangGraph or builtin with fallback).
+
+    Applies feature heuristic and audit counters; returns plan + metadata.
+    """
     """Backend-agnostic entrypoint: memory load/save and the feature-request
     heuristic live here so every backend gets them; only planning is
     backend-specific (AGENT_BACKEND=builtin|langgraph, builtin the default
@@ -231,6 +238,7 @@ def _run_builtin_planner(
     llm_model: str | None,
     read_counters: Dict[str, int],
 ) -> Tuple[ArchitectPlan, Dict[str, Any]]:
+    """Linear pipeline: RAG retrieval, message build, LLM call, structured parsing, audit assembly."""
     original_question = question
 
     # 1) Retrieval

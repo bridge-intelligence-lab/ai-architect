@@ -1,9 +1,11 @@
+"""Structured output schema for architecture planning."""
 from typing import Any, Dict, List
 
 from pydantic import BaseModel, Field
 
 
 class ArchitectPlan(BaseModel):
+    """Solution plan with summary, steps, env flags, citations, and feature request hints."""
     summary: str = ""
     suggested_steps: List[str] = Field(default_factory=list)
     suggested_env_flags: List[str] = Field(default_factory=list)

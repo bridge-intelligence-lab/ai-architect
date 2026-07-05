@@ -1,3 +1,5 @@
+"""Policy navigator endpoints: decompose and answer compliance questions."""
+
 import os
 import time
 from typing import List, Optional
@@ -27,6 +29,10 @@ class PolicyResponse(BaseModel):
 
 @router.post("/policy_navigator", response_model=PolicyResponse)
 def post_policy_navigator(req: Request, payload: PolicyRequest):
+    """Answer policy questions via decompose-retrieve-synthesize loop.
+
+    Requires analyst role. Gated by POLICY_NAV_ENABLED flag (default true).
+    Audit includes step-by-step latencies and hashes."""
     role = parse_role(req)
     if role not in ("analyst", "admin"):
         raise HTTPException(status_code=403, detail="forbidden")

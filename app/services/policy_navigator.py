@@ -1,3 +1,4 @@
+"""Policy navigator: decompose, retrieve, synthesize compliance guidance."""
 import os
 from typing import Any, Dict, List
 
@@ -7,6 +8,7 @@ logger = get_logger(__name__)
 
 
 def decompose(question: str, max_subqs: int | None = None) -> List[str]:
+    """Split question into sub-questions by punctuation; filter short segments."""
     q = question.strip()
     parts = []
     # naive decomposition: split by '?' and '.'; filter short parts
@@ -22,6 +24,7 @@ def decompose(question: str, max_subqs: int | None = None) -> List[str]:
 
 
 def retrieve(subq: str, k: int = 3) -> List[Dict[str, Any]]:
+    """Fetch top-k citations for sub-question using doc retriever."""
     # Use the keyword-scan retriever
     try:
         from app.services.doc_retriever import answer_with_citations
@@ -35,6 +38,7 @@ def retrieve(subq: str, k: int = 3) -> List[Dict[str, Any]]:
 def synthesize(
     question: str, subqs: List[str], per_subq_citations: List[List[Dict[str, Any]]]
 ) -> Dict[str, Any]:
+    """Assemble structured guidance from sub-questions and their citations."""
     # naive synthesis: summarize findings and provide a recommendation
     lines = [f"Policy navigator for: {question}"]
     all_citations: List[Dict[str, Any]] = []

@@ -1,3 +1,4 @@
+"""Long-term memory: user facts indexed with embeddings and in-memory cosine retrieval."""
 import hashlib
 import os
 from typing import Any, Dict, List
@@ -26,6 +27,10 @@ def _get_embedder():
 
 
 def retrieve_facts(user_id: str, query: str, top_k: int = 5) -> List[Dict[str, Any]]:
+    """Rank stored facts by cosine similarity to query; pruned by retention days.
+
+    Attaches pruned count to retrieve_facts._last_pruned for downstream visibility.
+    """
     # naive similarity via cosine on local embeddings if available
     facts = _FACT_STORE.get(user_id, [])
     if not facts:
@@ -76,6 +81,10 @@ def retrieve_facts(user_id: str, query: str, top_k: int = 5) -> List[Dict[str, A
 def ingest_fact(
     user_id: str, fact: str, metadata: Dict[str, Any] | None = None
 ) -> bool:
+    """Store fact with embedding and metadata; idempotent upsert by content hash.
+
+    Enforces max-facts-per-user by evicting oldest; attaches eviction count to ingest_fact._last_evicted.
+    """
     emb = _get_embedder()
     try:
         vec = emb.embed([fact])[0]
@@ -125,5 +134,6 @@ def ingest_fact(
 
 
 def clear_long_memory(user_id: str) -> None:
+    """Delete all facts for user."""
     if user_id in _FACT_STORE:
         del _FACT_STORE[user_id]
