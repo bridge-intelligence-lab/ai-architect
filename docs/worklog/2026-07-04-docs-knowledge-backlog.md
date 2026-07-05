@@ -107,6 +107,18 @@ file is the first entry.
 - Small chore: relocate audit.db out of repo root into data/, update path config,
   gitignore if not already.
 
+### 10. Embeddings health: fail loudly on stub fallback [FOUND 2026-07-05]
+- Incident: the running server's LocalEmbeddings silently fell back to stub
+  embeddings after a reload under memory pressure. Every query then retrieved the
+  SAME three chunks regardless of question; judge correctness dropped ~0.9 before
+  the eval diff caught it. Nothing logged, nothing in audit.
+- Fix ideas: log at WARNING on fallback; expose embedder identity (local/stub/hash)
+  in the audit rag extras and /healthz or /memory/status-style endpoint; optionally
+  a startup check that refuses vector backend with stub embeddings unless
+  explicitly allowed.
+- The eval-diff discipline caught this; a single-number canary (retrieval
+  diversity: distinct sources over N queries) would catch it in seconds.
+
 ## Process (adopted this session)
 - approach.md pattern adopted (community practice): per-task
   approach doc written BEFORE implementation, approved as the gate; code review checks
