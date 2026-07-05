@@ -34,7 +34,18 @@ file is the first entry.
 - ttft equals latency by design for now: the SSE status ack is excluded from ttft and
   content events arrive only after the agent completes (no token streaming yet).
 
-### 4. Docs overhaul PR (one sweep, one corpus change)
+### 4. Docs overhaul PR [DONE - measured against baseline]
+- Eval diff (experiment `docs-overhaul-ce73e676` vs `baseline-post-pr27-8b06c0ad`,
+  26/26 each): groundedness 3.35→4.27, correctness 3.31→4.15, completeness
+  2.89→3.77, actionability 2.92→3.77, keywords_present 0.83→0.94; latency and
+  cost flat. Single-run LLM judges carry variance, but a consistent ~+0.9 across
+  all four judges is a real corpus effect, not noise.
+- Biggest contributor was likely the clean vector-store rebuild: the old store
+  held 230 chunks for a 196-chunk corpus (deleted docs' chunks linger; ingest
+  never deletes). Documented in rag.md.
+- Original plan below for the record.
+
+### (plan) Docs overhaul PR (one sweep, one corpus change)
 - Delete: building-with-ai-vs-no-code-dev.md, mlflow-rag-orchestration-idea-from-eric.md,
   architect_deterministic_mode.md (ADR-0007 is the record), dead env vars in .env.example
   (LC_RAG_ENABLED, LLM_ENABLE_RESEARCH, PII_REMEDIATION_INCLUDE_SNIPPETS).
