@@ -10,14 +10,14 @@ file is the first entry.
 
 ## Sequence
 
-### 1. Debug session memory + UI SSE [NEXT]
+### 1. Debug session memory + UI SSE [DONE - PR #27]
 - Symptoms: agent not remembering session conversation; UI SSE apparently not streaming.
 - Likely one root cause (conversation-state/streaming plumbing). Suspect eval-day changes
   (#19-#26), especially the .env/test-leak fix and #26.
 - Plan: reproduce both in UI, verify session store writes in backend logs, curl the SSE
   endpoint directly to isolate server vs UI client. Fallback: bisect against pre-#19.
 
-### 2. Fix GitHub-issue-offer regression
+### 2. Fix GitHub-issue-offer regression [DONE - PR #27, same root cause as 1]
 - Build/collaborate intent used to offer creating a GitHub issue to start the work; gone now.
 - Golden dataset (26 prompts) does not cover this behavior, so it broke silently.
 - Plan: `git log -p` over prompt files to bisect, fix, then add 2-3 golden prompts + an

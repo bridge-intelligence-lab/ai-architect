@@ -1,6 +1,12 @@
 # Approach: LangGraph backend parity (session memory + feature CTA) and SSE UX
 
-Status: APPROVED 2026-07-04
+Status: IMPLEMENTED 2026-07-04 (PR #27). All four changes A-D landed, plus
+RAG_EXCLUDE_DIRS pulled forward from backlog step 4 (worklog files entered docs/ in
+this PR, so the exclusion had to ship with them) and fresh per-example session ids in
+both eval harnesses (with shared "default" sessions, backend memory would leak context
+across eval questions). Full suite 179 passed; verified live over SSE. Note for the
+next grid run: the earlier builtin-vs-langgraph latency comparison was unfair, since
+langgraph skipped memory reads entirely.
 Relates to: 2026-07-04-docs-knowledge-backlog.md items 1 and 2
 
 ## Findings (investigated 2026-07-04)
