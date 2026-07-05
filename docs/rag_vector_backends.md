@@ -1,3 +1,12 @@
+---
+title: RAG Vector Backends
+status: current
+module: rag
+last_reviewed: 2026-07-04
+source:
+  - app/services/vector_retriever.py
+---
+
 # RAG Vector Backends
 
 ## Today

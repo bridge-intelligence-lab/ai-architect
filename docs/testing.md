@@ -1,3 +1,13 @@
+---
+title: Testing Cheat Sheet
+status: current
+module: testing
+last_reviewed: 2026-07-04
+source:
+  - tests/
+  - .github/workflows/ci.yml
+---
+
 # Testing Cheat Sheet
 
 ## One-time setup (local)

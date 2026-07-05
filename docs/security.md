@@ -1,3 +1,12 @@
+---
+title: Security
+status: current
+module: governance
+last_reviewed: 2026-07-04
+source:
+  - app/utils/rbac.py
+---
+
 # Security
 
 ## RBAC

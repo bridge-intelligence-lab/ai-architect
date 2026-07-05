@@ -1,13 +1,22 @@
+---
+title: Current Capabilities (Baseline)
+status: current
+module: overview
+last_reviewed: 2026-07-04
+---
+
 # Current Capabilities (Baseline)
 
 This document captures what is implemented today in AI Architect so we can design new capabilities in isolation on top of a clear baseline.
 
-Overview
+## Overview
+
 - API-first FastAPI service with deterministic defaults (no network in tests) and graceful fallbacks
 - Core features: Query + RAG, Architect agent (+SSE and UI), Research agent, Policy Navigator, PII detection and remediation, Risk scoring, Predict (MLflow), Memory (short/long), Metrics and Auditing
 - RBAC and PII safety, request-id logging, cost/tokens estimation, structured audits stored in a local DB by default
 
-Endpoints and behaviors
+## Endpoints and behaviors
+
 - GET /healthz — liveness check
 - GET /metrics — Prometheus metrics; open when METRICS_TOKEN unset, token-protected when set
 - POST /query
@@ -20,7 +29,7 @@ Endpoints and behaviors
   - When grounded, uses same RAG path for citations
   - Audit includes LLM metadata (provider/model/tokens/cost) and RAG flags when present
 - GET /architect/stream — Server-Sent Events (SSE)
-  - Events: meta, summary, steps, flags, citations, feature, audit
+  - Events: status (immediate ack), meta, summary, steps, flags, citations, feature, audit; error on failure
   - meta includes provider/model/grounded_used; includes memory_* reads when enabled
 - GET /architect/ui and GET/POST /ui — HTML UI for Architect/Query/Research
 - POST /research — agent pipeline with steps [search, fetch, summarize, risk_check]; per-step RBAC
@@ -28,6 +37,7 @@ Endpoints and behaviors
   - Audit: step entries with inputs/outputs preview and latency
 - POST /policy_navigator — decomposes question, retrieves citations, and synthesizes a recommendation
   - Flags: POLICY_NAV_ENABLED (default true), POLICY_NAV_MAX_SUBQS
+- POST /think — think planner: structured intermediate reasoning ahead of an action (analyst/admin); see docs/api.md
 - POST /pii — PII detection (regex + heuristics baseline, Presidio NER behind PII_BACKEND=presidio), optional grounded citations
   - Request: {text, types?, grounded?}; Response: summary, entities, counts, types_present, audit
   - Env: PII_BACKEND (regex|presidio), PII_TYPES, PII_LOCALES override active detectors
@@ -39,7 +49,8 @@ Endpoints and behaviors
 - POST /risk — heuristic scorer with optional ML-style path
   - Flags: RISK_ML_ENABLED, RISK_THRESHOLD
 
-RAG (grounding) baseline
+## RAG (grounding) baseline
+
 - Implementation: app/services/doc_retriever.py
   - Deterministic local-docs scanning; honors flags:
     - RAG_MULTI_QUERY_ENABLED (with RAG_MULTI_QUERY_COUNT)
@@ -48,7 +59,8 @@ RAG (grounding) baseline
   - Ensures at least one citation via filename/text fallbacks or synthetic context
   - Returns {answer, citations, rag_multi_query, rag_multi_count, rag_hyde}
 
-Memory
+## Memory
+
 - Short-term (SQLite file, default disabled)
   - Env: MEMORY_SHORT_ENABLED, MEMORY_DB_PATH, MEMORY_SHORT_MAX_TURNS, SHORT_MEMORY_RETENTION_DAYS, SHORT_MEMORY_MAX_TURNS_PER_SESSION
   - Endpoints: GET/DELETE /memory/short, GET /memory/status
@@ -60,7 +72,8 @@ Memory
   - In-query and in-architect behaviors: retrieve facts to augment context; ingest long sentences/facts after responses
   - Audit counters when enabled: memory_long_reads, memory_long_writes, memory_long_pruned
 
-Observability and auditing
+## Observability and auditing
+
 - Middleware attaches request_id (header REQUEST_ID_HEADER, default X-Request-ID) and records per-request metrics
 - Prometheus metrics (app/utils/metrics.py):
   - app_requests_total{endpoint,status}, app_request_latency_seconds{endpoint}
@@ -68,13 +81,15 @@ Observability and auditing
 - Structured audits are persisted via db.session and db.models.Audit
   - Every major endpoint writes audit rows best-effort with request id, hashes, latency, token/cost estimates, and feature-specific extras
 
-Security, RBAC, and PII
+## Security, RBAC, and PII
+
 - Roles: guest < analyst < admin (app/utils/rbac.py)
 - Per-endpoint role policies enforced in routers
 - PII detection/remediation is local and deterministic by default; PII_TYPES and PII_LOCALES allow runtime configuration
 - Denylist for /query research safety checks via DENYLIST
 
-MLflow predict path
+## MLflow predict path
+
 - Configuration: MLFLOW_TRACKING_URI, MLFLOW_EXPERIMENT_NAME
 - Optional artifacts:
   - Model path: MLFLOW_MODEL_ARTIFACT_PATH (default "model")
@@ -82,7 +97,8 @@ MLflow predict path
 - /predict/schema exposes the expected features (when artifact present) and run metadata
 - /predict enforces exact feature keys when feature order is available and converts numeric-like values
 
-Key components (pointers)
+## Key components (pointers)
+
 - app/main.py — middleware, router wiring, exception handlers
 - app/routers/*.py — endpoints (query, architect, architect_stream, architect_ui, research, policy, predict, pii, pii_remediation, risk, memory, metrics, ui)
 - app/services/*.py — RAG, LLM client, MLflow client, PII detector, policy navigator, risk scorer, architect agent
@@ -90,7 +106,8 @@ Key components (pointers)
 - db/models.py, db/session.py — audit table and DB helpers
 - docs/*.md — user/system documentation, prompts/*.yaml — agent prompt specs
 
-Configuration highlights (env)
+## Configuration highlights (env)
+
 - PROJECT_GUIDE_ENABLED, LLM_ENABLE_ARCHITECT, LLM_ENABLE_QUERY, LLM_PROVIDER, LLM_MODEL, LLM_TEMPERATURE, LLM_MAX_TOKENS
 - DOCS_PATH, RAG_MULTI_QUERY_ENABLED, RAG_MULTI_QUERY_COUNT, RAG_HYDE_ENABLED
 - MEMORY_* flags as above
@@ -100,14 +117,16 @@ Configuration highlights (env)
 - POLICY_NAV_ENABLED, POLICY_NAV_MAX_SUBQS
 - PII_REMEDIATION_ENABLED, PII_REMEDIATION_INCLUDE_SNIPPETS, PII_TYPES, PII_LOCALES
 
-Shipped since this baseline was written (see CHANGELOG for details)
+## Shipped since this baseline was written (see CHANGELOG for details)
+
 - MCP server (`app/mcp_server.py`, tools: retrieve_docs, detect_pii, architect_plan)
 - Vector retrieval backend (Chroma, `RAG_BACKEND=vector`)
 - LangGraph tool-loop architect (`AGENT_BACKEND=langgraph`)
 - Presidio PII backend (`PII_BACKEND=presidio`)
 - LangSmith eval pipeline (golden dataset, evaluators, judges, experiment grid)
 
-Out of scope (to design next, separately)
+## Out of scope (to design next, separately)
+
 - PEFT/LoRA/QLoRA fine-tuning and adapter loading
 - RLHF/DPO and bandit-based routing
 - gRPC + streaming RPCs and WebSockets

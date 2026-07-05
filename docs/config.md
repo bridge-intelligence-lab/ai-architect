@@ -1,3 +1,12 @@
+---
+title: Configuration
+status: current
+module: ops
+last_reviewed: 2026-07-04
+source:
+  - .env.example
+---
+
 # Configuration
 
 Environment variables (selected). Defaults shown are the code defaults when the
@@ -36,6 +45,7 @@ variable is unset; `.env.example` documents a working local setup.
 - VECTORSTORE_PATH: Chroma persistence path; RAG_COLLECTION: collection name
 - RAG_EXCLUDE_FILES: comma-separated basenames never used as grounding context
   (defaults include the eval/prompt docs; applied at keyword scan, vector query, and ingestion)
+- RAG_EXCLUDE_DIRS: directory names excluded the same way (default: worklog)
 - RAG_MULTI_QUERY_ENABLED, RAG_MULTI_QUERY_COUNT, RAG_HYDE_ENABLED: query expansion
   (keyword-scan path only; no-ops under RAG_BACKEND=vector)
 - EMBEDDINGS_PROVIDER: local|openai|hash|stub
@@ -55,7 +65,8 @@ variable is unset; `.env.example` documents a working local setup.
 - SHORT_MEMORY_RETENTION_DAYS, SHORT_MEMORY_MAX_TURNS_PER_SESSION (default: 0=disabled)
 - MEMORY_LONG_ENABLED (default: false), MEMORY_COLLECTION_PREFIX (default: memory)
 - MEMORY_LONG_RETENTION_DAYS, MEMORY_LONG_MAX_FACTS (default: 0=disabled)
-- Note: memory integrates with /query and the builtin architect; the langgraph backend currently bypasses it
+- Note: memory integrates with /query and /architect; for /architect it is
+  backend-agnostic (both builtin and langgraph read/write it)
 
 ## Research agent safety
 

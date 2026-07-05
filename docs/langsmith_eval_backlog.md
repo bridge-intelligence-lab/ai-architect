@@ -1,3 +1,10 @@
+---
+title: Backlog: LangSmith Eval Setup for AI Architect
+status: current
+module: eval
+last_reviewed: 2026-07-04
+---
+
 # Backlog: LangSmith Eval Setup for AI Architect
 
 Companion to `docs/langsmith_test_plan.md`. Work items in dependency order. Nothing starts until this doc is reviewed.
@@ -90,7 +97,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 - **Status:** todo
 - **Effort:** half day
 - **What:** DESIGN CORRECTED 2026-07-04: multi-query/hyDE flags are no-ops under RAG_BACKEND=vector (they only affect the keyword scan). Round two axes instead: RAG_BACKEND vector vs keyword_scan, and the model shootout gpt-4.1 vs gpt-4.1-mini (judges upgraded via EVAL_JUDGE_MODEL for that run).
-- **Acceptance:** 3-4 experiments tagged by flag combo; findings noted in `docs/live_eval.md` or a new results doc.
+- **Acceptance:** 3-4 experiments tagged by flag combo; findings noted in `docs/eval_results/` (chosen).
 - **Depends on:** LS-8
 
 ## Epic 5: Production loop
@@ -138,4 +145,4 @@ Total: roughly 4-5 days of focused work, deliverable in slices. Each epic leaves
 1. Model pair for the first experiment (LS-8)?
 2. Budget ceiling for judge calls? Judges on 21 examples x 4 rubrics per experiment is cheap, but online eval (LS-10) sampling live traffic is ongoing spend.
 3. Do we care about pairwise (A/B judge picks winner) in the first pass, or is scalar scoring enough? Currently left out of the backlog.
-4. Where do experiment writeups live: `docs/live_eval.md` or a new `docs/eval_results/` folder?
+4. Where do experiment writeups live: `docs/eval_results/` (chosen)

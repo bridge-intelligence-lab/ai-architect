@@ -1,3 +1,14 @@
+---
+title: Agents
+status: current
+module: agents
+last_reviewed: 2026-07-04
+source:
+  - app/services/architect_agent.py
+  - app/services/langgraph_architect.py
+  - app/routers/architect.py
+---
+
 # Agents
 
 ## Architect backends (AGENT_BACKEND)
@@ -20,15 +31,20 @@ The `/architect` endpoints run one of two backends, selected by
   the builtin fallback fires instead of streaming an empty plan. Tokens and
   cost accumulate across turns into the audit, which also reports
   `agent_backend` and `agent_tool_calls`. Any failure falls back to the
-  builtin planner. Memory read/write integration is builtin-only for now
-  (ADR 0007).
+  builtin planner.
+
+Memory and the feature-request heuristic are backend-agnostic: they run in
+`run_architect_agent` around whichever backend is selected, so both backends
+read/write session memory (the langgraph loop receives loaded context as a
+system message) and both can emit the feature CTA. See docs/memory.md.
 
 In a measured comparison on the golden eval dataset, `langgraph` beat
 `builtin` on groundedness, correctness, completeness AND latency, so the
 default is the offline-safe choice, not necessarily the recommended one.
 See `docs/eval_results/2026-07-04-grid-backend-tokens.md`.
 
-Architect agent and community loop
+## Architect agent and community loop
+
 - The Architect agent can propose features when it detects gaps between a user goal and current capabilities (e.g., a new endpoint or a router rule).
 - Users can copy the proposal (summary, steps, flags) into a GitHub issue; see docs/llm_agent_streaming_prompts.md for a ready-to-use prompt set.
 - This closes the loop between learning, brainstorming, and contribution, keeping the repo a living reference architecture.
@@ -82,6 +98,10 @@ Architect agent and community loop
   - Memory audit fields are included in the response: memory_short_reads, memory_short_writes, memory_long_reads, memory_long_writes, memory_short_pruned, memory_long_pruned, summary_updated
   - See docs/memory.md for retention and configuration details
 - SSE event contract (/architect/stream):
+  - event: status
+    data: "planning" — emitted immediately on connect, before the agent runs
+  - event: error
+    data: string — server-side failure message; stream ends after this
   - event: meta
     data: { "provider": string|null, "model": string|null, "grounded_used": bool|null }
   - event: summary
@@ -111,6 +131,7 @@ Architect agent and community loop
 
 ---
 
-See also
+## See also
+
 - ports_and_adapters.md: interface-first architecture and planner/RAG backends
 - related_projects.md: curated ecosystem overview and how this project complements it

@@ -1,3 +1,10 @@
+---
+title: LLM Agent Streaming Test Prompts
+status: historical
+module: community
+last_reviewed: 2026-07-04
+---
+
 # LLM Agent Streaming Test Prompts
 
 > **Scope note.** These prompts are for exercising the streaming UI by hand.
@@ -9,7 +16,8 @@
 
 Use these prompts to exercise different parts of the system and the streaming UI. They are grouped by scenario. Paste them into the Architect UI or call the streaming endpoint.
 
-Streaming endpoint
+## Streaming endpoint
+
 - GET /architect/stream?question=...
 
 ---
@@ -37,5 +45,6 @@ Streaming endpoint
 ## Feature CTA prompt
 13) Suggest a feature to automatically create a GitHub issue from the Architect plan. Provide a title and body suitable for an issue.
 
-Notes
+## Notes
+
 - These should trigger a good mix of meta, summary typing, steps, flags, citations, and the final audit in the streaming UI.

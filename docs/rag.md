@@ -1,3 +1,14 @@
+---
+title: Retrieval Configuration
+status: current
+module: rag
+last_reviewed: 2026-07-04
+source:
+  - app/services/doc_retriever.py
+  - app/services/vector_retriever.py
+  - scripts/ingest_docs.py
+---
+
 # Retrieval Configuration
 
 ## Two retrieval backends
@@ -27,7 +38,9 @@ no placeholder content is fabricated.
 1. Place `.md`/`.txt`/`.pdf` files under `DOCS_PATH`
 2. Run `python scripts/ingest_docs.py` or `make ingest` (chunks of 1000 chars
    with 200 overlap; idempotent, ids derive from path + offset; files in
-   `RAG_EXCLUDE_FILES` are skipped)
+   `RAG_EXCLUDE_FILES` and directories in `RAG_EXCLUDE_DIRS` are skipped).
+   Note: ingestion adds/updates but never deletes — after removing or renaming
+   docs, wipe `VECTORSTORE_PATH` and re-ingest or stale chunks stay retrievable
 3. Set `RAG_BACKEND=vector` and query with `grounded=true`
 
 ## Environment flags
@@ -42,6 +55,9 @@ no placeholder content is fabricated.
   them). Enforced at all three paths: keyword scan, vector query (over-fetches
   2x then drops excluded chunks, so an already-built store behaves), and
   ingestion
+- `RAG_EXCLUDE_DIRS` — comma-separated directory names excluded the same way
+  (default: `worklog`, so dated work records under `docs/worklog/` never enter
+  the corpus)
 - `VECTORSTORE_PATH=./.local/vectorstore` — Chroma persistence dir
 - `RAG_COLLECTION=docs` — Chroma collection name
 - `EMBEDDINGS_PROVIDER=local|hash|stub` — `local` uses

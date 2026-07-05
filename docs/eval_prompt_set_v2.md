@@ -1,3 +1,12 @@
+---
+title: Eval Prompt Set v2 (draft for review)
+status: current
+module: eval
+last_reviewed: 2026-07-04
+source:
+  - eval/architect_prompts_v2.jsonl
+---
+
 # Eval Prompt Set v2 (draft for review)
 
 Replaces `docs/llm_agent_streaming_prompts.md` + `eval/architect_prompts.jsonl` as the source for the `ai-architect-golden` LangSmith dataset (backlog LS-4). Once approved, the dataset build script consumes this list; the old files stay untouched for UI smoke-testing.

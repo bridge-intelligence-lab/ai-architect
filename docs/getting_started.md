@@ -1,13 +1,22 @@
+---
+title: Getting Started
+status: current
+module: overview
+last_reviewed: 2026-07-04
+---
+
 # Getting Started
 
 This guide helps you install, run, and explore AI Architect locally. For a product overview, see the root README. For deeper topics, see the docs index.
 
-Prerequisites
+## Prerequisites
+
 - Python 3.11+
 - Optional: Docker (for the observability stack)
 - Optional: jq (for scripts/e2e examples)
 
-Quickstart (local)
+## Quickstart (local)
+
 ```bash
 # 0) Clone & env
 git clone https://github.com/bridge-intelligence-lab/ai-architect
@@ -35,34 +44,40 @@ curl -s -X POST localhost:8000/query \
   -d '{"question":"What is GDPR?","grounded": false}' | jq .
 ```
 
-Architect UI
+## Architect UI
+
 - Unified UI at http://localhost:8000/ui
 - Architect-first experience with streaming and debug panel
 
-RAG basics
+## RAG basics
+
 - Default in tests/CI: deterministic keyword-scan retriever (no embeddings network calls)
 - For vector retrieval locally: run scripts/ingest_docs.py, then set RAG_BACKEND=vector
 - See docs/rag.md and docs/rag_vector_backends.md for flags and backends
 
-Observability stack (optional)
+## Observability stack (optional)
+
 ```bash
 docker compose up --build
 # Prometheus: http://localhost:9090
-# Grafana: http://localhost:3000 (admin/admin)
+# Grafana: http://localhost:3001 (admin/admin; port 3000 is remapped in docker-compose.yml)
 ```
 
-Testing
+## Testing
+
 ```bash
 make venv
 make test
 ```
 
-Troubleshooting
+## Troubleshooting
+
 - Missing citations in deterministic mode: ensure DOCS_PATH points to your docs folder and files are .md/.txt/.pdf (the keyword-scan path defaults to ./examples when DOCS_PATH is unset)
 - Vector store not found with RAG_BACKEND=vector: check VECTORSTORE_PATH and re-run scripts/ingest_docs.py (retrieval falls back to keyword scan when the store is missing or empty)
 - Protected endpoints (RBAC): use X-User-Role: analyst for grounded /query and admin-only routes
 
-LLM providers (via LiteLLM)
+## LLM providers (via LiteLLM)
+
 - All real providers route through the LiteLLM library natively; there is no
   separate gateway to configure. Set:
   - LLM_PROVIDER=openai (or another LiteLLM-supported provider; `stub` = offline default)
@@ -73,8 +88,8 @@ LLM providers (via LiteLLM)
   (default text-embedding-ada-002)
 - Per-request cost comes from LiteLLM's pricing map and lands in audit rows and /metrics
 
-Next steps
+## Next steps
+
 - Explore the API: docs/api.md
 - Learn the architecture: docs/architecture_index.md
 - Configure RAG: docs/rag.md
-- Review launch details: docs/ai-architect-launch.md

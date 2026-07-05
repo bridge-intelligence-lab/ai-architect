@@ -1,3 +1,10 @@
+---
+title: 0) Clean up any leftovers
+status: current
+module: ops
+last_reviewed: 2026-07-04
+---
+
 Perfect. We’ll run **everything on one box (`tensorbook`, 3080 Ti)** for now, and leave **`jarvis` (1080 Ti)** unused until you want to split loads later.
 
 Here’s the clean single-box setup:
@@ -14,7 +21,7 @@ sudo systemctl stop ollama || true
 
 ---
 
-# 1) vLLM on GPU (Qwen 7B) — `tensorbook`
+## 1) vLLM on GPU (Qwen 7B) — `tensorbook`
 
 Persist caches so weights don’t re-download; set conservative KV cache.
 
@@ -46,7 +53,7 @@ curl -s http://127.0.0.1:8000/v1/models | jq .
 
 ---
 
-# 2) Ollama on **CPU** (embeddings + DeepSeek) — same box
+## 2) Ollama on **CPU** (embeddings + DeepSeek) — same box
 
 We’ll force CPU so it doesn’t fight vLLM for VRAM.
 
@@ -91,7 +98,7 @@ curl -s http://127.0.0.1:11434/api/embeddings \
 
 ---
 
-# 3) LiteLLM proxy — single entrypoint
+## 3) LiteLLM proxy — single entrypoint
 
 Create `litellm.yaml` on `tensorbook`:
 
@@ -133,7 +140,7 @@ LITELLM_LOG=DEBUG litellm --config litellm.yaml --host 0.0.0.0 --port 4000
 
 ---
 
-# 4) Tests (run on `tensorbook`)
+## 4) Tests (run on `tensorbook`)
 
 Proxy up?
 
@@ -176,7 +183,7 @@ curl -s http://127.0.0.1:4000/v1/chat/completions \
 
 ---
 
-# 5) Tips / knobs
+## 5) Tips / knobs
 
 * **If vLLM OOMs**: drop `--max-model-len` to 3072/2048 or `--max-num-seqs` to 2.
 * **If embeddings feel slow**: that’s CPU; totally OK for now. You can move Ollama to `jarvis` later and change `api_base` to its IP.

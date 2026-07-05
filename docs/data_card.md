@@ -1,3 +1,12 @@
+---
+title: Data Card
+status: current
+module: ml
+last_reviewed: 2026-07-04
+source:
+  - ml/
+---
+
 # Data Card
 
 ## Overview

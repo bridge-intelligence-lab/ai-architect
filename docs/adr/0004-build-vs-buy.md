@@ -79,13 +79,13 @@ Alternatives considered
   parser fragile.
 
 Implementation notes
-- Sequenced in [docs/MODERNIZATION_PLAN.md](../MODERNIZATION_PLAN.md) as PRs
+- Sequenced in [docs/worklog/2026-07-01-modernization-plan.md](../worklog/2026-07-01-modernization-plan.md) as PRs
   0 and A–I.
 - Order: CI health (0) → scope/roadmap docs (A) → retrieval rename/vector
   (B, C) → structured outputs (D) → LiteLLM (E) → LangGraph agent (F) →
   optional MCP (G), Presidio (H), coverage gate (I).
 
 References
-- docs/MODERNIZATION_PLAN.md
+- docs/worklog/2026-07-01-modernization-plan.md
 - docs/adr/0001-ports-and-adapters.md
 - docs/rag.md, docs/agents.md, docs/observability.md

@@ -1,3 +1,10 @@
+---
+title: Model Card
+status: current
+module: ml
+last_reviewed: 2026-07-04
+---
+
 # Model Card
 
 ## Overview
