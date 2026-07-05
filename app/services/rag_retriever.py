@@ -45,7 +45,7 @@ class OpenAIEmbeddings:
 
     def __init__(self):
         self.api_key = os.getenv("OPENAI_API_KEY")
-        self.model = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-ada-002")
+        self.model = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
 
     def embed(self, texts: List[str]) -> List[List[float]]:
         """Call OpenAI embeddings API."""

@@ -48,8 +48,8 @@ variable is unset; `.env.example` documents a working local setup.
 - RAG_EXCLUDE_DIRS: directory names excluded the same way (default: worklog)
 - RAG_MULTI_QUERY_ENABLED, RAG_MULTI_QUERY_COUNT, RAG_HYDE_ENABLED: query expansion
   (keyword-scan path only; no-ops under RAG_BACKEND=vector)
-- EMBEDDINGS_PROVIDER: local|openai|hash|stub
-- LOCAL_EMBEDDING_MODEL (default: all-MiniLM-L6-v2), OPENAI_EMBEDDING_MODEL (default: text-embedding-ada-002)
+- EMBEDDINGS_PROVIDER: openai|local|hash|stub (recommended: openai; see docs/rag.md for why)
+- LOCAL_EMBEDDING_MODEL (default: all-MiniLM-L6-v2), OPENAI_EMBEDDING_MODEL (default: text-embedding-3-small)
 
 ## PII / Risk
 
