@@ -77,4 +77,4 @@ Next steps
 - Explore the API: docs/api.md
 - Learn the architecture: docs/architecture_index.md
 - Configure RAG: docs/rag.md
-- Review launch details: docs/ai-architect-launch.md
+

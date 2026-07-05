@@ -147,4 +147,4 @@ Observability additions (for adapter)
 See also
 - ingestion_pipelines.md — streaming and batch design
 - mlops_plan.md — drift and model lifecycle
-- capabilities_current.md, capabilities_roadmap.md — context and planning
+- capabilities_current.md, worklog/2025-10-18-capabilities-roadmap.md — context and planning

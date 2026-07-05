@@ -17,7 +17,7 @@
 - **Evaluated** — a LangSmith golden dataset, 11 code evaluators + 4 calibrated LLM judges, and config decisions made by experiment (see [Evaluation](#-evaluation)).
 - **Governed** — RBAC, retention sweeps, and prompt registries.
 
-> **Project status:** a reference implementation you can run locally. Out of the box the LLM runs in a deterministic offline **stub** unless a provider key is set; retrieval defaults to a **keyword/deterministic baseline** with real **vector retrieval** (Chroma) behind `RAG_BACKEND=vector`; the architect defaults to a structured **deterministic planner** with a **LangGraph tool-loop agent** behind `AGENT_BACKEND=langgraph` (the measured winner on groundedness and latency — see [docs/eval_results/](docs/eval_results/2026-07-04-grid-backend-tokens.md)). Shipped vs planned lives in [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md).
+> **Project status:** a reference implementation you can run locally. Out of the box the LLM runs in a deterministic offline **stub** unless a provider key is set; retrieval defaults to a **keyword/deterministic baseline** with real **vector retrieval** (Chroma) behind `RAG_BACKEND=vector`; the architect defaults to a structured **deterministic planner** with a **LangGraph tool-loop agent** behind `AGENT_BACKEND=langgraph` (the measured winner on groundedness and latency — see [docs/eval_results/](docs/eval_results/2026-07-04-grid-backend-tokens.md)). Shipped vs planned lives in [docs/worklog/2026-07-01-modernization-plan.md](docs/worklog/2026-07-01-modernization-plan.md).
 
 ---
 
@@ -216,7 +216,7 @@ Full details → `docs/observability.md`, `docs/security.md`
 | 11 | Presidio PII backend, CI coverage gate | ✅ Done |
 | 12+ | Pinecone backend, role-scoped MCP, memory in the LangGraph loop | 🧩 Planned |
 
-> Full roadmap and build-vs-buy rationale: [docs/MODERNIZATION_PLAN.md](docs/MODERNIZATION_PLAN.md), [ADR-0004](docs/adr/0004-build-vs-buy.md).
+> Full roadmap and build-vs-buy rationale: [docs/worklog/2026-07-01-modernization-plan.md](docs/worklog/2026-07-01-modernization-plan.md), [ADR-0004](docs/adr/0004-build-vs-buy.md).
 
 ---
 

@@ -3,15 +3,13 @@
 Start here to explore AI Architect. This index complements the product-focused root README and serves as the corpus for the Architect agent (RAG grounding).
 
 Entry points
-- MODERNIZATION_PLAN.md: roadmap and PR sequencing for the current modernization
-- ai-architect-launch.md: launch scope, UX goals, and checklist
 - architecture_index.md: orientation for the Architect use case and system map
 - components.md: mapping of files to features and services
 - api.md: REST endpoints and schemas
 - deploy.md: local and cloud deployment notes
 - related_projects.md: curated landscape and how we complement it
 - capabilities_current.md: single-source baseline of what is implemented today
-- capabilities_roadmap.md: vendor-neutral planning for advanced capabilities
+- worklog/: dated work records (backlogs, approach docs, reviews, superseded plans) — excluded from the RAG corpus
 
 Core topics
 - ports_and_adapters.md: library-agnostic design, ports, adapters, and rollout plan
@@ -34,7 +32,7 @@ Evaluation (LangSmith)
 - eval_prompt_set_v2.md: the 26-prompt golden dataset (grounded core, new features, adversarial)
 - eval_calibration_2026-07-04.md: judge calibration round 1, with the disagreement table
 - eval_results/: dated experiment writeups with screenshots (first: backend x token grid)
-- live_eval.md: legacy smoke-check script (superseded for quality evaluation)
+
 
 Artifacts and references
 - data_card.md, model_card.md: documentation templates

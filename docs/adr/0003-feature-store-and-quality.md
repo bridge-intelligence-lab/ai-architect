@@ -38,4 +38,4 @@ Follow‑ups
 References
 - docs/feature_store_quality.md
 - docs/ingestion_pipelines.md
-- docs/capabilities_roadmap.md
+- docs/worklog/2025-10-18-capabilities-roadmap.md
