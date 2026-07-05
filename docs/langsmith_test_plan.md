@@ -45,6 +45,7 @@ Before building evals, make the traces worth evaluating.
 Two layers. Cheap deterministic checks catch structure failures; LLM judges catch quality failures.
 
 ### Code evaluators (port from run_live_eval.py)
+
 - `has_summary` (>= 40 chars), `steps_count` (>= 2), `step_quality` (>= 20 chars each)
 - `citations_present_when_grounded` (uses example metadata)
 - `audit_event_emitted`
@@ -52,6 +53,7 @@ Two layers. Cheap deterministic checks catch structure failures; LLM judges catc
 - latency + time-to-first-token (from trace timings)
 
 ### LLM-as-judge evaluators
+
 - **Correctness**: does the answer match what the repo docs actually say? For grounded prompts, pass the retrieved chunks as context and ask the judge to verify claims.
 - **Groundedness / hallucination**: are cited files real, are claims supported by the citations?
 - **Completeness**: did it answer all parts of the question (files + tests + deployment when asked)?
@@ -59,6 +61,7 @@ Two layers. Cheap deterministic checks catch structure failures; LLM judges catc
 Score each 1-5 with a short reasoning field. Start with LangSmith's off-the-shelf judge prompts, tune after reading 20-30 judged runs.
 
 ### Calibrate the judges
+
 Run the judges over ~20 traces, read every judgment, and fix the judge prompt where you disagree. An uncalibrated judge is worse than no judge.
 
 ## Phase 3: Experiments (this is where LangSmith pays off)

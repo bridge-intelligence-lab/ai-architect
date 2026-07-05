@@ -12,6 +12,7 @@ source:
 This project is designed to run locally or on simple PaaS setups. Below are minimal notes; tailor for your platform.
 
 ## Render (Docker)
+
 - Push your repo to GitHub
 - Create a new Web Service and choose Dockerfile at repo root
 - Set environment variables (see .env.example)
@@ -19,16 +20,19 @@ This project is designed to run locally or on simple PaaS setups. Below are mini
 - (Optional) Add a persistent disk mounted at /data for audit.db and vectorstore
 
 ## Fly.io (example)
+
 - Create an app and deploy with Dockerfile
 - Expose port 8000, set health check to /healthz
 - Use volumes for persistence (/data)
 
 ## Cloud Run (example)
+
 - Build container and deploy
 - Set concurrency to a small number for local CPU-friendly workloads
 - Set env vars and health check
 
 ## Validation
+
 - After deploy, run a few smoke tests:
 
 ```bash
