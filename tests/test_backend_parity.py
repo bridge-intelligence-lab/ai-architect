@@ -103,6 +103,61 @@ def test_langgraph_sets_suggest_feature(monkeypatch):
     assert plan.feature_request
 
 
+def test_explicit_feature_phrasing_fires_even_when_grounded(monkeypatch, tmp_path):
+    # A grounded answer WITH steps must still show the CTA when the user
+    # explicitly asks to add/build something (the sparse-or-ungrounded gate
+    # never fires in the full-capacity config).
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    (docs / "notify.md").write_text("Notifications are dispatched via the metrics pipeline.")
+    monkeypatch.setenv("DOCS_PATH", str(docs))
+    monkeypatch.setenv("AGENT_BACKEND", "langgraph")
+    monkeypatch.setenv("MEMORY_SHORT_ENABLED", "false")
+    monkeypatch.setenv("MEMORY_LONG_ENABLED", "false")
+
+    monkeypatch.setattr(
+        llm_mod.LLMClient,
+        "call",
+        _scripted_llm(
+            [
+                json.dumps({"action": "retrieve_docs", "query": "notifications"}),
+                _final("Grounded plan.", steps=["step one"], flags=["FLAG=1"]),
+            ]
+        ),
+    )
+
+    plan, _ = run_architect_agent("Can you add support for Slack notifications?")
+    assert plan.grounded_used is True
+    assert plan.suggested_steps  # not sparse
+    assert plan.suggest_feature is True
+
+
+def test_plain_qa_with_add_keyword_does_not_fire_when_grounded(monkeypatch, tmp_path):
+    # Bare keywords ("add") in an ordinary grounded how-to must NOT show the CTA.
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    (docs / "config.md").write_text("Env vars are added to .env and loaded at startup.")
+    monkeypatch.setenv("DOCS_PATH", str(docs))
+    monkeypatch.setenv("AGENT_BACKEND", "langgraph")
+    monkeypatch.setenv("MEMORY_SHORT_ENABLED", "false")
+    monkeypatch.setenv("MEMORY_LONG_ENABLED", "false")
+
+    monkeypatch.setattr(
+        llm_mod.LLMClient,
+        "call",
+        _scripted_llm(
+            [
+                json.dumps({"action": "retrieve_docs", "query": "env vars"}),
+                _final("Add the variable to .env.", steps=["edit .env"], flags=[]),
+            ]
+        ),
+    )
+
+    plan, _ = run_architect_agent("How do I add an env var to the config?")
+    assert plan.grounded_used is True
+    assert not plan.suggest_feature
+
+
 def test_builtin_memory_counters_unchanged(monkeypatch, tmp_path):
     # The hoist must not change builtin behavior: same counters, same keys.
     monkeypatch.setenv("AGENT_BACKEND", "builtin")
