@@ -24,6 +24,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ## Epic 1: Trace hygiene
 
 ### LS-1: Audit current trace structure
+
 - **Status:** todo
 - **Effort:** 1-2 hrs
 - **What:** Open 5-10 recent traces in LangSmith. Document what the run tree looks like today: is it one flat run per request, or are retrieval / LLM call / parse-fallback visible as child runs? Note what metadata is already attached.
@@ -31,6 +32,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 - **Depends on:** nothing
 
 ### LS-2: Add child runs for pipeline stages
+
 - **Status:** todo
 - **Effort:** half day
 - **What:** In `app/services/architect_agent.py`, split the single RunTree into child runs: retrieval, LLM call, parsing/fallback. Keep it env-gated as today.
@@ -38,6 +40,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 - **Depends on:** LS-1
 
 ### LS-3: Attach run metadata for slicing
+
 - **Status:** todo
 - **Effort:** 1-2 hrs
 - **What:** Add to each root run: model, provider, grounded_used, RAG flags (multi-query, hyDE), session_id. Confirm project name is stable via `LANGCHAIN_TRACING_SESSION_NAME`.
@@ -47,6 +50,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ## Epic 2: Golden dataset
 
 ### LS-4a: Curate + refresh prompt set (v2)
+
 - **Status:** done (approved via PR #19)
 - **Effort:** 2-3 hrs
 - **What:** Review of the year-old prompts (2026-07-04) found them factually still valid but coverage-poor: written as a streaming-UI smoke test, zero coverage of post-2025 features (MCP server, Presidio PII, risk scorer, think planner, LangGraph architect), no negative/adversarial cases, and overlap between the md and jsonl sets. v2 set: 10 kept grounded-core + 8 new-features + 8 negative/adversarial = 26 prompts with per-example metadata (category, expect_grounded, expect_citations, keywords).
@@ -55,6 +59,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 - **Note:** The LangGraph architect already shipped behind `AGENT_BACKEND=langgraph` (deterministic planner remains default). Re-run A6-A8 and B7 against both backends once experiments exist (LS-8).
 
 ### LS-4b: Dataset build script
+
 - **Status:** review
 - **Effort:** 2-3 hrs
 - **What:** `scripts/build_langsmith_dataset.py`. Consumes the approved v2 set (as jsonl checked into `eval/`, generated from the doc). Creates/updates dataset `ai-architect-golden`. Each example carries `metadata.category` and expected-property flags read by evaluators.
@@ -64,6 +69,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ## Epic 3: Rubric (evaluators)
 
 ### LS-5: Code evaluators
+
 - **Status:** done (commit on epic-3 branch)
 - **Effort:** half day
 - **What:** Port heuristics from `scripts/run_live_eval.py` into LangSmith evaluator functions: has_summary (>= 40 chars), steps_count (>= 2), step_quality (>= 20 chars each), citations_present_when_grounded (reads example metadata), audit_event_emitted, stream_well_formed (meta, summary, steps, citations, audit all arrived), truncated (output cut by max_tokens: finish_reason or malformed-JSON tail; needed so LS-8 axis 2 shows truncation as a named cause, not mystery low completeness), latency + TTFT from trace timings.
@@ -71,6 +77,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 - **Depends on:** LS-4b
 
 ### LS-6: LLM-as-judge evaluators
+
 - **Status:** done (verified via baseline-fixed-v3-3def7580)
 - **Effort:** 1 day
 - **What:** Four judges scoring 1-5 with reasoning: correctness (vs repo docs / retrieved chunks), groundedness (claims supported by citations, cited files exist), completeness (all parts of the question answered), actionability (steps followable without guessing). Start from LangSmith off-the-shelf prompts.
@@ -78,6 +85,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 - **Depends on:** LS-4b, LS-5 (target function reuse)
 
 ### LS-7: Judge calibration pass
+
 - **Status:** done (see docs/eval_calibration_2026-07-04.md; delegated to Hue, verified against code)
 - **Effort:** half day
 - **What:** Read every judgment from one full run (~21 x 4). Where you disagree, adjust the judge prompt and re-run. Record disagreement rate before/after.
@@ -87,6 +95,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ## Epic 4: Experiments
 
 ### LS-8: evaluate() harness + first experiment
+
 - **Status:** done (see docs/eval_results/2026-07-04-grid-backend-tokens.md; winners = langgraph + 1024, already in .env)
 - **Effort:** half day
 - **What:** `scripts/run_langsmith_eval.py` with a target function that streams `/architect/stream` (SSE) and assembles the final payload. First experiment is a 2x2 grid over two live config questions instead of deciding them upfront (from .env review 2026-07-04): `AGENT_BACKEND` builtin vs langgraph, and `LLM_MAX_TOKENS` 1024 vs 2048. Four experiments x 26 prompts. Verdict metrics: backend axis = correctness/groundedness + latency + cost; token axis = completeness + the LS-5 `truncated` evaluator. Experiments tagged with their config.
@@ -94,6 +103,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 - **Depends on:** LS-5, LS-6
 
 ### LS-9: RAG flag experiments
+
 - **Status:** todo
 - **Effort:** half day
 - **What:** DESIGN CORRECTED 2026-07-04: multi-query/hyDE flags are no-ops under RAG_BACKEND=vector (they only affect the keyword scan). Round two axes instead: RAG_BACKEND vector vs keyword_scan, and the model shootout gpt-4.1 vs gpt-4.1-mini (judges upgraded via EVAL_JUDGE_MODEL for that run).
@@ -103,6 +113,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ## Epic 5: Production loop
 
 ### LS-10: Online evaluator rule
+
 - **Status:** todo
 - **Effort:** 2-3 hrs
 - **What:** Rule on the tracing project sampling 10-25% of live traces, running groundedness + correctness judges automatically.
@@ -110,6 +121,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 - **Depends on:** LS-7
 
 ### LS-11: Annotation queue
+
 - **Status:** todo
 - **Effort:** 1-2 hrs
 - **What:** Queue receiving low-scoring / flagged runs for human review. Define the feedback schema (thumbs + free text is enough to start).
@@ -117,6 +129,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 - **Depends on:** LS-10
 
 ### LS-12: Dashboard + alerts
+
 - **Status:** todo
 - **Effort:** 2-3 hrs
 - **What:** Dashboard for latency, token cost, error rate, judge scores over time. Alert on error-rate spike or score drop.
@@ -126,6 +139,7 @@ Status legend: `todo` / `in-progress` / `review` / `done`
 ## Epic 6: Regression gate
 
 ### LS-13: make eval-langsmith with thresholds
+
 - **Status:** todo
 - **Effort:** half day
 - **What:** Makefile target wrapping LS-8 harness with pass/fail thresholds per evaluator. Nightly-friendly (live evals cost money, not per-PR).
