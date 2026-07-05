@@ -65,6 +65,7 @@ Prometheus metrics (optionally token-protected)
 ### POST /predict
 
 model inference; requires role analyst/admin
+
 - Request: { features: object, user_id?: string }
 - Rules: features must be a non-empty object with numeric-like values; exact feature set must match training
 - Errors: 400 when features invalid/mismatch or when no model is available
@@ -73,6 +74,7 @@ model inference; requires role analyst/admin
 ### GET /predict/schema
 
 returns expected feature list and model metadata (analyst/admin)
+
 - Response: { features: [string], run_id: string, experiment: string }
 - Notes: Artifacts names configurable via MLFLOW_MODEL_ARTIFACT_PATH and MLFLOW_FEATURE_ORDER_ARTIFACT; MLFLOW_MODEL_URI can override model selection; MLFLOW_MODEL_CACHE_TTL enables in-process caching.
 
@@ -96,6 +98,7 @@ returns expected feature list and model metadata (analyst/admin)
 ### POST /risk
 
 Risk scoring endpoint (analyst/admin)
+
 - Request: { text: string }
 - Response: { label: "low|medium|high", value: number in [0,1], rationale: string, audit: { ... } }
 - Feature flags:
@@ -110,48 +113,56 @@ Risk scoring endpoint (analyst/admin)
 ### POST /policy_navigator
 
 Policy Navigator Agent (analyst/admin)
+
 - Request: { question: string, max_subqs?: number }
 - Response: { recommendation: string, citations: [{source, snippet, page?}], audit: { steps[] } }
 
 ### POST /pii_remediation
 
 PII Remediation Agent (analyst/admin)
+
 - Request: { text: string, return_snippets?: boolean, grounded?: boolean }
 - Response: { remediation: [...], citations?: [...], audit: { pii_entities_count, pii_types } }
 
 ### GET /memory/short
 
 list short-term memory for a session (analyst/admin)
+
 - Params: user_id (required), session_id (required)
 - Response: { turns: [{role, content, timestamp}], summary: string|null, audit: {...} }
 
 ### DELETE /memory/short
 
 clear short-term memory for a session (analyst/admin)
+
 - Params: user_id (required), session_id (required)
 - Response: { cleared: boolean, audit: {...} }
 
 ### GET /memory/long
 
 list long-term facts (analyst/admin)
+
 - Params: user_id (required), q (optional)
 - Response: { facts: [{text, created_at?, metadata?}], audit: {..., memory_long_reads?, memory_long_pruned?} }
 
 ### DELETE /memory/long
 
 clear long-term facts for user (analyst/admin)
+
 - Params: user_id (required)
 - Response: { cleared: boolean, audit: {...} }
 
 ### GET /memory/long/export
 
 export long-term facts (analyst/admin)
+
 - Params: user_id (required)
 - Response: { facts: [{id, text, created_at, metadata, embedding_present, embedding_dim}], audit: {..., memory_long_reads?, memory_long_pruned?} }
 
 ### POST /memory/long/import
 
 import long-term facts (analyst/admin)
+
 - Params: user_id (required)
 - Body: { facts: [{ text: string, metadata?: object }] }
 - Response: { imported: number, audit: {..., memory_long_writes?, memory_long_pruned?} }
@@ -159,21 +170,23 @@ import long-term facts (analyst/admin)
 ### GET /memory/status
 
 memory status (admin only)
+
 - Response: { config: {...}, short_memory: { sessions: [{user_id, session_id, turns, summary}], db_ok }, long_memory: { users: [{user_id, facts}], store_ok }, counters: { memory_short_pruned_total, memory_long_pruned_total }, audit: {...} }
 
 ### POST /research
 
 multi-step research pipeline with auditing; step RBAC applies
+
 - Request: { topic: string, steps?: ["search","fetch","summarize","risk_check"], user_id?: string }
 - Response: { findings: [...], sources: [...], steps: [{name,inputs,outputs,latency_ms,hash,timestamp}], audit: {...} }
 - Defaults: steps defaults to [search, fetch, summarize, risk_check]
 - Flags: AGENT_LIVE_MODE, AGENT_URL_ALLOWLIST, DENYLIST
 - See docs/agents.md for step details
 
-### POST /think
+### POST /think (analyst/admin)
 
-think planner: structured intermediate reasoning ahead of an
-  Architect plan (analyst/admin)
+Structured intermediate reasoning ahead of an Architect plan.
+
 - Request: { request_type: "ThinkRequest"|"ToolResult", ... }
 - Response: planner output plus audit (tokens/cost/latency)
 
@@ -191,7 +204,9 @@ think planner: structured intermediate reasoning ahead of an
 
 ### POST /architect
 
-(requires PROJECT_GUIDE_ENABLED=true)
+Structured plan generation; requires `PROJECT_GUIDE_ENABLED=true`.
+
+
 - Request: { question: string (min 3), grounded?: boolean|null, user_id?: string, session_id?: string }
 - Response: { answer: string, citations?: [Citation], suggested_steps?: [string], suggested_env_flags?: [string], audit: {...}, suggest_feature?: bool, feature_request?: object }
 - Flags: PROJECT_GUIDE_ENABLED, LLM_ENABLE_ARCHITECT, DOCS_PATH, RAG flags
@@ -199,6 +214,7 @@ think planner: structured intermediate reasoning ahead of an
 ### GET /architect/stream
 
 (SSE)
+
 - Content-Type: text/event-stream
 - Event contract: see docs/agents.md (Architect Agent)
 
