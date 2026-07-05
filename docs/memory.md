@@ -91,3 +91,31 @@ This service supports short-term conversation memory and long-term semantic memo
 
 - SHORT_MEMORY_RETENTION_DAYS=7; SHORT_MEMORY_MAX_TURNS_PER_SESSION=100
 - MEMORY_LONG_RETENTION_DAYS=180; MEMORY_LONG_MAX_FACTS=500
+
+## Design
+
+**Owns:** conversational continuity. Two tiers with different lifetimes and shapes:
+short-term (verbatim turns per user+session, SQLite) and long-term (distilled facts
+per user, in-process semantic store). `app/memory/short_memory.py` and
+`app/memory/long_memory.py` own their stores; nothing else writes to them.
+
+**Contract (short):** `load_turns(user_id, session_id) -> [(role, content)]`,
+`save_turn(...)`, `load_summary(...)`; pruning (retention days, per-session cap)
+happens on read and is reported via `_last_pruned`. **Contract (long):**
+`retrieve_facts(user_id, question, top_k)`, `ingest_fact(user_id, text)`.
+
+**Invariants:**
+- Keying is always (user_id, session_id) for turns, user_id for facts; an absent
+  session_id maps to "default", so callers that want isolation must pass one
+  (the eval harnesses generate a fresh session id per example for this reason).
+- Memory never fails a request: all memory operations are best-effort with
+  exceptions swallowed (set MEMORY_DEBUG=true to surface them).
+- Consumers integrate through `run_architect_agent` / the query router, which load
+  context before the LLM call and save after; backends never call memory directly
+  (this is what keeps memory backend-agnostic across builtin and langgraph).
+
+**Why it exists:** multi-turn coherence for the architect UI and /query without
+coupling memory shape to any particular agent implementation.
+
+**Non-goals:** cross-user recall, vector-DB-backed long memory (in-process by
+design at this scale), automatic summarization beyond the rolling window.

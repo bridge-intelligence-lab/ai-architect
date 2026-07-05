@@ -85,3 +85,35 @@ contracts. Keep new tests offline; never depend on a model download.
 - `rag_vector_backends.md`: backend matrix and planned managed backends
 - `ports_and_adapters.md`: RAGPort design and how backends plug in
 - `docs/adr/0005-doc-retriever-naming.md`: why the module was renamed
+
+## Design
+
+**Owns:** everything between a question and grounding context: backend selection,
+corpus exclusion, query expansion, and citation shaping. Nothing else in the app
+touches the corpus directly; `answer_with_citations()` in
+`app/services/doc_retriever.py` is the single entry point (the facade), used by
+/query, both architect backends, and the MCP server.
+
+**Contract:** `answer_with_citations(question, k) -> {answer, citations[],
+rag_multi_query?, rag_multi_count?, rag_hyde?}`. Citations carry `source`, optional
+`page`, `snippet`, `distance`. Callers may treat an empty citations list as
+"ungrounded"; they never receive excluded content.
+
+**Invariants:**
+- Exclusion is enforced at all three paths (keyword scan, vector query, ingestion),
+  so a stale store cannot leak excluded files: the vector path over-fetches 2x and
+  drops excluded chunks post-hoc.
+- The vector backend falls back to keyword scan when the store is missing or empty;
+  callers never see a hard failure from a missing store.
+- Ingestion is add/update only. Deleting or renaming a doc requires wiping
+  `VECTORSTORE_PATH` and re-ingesting, or its chunks stay retrievable.
+- Determinism: with `RAG_BACKEND=keyword_scan` (the default) retrieval is fully
+  deterministic, which is what CI and the offline test suite rely on.
+
+**Why it exists:** grounding quality is the product's main quality lever (measured:
+the 2026-07-04 corpus cleanup moved judge groundedness more than any backend
+change), so retrieval is centralized where exclusion and fallback rules can be
+enforced once and measured.
+
+**Non-goals:** no reranking, no hybrid search, no managed vector DBs (roadmap);
+no write access for callers.
