@@ -135,15 +135,45 @@ def _save_memory(
     return counters
 
 
+# Explicit build/collaborate phrasing fires the CTA even when the answer is
+# grounded and has steps: with vector RAG + a strong model nearly every answer
+# is grounded, so the sparse-or-ungrounded gate alone never triggers.
+_FEATURE_PHRASES = (
+    "add support",
+    "can you add",
+    "could you add",
+    "can we add",
+    "please add",
+    "can we build",
+    "can you build",
+    "could we build",
+    "build that together",
+    "build this together",
+    "work on this together",
+    "feature request",
+    "new feature",
+    "would be nice",
+    "would be great",
+    "on the roadmap",
+    "do you plan",
+    "any plans",
+    "integrate this with",
+    "integrate it with",
+    "integration with",
+)
+
+
 def _apply_feature_heuristic(plan: ArchitectPlan, question: str) -> None:
-    """Suggest opening a feature request when the ask sounds like new work and
-    the plan came back thin or ungrounded. Backend-agnostic."""
+    """Suggest opening a feature request when the ask sounds like new work:
+    explicit build/collaborate phrasing always fires; broad keywords only fire
+    when the plan came back thin or ungrounded. Backend-agnostic."""
     try:
         ql = (question or "").lower()
+        explicit = any(p in ql for p in _FEATURE_PHRASES)
         needs = any(w in ql for w in ("feature", "support", "integrate", "add", "roadmap"))
         sparse = len(plan.suggested_steps or []) == 0 and len(plan.suggested_env_flags or []) == 0
         grounded_used = bool(getattr(plan, "grounded_used", False))
-        if (sparse or not grounded_used) and needs:
+        if explicit or ((sparse or not grounded_used) and needs):
             plan.suggest_feature = True
             plan.feature_request = plan.feature_request or (
                 f"Request: {question[:60]}" if question else "Feature request"
