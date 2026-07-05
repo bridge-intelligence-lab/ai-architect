@@ -1,5 +1,5 @@
 ---
-title: ADR 0007: LangGraph tool-loop architect behind AGENT_BACKEND
+title: "ADR 0007: LangGraph tool-loop architect behind AGENT_BACKEND"
 status: current
 module: architecture
 last_reviewed: 2026-07-05

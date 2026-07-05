@@ -1,5 +1,5 @@
 ---
-title: ADR 0003: Feature Store and Data Quality
+title: "ADR 0003: Feature Store and Data Quality"
 status: current
 module: architecture
 last_reviewed: 2026-07-05

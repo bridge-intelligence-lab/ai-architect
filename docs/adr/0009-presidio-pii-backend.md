@@ -1,5 +1,5 @@
 ---
-title: ADR 0009: Presidio PII backend behind PII_BACKEND; regex baseline kept
+title: "ADR 0009: Presidio PII backend behind PII_BACKEND; regex baseline kept"
 status: current
 module: architecture
 last_reviewed: 2026-07-05

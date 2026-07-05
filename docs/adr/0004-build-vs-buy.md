@@ -1,5 +1,5 @@
 ---
-title: ADR 0004: Build-vs-buy policy for AI-Architect components
+title: "ADR 0004: Build-vs-buy policy for AI-Architect components"
 status: current
 module: architecture
 last_reviewed: 2026-07-05

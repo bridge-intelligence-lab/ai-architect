@@ -1,5 +1,5 @@
 ---
-title: ADR 0001: Ports-and-Adapters for AI-Architect
+title: "ADR 0001: Ports-and-Adapters for AI-Architect"
 status: current
 module: architecture
 last_reviewed: 2026-07-05

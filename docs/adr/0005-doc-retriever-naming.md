@@ -1,5 +1,5 @@
 ---
-title: ADR 0005: Rename langchain_rag to doc_retriever; retire placeholder responses
+title: "ADR 0005: Rename langchain_rag to doc_retriever; retire placeholder responses"
 status: current
 module: architecture
 last_reviewed: 2026-07-05

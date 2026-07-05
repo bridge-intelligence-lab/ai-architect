@@ -1,5 +1,5 @@
 ---
-title: ADR 0006: Native structured outputs; drop langchain, keep langchain-core
+title: "ADR 0006: Native structured outputs; drop langchain, keep langchain-core"
 status: current
 module: architecture
 last_reviewed: 2026-07-05

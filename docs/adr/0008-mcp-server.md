@@ -1,5 +1,5 @@
 ---
-title: ADR 0008: Expose architect capabilities over MCP
+title: "ADR 0008: Expose architect capabilities over MCP"
 status: current
 module: architecture
 last_reviewed: 2026-07-05

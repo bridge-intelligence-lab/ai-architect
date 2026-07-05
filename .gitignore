@@ -40,3 +40,4 @@ data/vectorstore
 e2e_logs/
 docs/promote_repo.md
 ai_architect.egg-info/
+.obsidian/

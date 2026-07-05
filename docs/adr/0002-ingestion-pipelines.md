@@ -1,5 +1,5 @@
 ---
-title: ADR 0002: Ingestion Architecture for Streaming and Batch
+title: "ADR 0002: Ingestion Architecture for Streaming and Batch"
 status: current
 module: architecture
 last_reviewed: 2026-07-05
