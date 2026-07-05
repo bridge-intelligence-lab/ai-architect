@@ -44,9 +44,11 @@ def load_prompts(path: str) -> List[str]:
 
 
 async def stream_architect(question: str, url: str, timeout: float = 60.0, llm_model: Optional[str] = None) -> Dict[str, Any]:
-    # Fresh session per example so backend memory cannot leak context
-    # between eval questions (see run_langsmith_eval.py).
-    params = {"question": question, "session_id": f"eval-{uuid.uuid4().hex[:12]}"}
+    # Fresh session + user per example so backend memory (both tiers)
+    # cannot leak context between eval questions. Long-term memory keys on
+    # user_id only, so a shared user accumulates facts across runs.
+    tag = uuid.uuid4().hex[:12]
+    params = {"question": question, "session_id": f"eval-{tag}", "user_id": f"eval-{tag}"}
     if llm_model:
         params["llm_model"] = llm_model
     meta: Dict[str, Any] = {}
