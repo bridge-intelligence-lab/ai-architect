@@ -60,11 +60,20 @@ no placeholder content is fabricated.
   the corpus)
 - `VECTORSTORE_PATH=./.local/vectorstore` — Chroma persistence dir
 - `RAG_COLLECTION=docs` — Chroma collection name
-- `EMBEDDINGS_PROVIDER=local|hash|stub` — `local` uses
-  sentence-transformers (`LOCAL_EMBEDDING_MODEL`, default all-MiniLM-L6-v2);
-  `hash` is a deterministic hashed bag-of-words used by CI golden-query
-  tests (offline, no model download); `stub` is the legacy length-based
-  stub (degenerate for ranking, kept for compatibility)
+- `EMBEDDINGS_PROVIDER=openai|local|hash|stub` (recommended: `openai`).
+  `openai` uses text-embedding-3-small by default, overridable via
+  `OPENAI_EMBEDDING_MODEL`; network-hosted, no local torch worker to swap
+  out under memory pressure. `local` uses sentence-transformers
+  (`LOCAL_EMBEDDING_MODEL`, default all-MiniLM-L6-v2); works on a well-fed
+  host, but a memory-tight worker can silently fall back to stub embeddings
+  and collapse retrieval to identical top-k for every query. `hash` is a
+  deterministic hashed bag-of-words used by CI golden-query tests (offline,
+  no model download); `stub` is the legacy length-based stub (degenerate
+  for ranking, kept for compatibility).
+- Switching embedder (different vector dimension) invalidates the store;
+  wipe `VECTORSTORE_PATH` and re-ingest. Pin `RAG_COLLECTION` to a per-model
+  name (e.g. `docs_openai_3_small`) so accidental provider flips do not hit
+  a stale collection.
 - `RAG_MULTI_QUERY_ENABLED=false`, `RAG_MULTI_QUERY_COUNT=3`,
   `RAG_HYDE_ENABLED=false` — deterministic query-expansion flags
   (keyword-scan path)

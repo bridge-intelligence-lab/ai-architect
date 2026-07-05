@@ -83,9 +83,9 @@ make test
   - LLM_PROVIDER=openai (or another LiteLLM-supported provider; `stub` = offline default)
   - LLM_MODEL=<model name, e.g. gpt-4.1-mini>
   - OPENAI_API_KEY=<your key> (provider keys are read by LiteLLM at call time)
-- Embeddings are configured separately: EMBEDDINGS_PROVIDER=local|openai|hash|stub,
-  with LOCAL_EMBEDDING_MODEL (default all-MiniLM-L6-v2) or OPENAI_EMBEDDING_MODEL
-  (default text-embedding-ada-002)
+- Embeddings are configured separately: EMBEDDINGS_PROVIDER=openai|local|hash|stub
+  (recommended: openai, see docs/rag.md), with OPENAI_EMBEDDING_MODEL
+  (default text-embedding-3-small) or LOCAL_EMBEDDING_MODEL (default all-MiniLM-L6-v2)
 - Per-request cost comes from LiteLLM's pricing map and lands in audit rows and /metrics
 
 ## Next steps

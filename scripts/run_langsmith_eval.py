@@ -42,13 +42,18 @@ def stream_architect(question: str, url: str, timeout: float, max_tokens: Option
 
     # Fresh session per example: with backend-agnostic memory, sharing the
     # implicit "default" session would leak conversation context across
-    # dataset examples and contaminate groundedness.
-    session_id = f"eval-{uuid.uuid4().hex[:12]}"
+    # dataset examples and contaminate groundedness. Fresh user_id too:
+    # long-term memory keys on user_id only, so a shared "anonymous" user
+    # accumulates ingested facts across runs and returns them as grounding
+    # context to future eval questions.
+    tag = uuid.uuid4().hex[:12]
+    session_id = f"eval-{tag}"
+    user_id = f"eval-{tag}"
     with httpx.Client(timeout=timeout) as client:
         with client.stream(
             "GET",
             url,
-            params={"question": question, "session_id": session_id},
+            params={"question": question, "session_id": session_id, "user_id": user_id},
             headers={"Accept": "text/event-stream"},
         ) as resp:
             resp.raise_for_status()
