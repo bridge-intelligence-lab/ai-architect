@@ -1,13 +1,15 @@
 ---
-title: 0) Clean up any leftovers
+title: Local LLMs setup (single-box vLLM + Ollama)
 status: current
 module: ops
 last_reviewed: 2026-07-04
 ---
 
-Perfect. We’ll run **everything on one box (`tensorbook`, 3080 Ti)** for now, and leave **`jarvis` (1080 Ti)** unused until you want to split loads later.
+# Local LLMs setup (single-box vLLM + Ollama)
 
-Here’s the clean single-box setup:
+Perfect. We'll run **everything on one box (`tensorbook`, 3080 Ti)** for now, and leave **`jarvis` (1080 Ti)** unused until you want to split loads later.
+
+Here's the clean single-box setup:
 
 # 0) Clean up any leftovers
 
@@ -23,7 +25,7 @@ sudo systemctl stop ollama || true
 
 ## 1) vLLM on GPU (Qwen 7B) — `tensorbook`
 
-Persist caches so weights don’t re-download; set conservative KV cache.
+Persist caches so weights don't re-download; set conservative KV cache.
 
 ```bash
 sudo mkdir -p /opt/models/hf_cache /opt/models/vllm_cache
@@ -55,7 +57,7 @@ curl -s http://127.0.0.1:8000/v1/models | jq .
 
 ## 2) Ollama on **CPU** (embeddings + DeepSeek) — same box
 
-We’ll force CPU so it doesn’t fight vLLM for VRAM.
+We'll force CPU so it doesn't fight vLLM for VRAM.
 
 ```bash
 sudo systemctl edit ollama
@@ -185,13 +187,13 @@ curl -s http://127.0.0.1:4000/v1/chat/completions \
 
 ## 5) Tips / knobs
 
-* **If vLLM OOMs**: drop `--max-model-len` to 3072/2048 or `--max-num-seqs` to 2.
-* **If embeddings feel slow**: that’s CPU; totally OK for now. You can move Ollama to `jarvis` later and change `api_base` to its IP.
-* **If DeepSeek is heavy**: keep it CPU (current setup) or allow a few `OLLAMA_GPU_LAYERS` once vLLM is stable.
+- **If vLLM OOMs**: drop `--max-model-len` to 3072/2048 or `--max-num-seqs` to 2.
+- **If embeddings feel slow**: that's CPU; totally OK for now. You can move Ollama to `jarvis` later and change `api_base` to its IP.
+- **If DeepSeek is heavy**: keep it CPU (current setup) or allow a few `OLLAMA_GPU_LAYERS` once vLLM is stable.
 
 ---
 
-When you’re ready to split loads:
+When you're ready to split loads:
 
-* Start Ollama on `jarvis`, open 11434 on LAN, set `api_base: "http://<jarvis-ip>:11434"` for `local-embed` and `local-code`.
-* No other changes needed—Architect still hits LiteLLM on `tensorbook`.
+- Start Ollama on `jarvis`, open 11434 on LAN, set `api_base: "http://<jarvis-ip>:11434"` for `local-embed` and `local-code`.
+- No other changes needed—Architect still hits LiteLLM on `tensorbook`.

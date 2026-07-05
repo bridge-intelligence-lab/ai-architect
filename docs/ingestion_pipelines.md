@@ -1,5 +1,5 @@
 ---
-title: Ingestion Pipelines: Streaming and Batch (Vendor‑Neutral)
+title: "Ingestion Pipelines: Streaming and Batch (Vendor-Neutral)"
 status: current
 module: rag
 last_reviewed: 2026-07-04
@@ -7,60 +7,60 @@ source:
   - scripts/ingest_docs.py
 ---
 
-# Ingestion Pipelines: Streaming and Batch (Vendor‑Neutral)
+# Ingestion Pipelines: Streaming and Batch (Vendor-Neutral)
 
 ## Purpose
 
-- Define a scalable, deterministic-by-default ingestion architecture for both document corpora (RAG) and time‑series signals.
-- Keep the core design vendor‑neutral via ports and adapters; document an optional mapping to Spark/Databricks without coupling the codebase.
+- Define a scalable, deterministic-by-default ingestion architecture for both document corpora (RAG) and time-series signals.
+- Keep the core design vendor-neutral via ports and adapters; document an optional mapping to Spark/Databricks without coupling the codebase.
 
 ## Goals and constraints
 
 - Idempotent: replays and retries must not create duplicates.
 - Resilient: backpressure, DLQ, and recovery flows.
 - Deterministic by default: CI does not require external infra.
-- Unified transforms: the same feature/chunking code paths for streaming and batch to prevent training‑serving skew.
+- Unified transforms: the same feature/chunking code paths for streaming and batch to prevent training-serving skew.
 - Observable: clear metrics, logs, and audit trails.
 
 ## Scope and use cases
 
-- Documents (RAG): ingest .md/.txt/.pdf from FS/object stores; produce chunks and upsert into a vector store; maintain document state for incremental re‑indexing.
-- Time‑series signals: ingest append‑only events (e.g., telemetry or sensor‑like signals), compute windowed features, and write to an online/offline store.
+- Documents (RAG): ingest .md/.txt/.pdf from FS/object stores; produce chunks and upsert into a vector store; maintain document state for incremental re-indexing.
+- Time-series signals: ingest append-only events (e.g., telemetry or sensor-like signals), compute windowed features, and write to an online/offline store.
 
 ## Architecture: ports and adapters
 
 - SourcePort: list/read objects from FS/S3/GCS/Azure; HTTP and git optional; CDC (e.g., Debezium) optional.
-- StreamBusPort: Kafka/NATS/Pulsar; CloudEvents envelope; in‑memory queue fallback for CI.
+- StreamBusPort: Kafka/NATS/Pulsar; CloudEvents envelope; in-memory queue fallback for CI.
 - ComputePort: local worker (default); optional Spark/Flink implementations.
 - EmbeddingsPort: stub/local/OpenAI; batchable; deterministic stub in CI.
 - VectorStorePort: FAISS/Chroma/local backends; optional managed backends later.
 - FeatureStorePort (optional): online/offline feature stores (e.g., local sqlite/parquet for default; Feast for larger setups).
 - MetadataStorePort: state for documents/chunks/signals (SQLite/Postgres/Delta); idempotency and checkpoints.
 - OrchestratorPort: Airflow/Prefect; cron fallback.
-- TracePort: no‑op by default; optional OpenTelemetry/LangSmith.
+- TracePort: no-op by default; optional OpenTelemetry/LangSmith.
 
 ## Data model (logical)
 
 - Document: { id, uri, content_hash, etag, version, last_modified, metadata, status, error_count }
 - Chunk: { doc_id, chunk_id, offset, length, chunk_hash, text, embedding_ref, created_at }
-- Signal (time‑series): { entity_id, event_time, sequence, payload, source, trace_id, content_hash }
+- Signal (time-series): { entity_id, event_time, sequence, payload, source, trace_id, content_hash }
 - FeatureRow: { entity_id, event_time, window, feature_set, version, values, content_hash }
 
-## Idempotency and exactly‑once sinks
+## Idempotency and exactly-once sinks
 
 - Use content_hash (e.g., sha256) over canonicalized inputs to drive upserts.
 - Document upsert key: (doc_id, content_hash); chunk upsert key: (doc_id, chunk_hash).
 - Feature upsert key: (entity_id, event_time, feature_set, version).
 - Maintain a small state table with last processed content_hash per entity/doc to skip identical replays.
 
-## Streaming pipeline (at‑least‑once)
+## Streaming pipeline (at-least-once)
 
 1) Discover/notify: sources emit doc_added/doc_updated/doc_deleted or signal events to StreamBusPort.
 2) Fetch/extract: download or read object; for PDFs use extract_pdf_text (deterministic in CI by gating).
 3) Normalize: canonicalize text, trim fronts/footers, scrub PII if required.
 4) Chunk or Feature: 
    - Docs: chunk_text(size, overlap) → {offset, text}.
-   - Signals: compute windowed features (tumbling/sliding/EWMA/z‑score) using watermarking for out‑of‑order events.
+   - Signals: compute windowed features (tumbling/sliding/EWMA/z-score) using watermarking for out-of-order events.
 5) Embed (docs only): batch embeddings using EmbeddingsPort; drop into VectorStorePort with upsert semantics.
 6) Sink and ack: write state rows and emit success/failure events. Failures go to DLQ with full error context.
 
@@ -76,7 +76,7 @@ source:
 2) Compare to MetadataStorePort by etag/content_hash; derive delta set.
 3) For each delta: run the same Normalize → Chunk/Feature → (Embed) → Sink stages.
 4) Write offline artifacts: Parquet/Delta partitioned by date/entity; register dataset versions.
-5) Checkpointing: resume from last processed key or time‑based watermark.
+5) Checkpointing: resume from last processed key or time-based watermark.
 
 ## Scheduling
 
@@ -84,8 +84,8 @@ source:
   - Tasks: discover → stage_in → normalize → chunk_or_feature → embed (optional) → index/sink → validate → publish
   - Use task groups for doc vs signal branches; retries with exponential backoff; XCom only for minimal metadata references.
 - Prefect Flow (skeleton)
-  - Parameterized flow with mapping over items; built‑in retry policies; concurrency limits per partition key.
-- Cron fallback: small installs can run batch scripts periodically with file‑based checkpoints.
+  - Parameterized flow with mapping over items; built-in retry policies; concurrency limits per partition key.
+- Cron fallback: small installs can run batch scripts periodically with file-based checkpoints.
 
 ## Observability
 
@@ -132,7 +132,7 @@ source:
 - Treat Spark Structured Streaming as a ComputePort implementation; Delta as MetadataStorePort/Offline store.
 - Autoloader ingests into Bronze; transforms to Silver with chunking/feature UDFs; upsert to Gold (vector/index or features).
 - Delta Live Tables for quality thresholds; Jobs/Workflows for scheduling; MLflow ties to models and features.
-- Keep code vendor‑neutral; map via environment/config without changing endpoint contracts.
+- Keep code vendor-neutral; map via environment/config without changing endpoint contracts.
 
 ## See also
 

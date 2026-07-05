@@ -1,5 +1,5 @@
 ---
-title: Observability: Prometheus Metrics and Grafana
+title: "Observability: Prometheus Metrics and Grafana"
 status: current
 module: governance
 last_reviewed: 2026-07-04
@@ -49,6 +49,7 @@ This page documents the metrics exported by the service, how they are updated, a
 
 A minimal scrape job (prometheus.yml):
 
+```yaml
 scrape_configs:
   - job_name: 'ai-monitor'
     static_configs:
@@ -58,10 +59,11 @@ scrape_configs:
     # scheme: http
     # headers:
     #   X-Metrics-Token: ${METRICS_TOKEN}
+```
 
 ## Grafana
 
-- Default: http://localhost:3000 (admin/admin)
+- Default: http://localhost:3001 (admin/admin; container port 3000 is remapped by docker-compose)
 - Datasource: Prometheus at http://prometheus:9090 (provisioned via grafana/provisioning)
 - Dashboard: grafana/dashboards/ai-monitor-dashboard.json (also mirrored under docs/grafana)
   - Example queries used by the dashboard:

@@ -11,6 +11,7 @@ source:
 # ML and Drift
 
 ## Training
+
 - Script: ml/train.py
 - MLflow env vars:
   - MLFLOW_TRACKING_URI
@@ -26,6 +27,7 @@ source:
   - Then POST /predict with a features object containing exactly these columns.
 
 ## Drift (PSI)
+
 - Script: ml/drift.py
 - PSI implementation:
   - Shared bin edges between baseline and new arrays
@@ -37,6 +39,7 @@ source:
   - 1: retrain recommended (PSI > threshold)
 
 ## Notes
+
 - CPU-only installs by default:
   - Dockerfile installs sentence-transformers using the PyTorch CPU wheel index, which ensures CPU torch wheels are selected.
   - To switch to GPU later, modify Dockerfile to use a CUDA-specific index URL and matching torch/torchvision/torchaudio versions.

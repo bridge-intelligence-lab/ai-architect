@@ -1,5 +1,5 @@
 ---
-title: MLOps Plan: Risk Scoring Model, Drift Monitoring, and Registry
+title: "MLOps Plan: Risk Scoring Model, Drift Monitoring, and Registry"
 status: historical
 module: ml
 last_reviewed: 2026-07-04

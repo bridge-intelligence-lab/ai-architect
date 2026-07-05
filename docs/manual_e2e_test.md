@@ -21,22 +21,28 @@ This guide walks you through a comprehensive, reproducible end-to-end (E2E) test
 
 ## Setup
 
-1) Create venv and install
-```
+**1. Create venv and install**
+
+```bash
 python -m venv .venv
 . .venv/bin/activate
 pip install -e .
 ```
-2) Start the API (choose one)
-- Option A (recommended for this guide): from another terminal
-```
+
+**2. Start the API (choose one)**
+
+Option A (recommended for this guide): from another terminal.
+
+```bash
 . .venv/bin/activate
 uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
-- Option B: let the provided script start the server (see scripts/manual_e2e_test.sh --start-server)
 
-3) Prepare environment
-- Minimal defaults are fine. You can customize flags during steps.
+Option B: let the provided script start the server (see `scripts/manual_e2e_test.sh --start-server`).
+
+**3. Prepare environment**
+
+Minimal defaults are fine. You can customize flags during steps.
 
 ## Test flow overview (ordered)
 
@@ -65,7 +71,7 @@ uvicorn app.main:app --host 127.0.0.1 --port 8000
 
 ### Commands
 
-```
+```bash
 curl -sS localhost:8000/healthz | jq .
 ```
 
@@ -75,7 +81,7 @@ curl -sS localhost:8000/healthz | jq .
 
 ### Commands
 
-```
+```bash
 curl -sS localhost:8000/metrics | head -n 50
 ```
 
@@ -89,7 +95,7 @@ curl -sS localhost:8000/metrics | head -n 50
 
 ### Commands
 
-```
+```bash
 curl -sS -X POST localhost:8000/query \
   -H 'Content-Type: application/json' \
   -d '{"question":"Hello there","grounded": false}' | jq .
@@ -107,7 +113,7 @@ curl -sS -X POST localhost:8000/query \
 
 ### Prepare docs
 
-```
+```bash
 mkdir -p e2e_docs
 printf "GDPR is a regulation about data protection." > e2e_docs/gdpr.txt
 export DOCS_PATH=$PWD/e2e_docs
@@ -115,7 +121,7 @@ export DOCS_PATH=$PWD/e2e_docs
 
 ### Commands
 
-```
+```bash
 curl -sS -X POST localhost:8000/query \
   -H 'Content-Type: application/json' \
   -H 'X-User-Role: analyst' \
@@ -134,13 +140,13 @@ curl -sS -X POST localhost:8000/query \
 
 ### Enable router
 
-```
+```bash
 export ROUTER_ENABLED=true
 ```
 
 ### PII detect
 
-```
+```bash
 curl -sS -X POST localhost:8000/query \
   -H 'Content-Type: application/json' \
   -d '{"question":"Email is bob@example.com","grounded": false}' | jq .
@@ -149,7 +155,7 @@ Expected: audit.router_intent == "pii_detect"
 
 ### Risk score
 
-```
+```bash
 curl -sS -X POST localhost:8000/query \
   -H 'Content-Type: application/json' \
   -d '{"question":"What is the risk score for this incident?","grounded": false}' | jq .
@@ -158,7 +164,7 @@ Expected: audit.router_intent == "risk_score"
 
 ### Policy navigator
 
-```
+```bash
 curl -sS -X POST localhost:8000/query \
   -H 'Content-Type: application/json' \
   -d '{"question":"What policy covers encryption?","grounded": false}' | jq .
@@ -169,7 +175,7 @@ Expected: audit.router_intent == "policy_navigator" (or qa if not matched)
 
 ## Step 5: PII endpoint
 
-```
+```bash
 curl -sS -X POST localhost:8000/pii \
   -H 'Content-Type: application/json' \
   -H 'X-User-Role: analyst' \
@@ -182,7 +188,7 @@ curl -sS -X POST localhost:8000/pii \
 - masked previews in entities
 
 Optional locales
-```
+```bash
 export PII_LOCALES="US,UK,CA"
 ```
 
@@ -192,7 +198,7 @@ export PII_LOCALES="US,UK,CA"
 
 ### Heuristic
 
-```
+```bash
 curl -sS -X POST localhost:8000/risk \
   -H 'Content-Type: application/json' \
   -H 'X-User-Role: analyst' \
@@ -202,7 +208,7 @@ Expected: label==high, audit contains risk_score_value
 
 ### ML-like mode
 
-```
+```bash
 export RISK_ML_ENABLED=true
 export RISK_THRESHOLD=0.6
 curl -sS -X POST localhost:8000/risk \
@@ -218,13 +224,13 @@ Expected: audit.risk_score_method == "ml", value in [0,1]
 
 ### Enable
 
-```
+```bash
 export MEMORY_SHORT_ENABLED=true
 ```
 
 ### Drive context
 
-```
+```bash
 curl -sS -X POST localhost:8000/query \
   -H 'Content-Type: application/json' \
   -d '{"question":"hello","user_id":"u","session_id":"s"}' | jq .
@@ -232,14 +238,14 @@ curl -sS -X POST localhost:8000/query \
 
 ### List
 
-```
+```bash
 curl -sS "localhost:8000/memory/short?user_id=u&session_id=s" \
   -H 'X-User-Role: analyst' | jq .
 ```
 
 ### Clear
 
-```
+```bash
 curl -sS -X DELETE "localhost:8000/memory/short?user_id=u&session_id=s" \
   -H 'X-User-Role: analyst' | jq .
 ```
@@ -251,13 +257,13 @@ Expected: cleared==true
 
 ### Enable
 
-```
+```bash
 export MEMORY_LONG_ENABLED=true
 ```
 
 ### Drive one query (the server injects a deterministic long fact when enabled)
 
-```
+```bash
 curl -sS -X POST localhost:8000/query \
   -H 'Content-Type: application/json' \
   -d '{"question":"A long message to seed long memory","user_id":"lu"}' | jq .
@@ -265,13 +271,13 @@ curl -sS -X POST localhost:8000/query \
 
 ### List
 
-```
+```bash
 curl -sS "localhost:8000/memory/long?user_id=lu" -H 'X-User-Role: admin' | jq .
 ```
 
 ### Clear
 
-```
+```bash
 curl -sS -X DELETE "localhost:8000/memory/long?user_id=lu" -H 'X-User-Role: admin' | jq .
 ```
 Expected: cleared==true
@@ -280,7 +286,7 @@ Expected: cleared==true
 
 ## Step 9: Agents — research
 
-```
+```bash
 curl -sS -X POST localhost:8000/research \
   -H 'Content-Type: application/json' \
   -d '{"topic":"Latest updates on GDPR and AI","steps":["search","fetch","summarize","risk_check"]}' | jq .
@@ -295,7 +301,7 @@ curl -sS -X POST localhost:8000/research \
 
 ## Step 10: RAG flags (multi-query, hyDE)
 
-```
+```bash
 export RAG_MULTI_QUERY_ENABLED=true
 export RAG_MULTI_QUERY_COUNT=4
 export RAG_HYDE_ENABLED=true
@@ -317,13 +323,13 @@ curl -sS -X POST localhost:8000/query \
 ### Audit persistence (optional)
 
 - Check sqlite DB (if DB_URL is default sqlite):
-```
+```bash
 sqlite3 audit.db 'select count(1) from audit;'
 ```
 
 ### Metrics counters
 
-```
+```bash
 curl -sS localhost:8000/metrics | grep '^app_tokens_total' -n | head -n 3
 ```
 Expected: tokens_total appears and increases after requests
@@ -332,7 +338,7 @@ Expected: tokens_total appears and increases after requests
 
 ## Step 12: OpenAPI export
 
-```
+```bash
 . .venv/bin/activate
 python scripts/export_openapi.py
 ls -l docs/openapi.yaml
@@ -345,7 +351,7 @@ Expected: docs/openapi.yaml exists and contains /query, /pii, /risk, /research
 
 ### Option A: Bash loop
 
-```
+```bash
 for i in $(seq 1 50); do \
   curl -sS -X POST localhost:8000/query -H 'Content-Type: application/json' \
     -d '{"question":"Hello '"$i"'","grounded": false}' >/dev/null & done; wait
