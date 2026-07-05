@@ -28,9 +28,12 @@ Integration in /query
 - After answering, writes user and assistant turns; ingests long facts into long-term memory
 
 Integration in /architect
-- The builtin architect backend integrates the same way (same flags, same
-  memory_* audit counters); see docs/agents.md
-- The langgraph backend currently bypasses memory entirely (counters report 0)
+- Memory is backend-agnostic: `run_architect_agent` loads turns/summary and
+  long-term facts before dispatching to either backend and saves the turn
+  after, so builtin and langgraph share the same flags and memory_* audit
+  counters; see docs/agents.md
+- The langgraph loop receives the loaded context as a system message
+  alongside its retrieve_docs tool results
 
 Configuration
 - MEMORY_SHORT_ENABLED: false

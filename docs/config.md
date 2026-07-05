@@ -36,6 +36,7 @@ variable is unset; `.env.example` documents a working local setup.
 - VECTORSTORE_PATH: Chroma persistence path; RAG_COLLECTION: collection name
 - RAG_EXCLUDE_FILES: comma-separated basenames never used as grounding context
   (defaults include the eval/prompt docs; applied at keyword scan, vector query, and ingestion)
+- RAG_EXCLUDE_DIRS: directory names excluded the same way (default: worklog)
 - RAG_MULTI_QUERY_ENABLED, RAG_MULTI_QUERY_COUNT, RAG_HYDE_ENABLED: query expansion
   (keyword-scan path only; no-ops under RAG_BACKEND=vector)
 - EMBEDDINGS_PROVIDER: local|openai|hash|stub

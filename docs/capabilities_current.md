@@ -28,6 +28,7 @@ Endpoints and behaviors
   - Audit: step entries with inputs/outputs preview and latency
 - POST /policy_navigator — decomposes question, retrieves citations, and synthesizes a recommendation
   - Flags: POLICY_NAV_ENABLED (default true), POLICY_NAV_MAX_SUBQS
+- POST /think — think planner: structured intermediate reasoning ahead of an action (analyst/admin); see docs/api.md
 - POST /pii — PII detection (regex + heuristics baseline, Presidio NER behind PII_BACKEND=presidio), optional grounded citations
   - Request: {text, types?, grounded?}; Response: summary, entities, counts, types_present, audit
   - Env: PII_BACKEND (regex|presidio), PII_TYPES, PII_LOCALES override active detectors

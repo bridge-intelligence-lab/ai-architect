@@ -48,7 +48,7 @@ Observability stack (optional)
 ```bash
 docker compose up --build
 # Prometheus: http://localhost:9090
-# Grafana: http://localhost:3000 (admin/admin)
+# Grafana: http://localhost:3001 (admin/admin; port 3000 is remapped in docker-compose.yml)
 ```
 
 Testing

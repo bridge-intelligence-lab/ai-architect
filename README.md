@@ -137,42 +137,41 @@ Complete file map → `docs/components.md`
 ## 🧩 System Architecture
 ```mermaid
 flowchart LR
-  A["Client / UI"] -->|REST / JSON| B["FastAPI Gateway"]
+  A["Client / UI (SSE)"] -->|REST / JSON| B["FastAPI Gateway"]
 
-  subgraph Retrieval_and_Synthesis
-    B --> C1["Retriever: DOCS_PATH scan"]
-    C1 --> C3["Optional LLM Synthesis"]
-    C1 --> C4["Vector Store: FAISS / Chroma"]
+  subgraph Architect["Architect agent (flagship)"]
+    B --> AR["/architect + /architect/stream"]
+    AR --> BE{"AGENT_BACKEND"}
+    BE -->|builtin| P1["Deterministic planner"]
+    BE -->|langgraph| P2["LangGraph tool loop"]
+    P2 -.->|fallback on failure| P1
+    P1 --> RET["Retriever — RAG_BACKEND: keyword_scan | vector (Chroma)"]
+    P2 -->|retrieve_docs tool| RET
+    P1 --> LLM["LLM via LiteLLM — stub | openai | ..."]
+    P2 --> LLM
   end
 
-  subgraph Memory
-    B --> M1["Short-term Memory: SQLite"]
-    B --> M2["Long-term Memory: Embeddings"]
+  subgraph Memory["Memory (both backends)"]
+    AR --> M1["Short-term: SQLite turns"]
+    AR --> M2["Long-term: embedded facts"]
   end
 
-  subgraph Governance_and_Compliance
-    B --> D1["Audit Logger"]
-    D1 --> D2[("Audit DB")] 
-    D1 --> D3["Denylist / Compliance Rules"]
-    D1 --> D4["Cost Tracker / FinOps Metrics"]
+  subgraph Endpoints["Other endpoints"]
+    B --> Q["/query — grounded QA (RBAC)"]
+    B --> R["/research — web agent (allowlist)"]
+    B --> PII["/pii — regex | presidio"]
+    B --> RISK["/risk · /predict — MLflow models"]
   end
 
-  subgraph Observability
-    D4 --> E1["Prometheus /metrics"]
-    E1 --> E2["Grafana Dashboard"]
-  end
-
-  subgraph ML_Lifecycle
-    B --> F1["/predict (MLflow Model API)"]
-    F1 --> F2["Model Registry"]
-    F1 --> F3["Drift Detector / Retraining"]
-  end
-
-  subgraph Agents
-    B --> G1["/research (Agent Orchestrator)"]
-    G1 --> G2["Search Tool / Web Fetch (allowlist)"]
-    G1 --> G3["Summarizer / Risk Checker"]
-    G1 --> D1
+  subgraph Governance_and_Observability
+    AR --> D1["Audit rows — backend, tool calls, real $ cost"]
+    Q --> D1
+    R --> D1
+    PII --> D1
+    D1 --> D2[("Audit DB")]
+    D1 --> E1["Prometheus /metrics"]
+    E1 --> E2["Grafana"]
+    AR -.-> LS["LangSmith — tracing + eval experiments"]
   end
 ```
 
@@ -214,7 +213,8 @@ Full details → `docs/observability.md`, `docs/security.md`
 | 9 | Architect agent on LangGraph (`AGENT_BACKEND=langgraph`) | ✅ Done |
 | 10 | Real vector retrieval (`RAG_BACKEND=vector`), LiteLLM cost tracking, MCP server | ✅ Done |
 | 11 | Presidio PII backend, CI coverage gate | ✅ Done |
-| 12+ | Pinecone backend, role-scoped MCP, memory in the LangGraph loop | 🧩 Planned |
+| 12 | Backend-agnostic memory (LangGraph loop included), SSE status events | ✅ Done |
+| 13+ | Pinecone backend, role-scoped MCP, intent-conditioned responses | 🧩 Planned |
 
 > Full roadmap and build-vs-buy rationale: [docs/worklog/2026-07-01-modernization-plan.md](docs/worklog/2026-07-01-modernization-plan.md), [ADR-0004](docs/adr/0004-build-vs-buy.md).
 

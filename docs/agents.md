@@ -20,8 +20,12 @@ The `/architect` endpoints run one of two backends, selected by
   the builtin fallback fires instead of streaming an empty plan. Tokens and
   cost accumulate across turns into the audit, which also reports
   `agent_backend` and `agent_tool_calls`. Any failure falls back to the
-  builtin planner. Memory read/write integration is builtin-only for now
-  (ADR 0007).
+  builtin planner.
+
+Memory and the feature-request heuristic are backend-agnostic: they run in
+`run_architect_agent` around whichever backend is selected, so both backends
+read/write session memory (the langgraph loop receives loaded context as a
+system message) and both can emit the feature CTA. See docs/memory.md.
 
 In a measured comparison on the golden eval dataset, `langgraph` beat
 `builtin` on groundedness, correctness, completeness AND latency, so the
@@ -82,6 +86,10 @@ Architect agent and community loop
   - Memory audit fields are included in the response: memory_short_reads, memory_short_writes, memory_long_reads, memory_long_writes, memory_short_pruned, memory_long_pruned, summary_updated
   - See docs/memory.md for retention and configuration details
 - SSE event contract (/architect/stream):
+  - event: status
+    data: "planning" — emitted immediately on connect, before the agent runs
+  - event: error
+    data: string — server-side failure message; stream ends after this
   - event: meta
     data: { "provider": string|null, "model": string|null, "grounded_used": bool|null }
   - event: summary
