@@ -1,3 +1,4 @@
+"""Risk scoring: keyword-based heuristics and optional deterministic ML."""
 import os
 from typing import Dict, Tuple
 
@@ -43,6 +44,7 @@ def _env_truthy(name: str, default: str = "false") -> bool:
 
 
 def heuristic_score(text: str) -> Dict[str, object]:
+    """Score text by keyword membership in risk tiers; return (label, value, rationale, method)."""
     t = (text or "").lower()
     score = 0.0
     label = "low"
@@ -93,6 +95,7 @@ def _deterministic_ml_score(text: str, threshold: float) -> Tuple[str, float, st
 
 
 def score(text: str) -> Dict[str, object]:
+    """Score text using ML (if RISK_ML_ENABLED) or heuristic method."""
     # If ML enabled, compute deterministic pseudo-ML score; else heuristic
     ml_enabled = _env_truthy("RISK_ML_ENABLED", "false")
     try:

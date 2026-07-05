@@ -1,3 +1,5 @@
+"""Architect endpoints: structured plan generation (POST) and HTML UI."""
+
 import os
 import time
 from pathlib import Path
@@ -36,6 +38,10 @@ class ArchitectResponse(BaseModel):
 
 @router.post("/architect", response_model=ArchitectResponse, tags=["Architect"])
 def post_architect(request: Request, payload: ArchitectRequest):
+    """Generate structured plan from question with optional grounded retrieval.
+
+    Requires PROJECT_GUIDE_ENABLED flag. Optional LLM synthesis when LLM_ENABLE_ARCHITECT=true.
+    Audit includes prompt/response hashes and LLM usage when agent runs."""
     # feature flag guard
     if os.getenv("PROJECT_GUIDE_ENABLED", "").lower() not in ("1", "true", "yes", "on"):
         raise HTTPException(status_code=404, detail="Architect mode not enabled")

@@ -135,3 +135,36 @@ See `docs/eval_results/2026-07-04-grid-backend-tokens.md`.
 
 - ports_and_adapters.md: interface-first architecture and planner/RAG backends
 - related_projects.md: curated ecosystem overview and how this project complements it
+
+## Design (architect)
+
+**Owns:** turning a question into a validated `ArchitectPlan` plus an audit dict.
+`run_architect_agent` in `app/services/architect_agent.py` is the only entry point
+routers and the MCP server call; backend choice is an implementation detail behind it.
+
+**Contract:** `run_architect_agent(question, session_id?, user_id?, llm_model?) ->
+(ArchitectPlan, audit)`. The plan always has non-null `summary` and
+`suggested_steps`; `grounded_used` is true iff citations are attached. The audit
+always carries `agent_backend`, token/cost fields, and the full set of memory_*
+counters regardless of backend.
+
+**Invariants:**
+- Cross-cutting behavior lives in the wrapper, not in backends: memory load/save
+  and the feature-CTA heuristic run around whichever backend executes. A new
+  backend gets them for free and cannot silently drop them (regression-tested in
+  tests/test_backend_parity.py; this invariant was extracted from a real incident
+  where the langgraph switch lost both).
+- The builtin planner is the universal fallback: any langgraph exception, and any
+  langgraph run that finalizes with an empty summary, falls back to builtin rather
+  than surfacing a failure or an empty plan.
+- The langgraph tool loop is budgeted (3 retrieve_docs calls); at the cap the model
+  is told to finalize from existing context.
+- Offline-safe by default: `AGENT_BACKEND=builtin` + stub LLM is deterministic and
+  network-free, which is what the test suite and CI run.
+
+**Why two backends:** builtin gives determinism (tests, CI, fallback); langgraph
+gives quality (measured winner on groundedness and latency). Keeping the seam at
+`run_architect_agent` lets eval experiments swap backends with one env var.
+
+**Non-goals:** the wrapper does not stream (the SSE endpoint wraps it), does not
+choose models (LLMClient + env), and does not know about HTTP.

@@ -28,3 +28,30 @@ source:
 - Script: scripts/sweep_retention.py
 - Usage: python scripts/sweep_retention.py
 - Recommended to run periodically (cron/k8s job) depending on policy.
+
+## Design
+
+**Owns:** the append-only record of what the system did per request.
+`write_audit(db, **fields)` in `app/utils/audit.py` plus the `Audit` model in
+`db/models.py`; `make_hash` provides sha256 content hashes so prompts/responses are
+attributable without storing raw text in fixed columns.
+
+**Contract:** one audit row per handled request, written best-effort at the end of
+the handler. Fixed columns (request_id, endpoint, user_id, created_at, tokens,
+cost_usd, latency_ms, compliance_flag, prompt_hash, response_hash) plus
+feature-specific extras in the response audit payload.
+
+**Invariants:**
+- Auditing never breaks the API: a failed write is logged, rolled back, and the
+  response still returns. The audit is an observability guarantee, not a
+  transactional one; consumers must not assume 100% coverage under DB failure.
+- Rows are append-only in practice: nothing in the app updates or deletes audit
+  rows except the retention sweep script.
+- Hashes, not payloads, in fixed columns: content is referenced by sha256 so the
+  table stays lean and privacy exposure is bounded.
+
+**Why it exists:** the governance story (who did what, at what cost, with which
+backend/model/policy inputs) is a first-class product feature, not debug logging.
+
+**Non-goals:** not a metrics system (Prometheus owns aggregates), not tamper-evident
+(no signing/chaining), not a transaction log for replay.

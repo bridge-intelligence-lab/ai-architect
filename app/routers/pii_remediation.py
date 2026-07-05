@@ -1,3 +1,5 @@
+"""PII remediation endpoints: generate redaction/anonymization guidance."""
+
 import os
 import time
 from typing import Any, Dict, List, Optional
@@ -24,6 +26,9 @@ class PiiRemediationResponse(BaseModel):
 
 @router.post("/pii_remediation", response_model=PiiRemediationResponse)
 def post_pii_remediation(req: Request, payload: PiiRemediationRequest):
+    """Synthesize remediation steps for detected PII with optional code snippets.
+
+    Requires analyst role. Gated by PII_REMEDIATION_ENABLED flag (default true)."""
     role = parse_role(req)
     if role not in ("analyst", "admin"):
         raise HTTPException(status_code=403, detail="forbidden")

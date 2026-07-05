@@ -1,3 +1,5 @@
+"""PII detection endpoints: identify sensitive data in text."""
+
 import os
 import time
 from typing import List, Optional
@@ -29,6 +31,9 @@ class PiiResponse(BaseModel):
 
 @router.post("/pii", response_model=PiiResponse)
 def post_pii(req: Request, payload: PiiRequest):
+    """Detect PII types in text and return counts by entity type.
+
+    Requires analyst role. Optional grounded citations from policy docs."""
     # RBAC: analyst/admin (minimum analyst)
     # Use dependency function style but we call it here for simplicity
     # If role < analyst, raise 403

@@ -1,3 +1,5 @@
+"""Risk scoring endpoints: heuristic risk assessment of text."""
+
 import os
 import time
 
@@ -25,6 +27,9 @@ class RiskResponse(BaseModel):
 
 @router.post("/risk", response_model=RiskResponse)
 def post_risk(req: Request, payload: RiskRequest):
+    """Score text for risk (low/medium/high) with rationale and scoring method.
+
+    Requires analyst role."""
     # RBAC: analyst/admin
     role = parse_role(req)
     if role not in ("analyst", "admin"):

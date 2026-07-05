@@ -1,3 +1,5 @@
+"""Architect UI endpoints: HTML form for architect endpoint."""
+
 import os
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse
@@ -10,6 +12,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/architect/ui", response_class=HTMLResponse, tags=["Architect"])
 def get_ui(request: Request):
+    """Serve architect form HTML, gated by PROJECT_GUIDE_ENABLED flag."""
     context = {
         "project_guide_enabled": os.getenv("PROJECT_GUIDE_ENABLED", "").lower() in ("1", "true", "yes", "on"),
     }

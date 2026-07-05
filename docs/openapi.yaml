@@ -6,6 +6,7 @@ paths:
   /healthz:
     get:
       summary: Healthz
+      description: 'Liveness check: returns ok when the process is up.'
       operationId: healthz_healthz_get
       responses:
         '200':
@@ -16,6 +17,8 @@ paths:
   /metrics:
     get:
       summary: Metrics
+      description: Prometheus metrics export (text/plain). Token required if METRICS_TOKEN
+        env set.
       operationId: metrics_metrics_get
       parameters:
       - name: X-Metrics-Token
@@ -42,6 +45,13 @@ paths:
   /query:
     post:
       summary: Post Query
+      description: 'Answer questions with optional grounding, PII detection, or risk
+        scoring via router.
+
+
+        Integrates short/long memory when enabled. Router dispatches intent dynamically.
+
+        Audit includes LLM usage, memory ops, and compliance flags.'
       operationId: post_query_query_post
       requestBody:
         content:
@@ -65,6 +75,13 @@ paths:
   /research:
     post:
       summary: Post Research
+      description: 'Run multi-step research agent with guest/analyst/admin role-based
+        restrictions.
+
+
+        Steps: search, fetch, summarize, risk_check. Guests cannot use fetch step.
+
+        Audit includes step hashes and overall latency.'
       operationId: post_research_research_post
       requestBody:
         content:
@@ -88,7 +105,11 @@ paths:
   /predict/schema:
     get:
       summary: Get Predict Schema
-      description: Return expected feature list and model metadata from latest run.
+      description: 'Retrieve expected feature order and model metadata from latest
+        MLflow run.
+
+
+        Requires analyst role.'
       operationId: get_predict_schema_predict_schema_get
       responses:
         '200':
@@ -102,6 +123,11 @@ paths:
   /predict:
     post:
       summary: Post Predict
+      description: 'Generate model prediction for provided features with validation
+        against schema.
+
+
+        Requires analyst role. Enforces exact feature match to training set.'
       operationId: post_predict_predict_post
       requestBody:
         content:
@@ -125,6 +151,10 @@ paths:
   /pii:
     post:
       summary: Post Pii
+      description: 'Detect PII types in text and return counts by entity type.
+
+
+        Requires analyst role. Optional grounded citations from policy docs.'
       operationId: post_pii_pii_post
       requestBody:
         content:
@@ -148,6 +178,11 @@ paths:
   /risk:
     post:
       summary: Post Risk
+      description: 'Score text for risk (low/medium/high) with rationale and scoring
+        method.
+
+
+        Requires analyst role.'
       operationId: post_risk_risk_post
       requestBody:
         content:
@@ -171,6 +206,10 @@ paths:
   /memory/short:
     get:
       summary: Get Short Memory
+      description: 'Retrieve conversation turns and summary for user/session.
+
+
+        Requires analyst role. Returns empty on disabled flag. Includes pruned count.'
       operationId: get_short_memory_memory_short_get
       parameters:
       - name: user_id
@@ -200,6 +239,10 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     delete:
       summary: Delete Short Memory
+      description: 'Clear turns and summary for user/session.
+
+
+        Requires analyst role. Idempotent: returns cleared=true when enabled.'
       operationId: delete_short_memory_memory_short_delete
       parameters:
       - name: user_id
@@ -232,6 +275,10 @@ paths:
   /memory/long:
     get:
       summary: Get Long Memory
+      description: 'Retrieve facts for user, optionally filtered by query.
+
+
+        Requires analyst role. Returns empty on disabled flag.'
       operationId: get_long_memory_memory_long_get
       parameters:
       - name: user_id
@@ -263,6 +310,10 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
     delete:
       summary: Delete Long Memory
+      description: 'Clear all facts for user.
+
+
+        Requires analyst role. Idempotent: returns cleared=true when enabled.'
       operationId: delete_long_memory_memory_long_delete
       parameters:
       - name: user_id
@@ -289,6 +340,10 @@ paths:
   /memory/status:
     get:
       summary: Get Memory Status
+      description: 'Inspect memory config, database health, and pruning counters.
+
+
+        Requires admin role.'
       operationId: get_memory_status_memory_status_get
       responses:
         '200':
@@ -302,6 +357,10 @@ paths:
   /memory/long/export:
     get:
       summary: Export Long Memory
+      description: 'Export all facts for user with retention pruning applied.
+
+
+        Requires analyst role. Includes embedding presence metadata.'
       operationId: export_long_memory_memory_long_export_get
       parameters:
       - name: user_id
@@ -326,6 +385,10 @@ paths:
   /memory/long/import:
     post:
       summary: Import Long Memory
+      description: 'Ingest facts for user with automatic eviction on size limits.
+
+
+        Requires analyst role. Tracks evictions triggered during import.'
       operationId: import_long_memory_memory_long_import_post
       parameters:
       - name: user_id
@@ -358,6 +421,12 @@ paths:
   /policy_navigator:
     post:
       summary: Post Policy Navigator
+      description: 'Answer policy questions via decompose-retrieve-synthesize loop.
+
+
+        Requires analyst role. Gated by POLICY_NAV_ENABLED flag (default true).
+
+        Audit includes step-by-step latencies and hashes.'
       operationId: post_policy_navigator_policy_navigator_post
       requestBody:
         content:
@@ -381,6 +450,11 @@ paths:
   /pii_remediation:
     post:
       summary: Post Pii Remediation
+      description: 'Synthesize remediation steps for detected PII with optional code
+        snippets.
+
+
+        Requires analyst role. Gated by PII_REMEDIATION_ENABLED flag (default true).'
       operationId: post_pii_remediation_pii_remediation_post
       requestBody:
         content:
@@ -406,6 +480,13 @@ paths:
       tags:
       - Architect
       summary: Post Architect
+      description: 'Generate structured plan from question with optional grounded
+        retrieval.
+
+
+        Requires PROJECT_GUIDE_ENABLED flag. Optional LLM synthesis when LLM_ENABLE_ARCHITECT=true.
+
+        Audit includes prompt/response hashes and LLM usage when agent runs.'
       operationId: post_architect_architect_post
       requestBody:
         content:
@@ -429,6 +510,14 @@ paths:
   /architect/stream:
     get:
       summary: Stream Architect
+      description: 'Stream the architect plan as SSE events: status first (immediate
+        ack),
+
+        then meta, summary, steps, flags, citations, optional feature, final audit;
+
+        a server-side failure emits an error event. Questions under 3 characters get
+
+        an empty stream (single bare meta event), not an HTTP error.'
       operationId: stream_architect_architect_stream_get
       parameters:
       - name: question
@@ -481,6 +570,7 @@ paths:
       tags:
       - Architect
       summary: Get Ui
+      description: Serve architect form HTML, gated by PROJECT_GUIDE_ENABLED flag.
       operationId: get_ui_architect_ui_get
       responses:
         '200':
@@ -494,6 +584,8 @@ paths:
       tags:
       - UI
       summary: Get Ui
+      description: Serve tabbed UI form (architect/query/research); default tab from
+        query param.
       operationId: get_ui_ui_get
       responses:
         '200':
@@ -507,6 +599,7 @@ paths:
       tags:
       - UI
       summary: Ui Architect
+      description: 'Form handler: POST question to /architect and render UI with response.'
       operationId: ui_architect_ui_architect_post
       requestBody:
         content:
@@ -532,6 +625,7 @@ paths:
       tags:
       - UI
       summary: Ui Query
+      description: 'Form handler: POST question to /query and render UI with response.'
       operationId: ui_query_ui_query_post
       requestBody:
         content:
@@ -557,6 +651,8 @@ paths:
       tags:
       - UI
       summary: Ui Research
+      description: 'Form handler: POST topic and steps to /research and render UI
+        with response.'
       operationId: ui_research_ui_research_post
       requestBody:
         content:
@@ -580,6 +676,11 @@ paths:
   /think:
     post:
       summary: Think Endpoint
+      description: 'Handle extended reasoning request (ThinkRequest or ToolResult)
+        with tool loop.
+
+
+        Requires analyst role. Validates request_type field.'
       operationId: think_endpoint_think_post
       requestBody:
         content:

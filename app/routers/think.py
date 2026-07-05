@@ -1,3 +1,5 @@
+"""Think endpoints: extended reasoning with tool loop for complex planning."""
+
 import os
 import time
 from typing import Any, Dict, Optional
@@ -17,6 +19,9 @@ def _now_iso() -> str:
 
 @router.post("/think")
 async def think_endpoint(req: Request, payload: Dict[str, Any]):
+    """Handle extended reasoning request (ThinkRequest or ToolResult) with tool loop.
+
+    Requires analyst role. Validates request_type field."""
     role = parse_role(req)
     if role not in ("analyst", "admin"):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="forbidden")

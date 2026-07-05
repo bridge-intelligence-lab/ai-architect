@@ -1,3 +1,5 @@
+"""Memory endpoints: short-term (per-session turns), long-term (facts), and status/export/import."""
+
 import os
 import time
 from typing import Any, Dict, List, Optional
@@ -27,6 +29,9 @@ class MemoryLongResponse(BaseModel):
 
 @router.get("/memory/short", response_model=MemoryShortResponse)
 def get_short_memory(req: Request, user_id: str, session_id: str):
+    """Retrieve conversation turns and summary for user/session.
+
+    Requires analyst role. Returns empty on disabled flag. Includes pruned count."""
     # RBAC
     role = parse_role(req)
     if role not in ("analyst", "admin"):
@@ -85,6 +90,9 @@ def get_short_memory(req: Request, user_id: str, session_id: str):
 
 @router.delete("/memory/short", response_model=dict)
 def delete_short_memory(req: Request, user_id: str, session_id: str):
+    """Clear turns and summary for user/session.
+
+    Requires analyst role. Idempotent: returns cleared=true when enabled."""
     role = parse_role(req)
     if role not in ("analyst", "admin"):
         raise HTTPException(status_code=403, detail="forbidden")
@@ -124,6 +132,9 @@ def delete_short_memory(req: Request, user_id: str, session_id: str):
 
 @router.get("/memory/long", response_model=MemoryLongResponse)
 def get_long_memory(req: Request, user_id: str, q: Optional[str] = None):
+    """Retrieve facts for user, optionally filtered by query.
+
+    Requires analyst role. Returns empty on disabled flag."""
     role = parse_role(req)
     if role not in ("analyst", "admin"):
         raise HTTPException(status_code=403, detail="forbidden")
@@ -166,6 +177,9 @@ def get_long_memory(req: Request, user_id: str, q: Optional[str] = None):
 
 @router.delete("/memory/long", response_model=dict)
 def delete_long_memory(req: Request, user_id: str):
+    """Clear all facts for user.
+
+    Requires analyst role. Idempotent: returns cleared=true when enabled."""
     role = parse_role(req)
     if role not in ("analyst", "admin"):
         raise HTTPException(status_code=403, detail="forbidden")
@@ -204,6 +218,9 @@ def delete_long_memory(req: Request, user_id: str):
 
 @router.get("/memory/status", response_model=dict)
 def get_memory_status(req: Request):
+    """Inspect memory config, database health, and pruning counters.
+
+    Requires admin role."""
     role = parse_role(req)
     if role != "admin":
         raise HTTPException(status_code=403, detail="forbidden")
@@ -287,6 +304,9 @@ def get_memory_status(req: Request):
 
 @router.get("/memory/long/export", response_model=MemoryLongResponse)
 def export_long_memory(req: Request, user_id: str):
+    """Export all facts for user with retention pruning applied.
+
+    Requires analyst role. Includes embedding presence metadata."""
     role = parse_role(req)
     if role not in ("analyst", "admin"):
         raise HTTPException(status_code=403, detail="forbidden")
@@ -338,6 +358,9 @@ class MemoryImportPayload(BaseModel):
 
 @router.post("/memory/long/import", response_model=dict)
 def import_long_memory(req: Request, user_id: str, payload: MemoryImportPayload):
+    """Ingest facts for user with automatic eviction on size limits.
+
+    Requires analyst role. Tracks evictions triggered during import."""
     role = parse_role(req)
     if role not in ("analyst", "admin"):
         raise HTTPException(status_code=403, detail="forbidden")

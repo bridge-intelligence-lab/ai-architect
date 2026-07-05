@@ -1,3 +1,5 @@
+"""Prediction endpoints: ML model inference with feature validation."""
+
 import os
 import time
 
@@ -15,7 +17,9 @@ router = APIRouter()
 
 @router.get("/predict/schema", response_model=dict)
 def get_predict_schema(role: str = Depends(require_role("analyst"))):
-    """Return expected feature list and model metadata from latest run."""
+    """Retrieve expected feature order and model metadata from latest MLflow run.
+
+    Requires analyst role."""
     client = MLflowClientWrapper()
     try:
         _model, run_id, _model_uri = client.load_latest_model()
@@ -29,6 +33,9 @@ def get_predict_schema(role: str = Depends(require_role("analyst"))):
 def post_predict(
     req: Request, payload: PredictRequest, role: str = Depends(require_role("analyst"))
 ):
+    """Generate model prediction for provided features with validation against schema.
+
+    Requires analyst role. Enforces exact feature match to training set."""
     start = time.perf_counter()
 
     if not isinstance(payload.features, dict) or not payload.features:

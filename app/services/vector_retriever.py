@@ -40,6 +40,7 @@ class HashEmbeddings:
     """
 
     def embed(self, texts: List[str]) -> List[List[float]]:
+        """Hash texts to normalized vectors over fixed buckets."""
         out: List[List[float]] = []
         for text in texts:
             vec = [0.0] * HASH_DIM
@@ -54,6 +55,7 @@ class HashEmbeddings:
 
 
 def get_embedder():
+    """Return configured embeddings provider (hash, stub, or local sentence-transformers)."""
     provider = os.getenv("EMBEDDINGS_PROVIDER", "local").lower()
     if provider == "hash":
         return HashEmbeddings()
@@ -67,6 +69,7 @@ def get_embedder():
 
 
 def get_collection(create: bool = False):
+    """Return Chroma collection; create if missing and create=True."""
     import chromadb
 
     client = chromadb.PersistentClient(path=vectorstore_path())
@@ -86,7 +89,7 @@ def is_ready() -> bool:
 
 
 def query(question: str, k: int = 3) -> List[Dict[str, Any]]:
-    """Return top-k chunk citations for the question.
+    """Return top-k chunk citations for the question, filtered by RAG_EXCLUDE_FILES.
 
     Raises on any backend failure; the caller decides whether to fall back.
     """

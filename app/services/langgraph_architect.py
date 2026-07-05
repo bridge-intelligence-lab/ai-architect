@@ -146,6 +146,7 @@ def _route(state: AgentState) -> str:
 
 
 def build_graph(llm: LLMClient, llm_model: Optional[str] = None):
+    """Assemble LangGraph state machine: agent + tools nodes with conditional routing."""
     graph = StateGraph(AgentState)
     graph.add_node("agent", _make_agent_node(llm, llm_model))
     graph.add_node("tools", _tools_node)
@@ -162,6 +163,7 @@ def run_langgraph_architect(
     llm_model: str | None = None,
     context_blocks: List[str] | None = None,
 ) -> Tuple[ArchitectPlan, Dict[str, Any]]:
+    """Run agent loop with document retrieval tool; return plan + audit with tool-call counts."""
     llm = LLMClient()
     app = build_graph(llm, llm_model)
     # Memory context (loaded by run_architect_agent) rides in as a system

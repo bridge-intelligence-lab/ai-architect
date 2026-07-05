@@ -1,3 +1,4 @@
+"""MLflow client: load models + signatures from runs, with optional caching."""
 import os
 import json
 from typing import List, Optional
@@ -12,6 +13,8 @@ os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
 
 
 class MLflowClientWrapper:
+    """MLflow client for model loading and metadata extraction from runs."""
+
     def __init__(self, tracking_uri: str | None = None, experiment: str | None = None):
         self.tracking_uri = tracking_uri or os.getenv(
             "MLFLOW_TRACKING_URI", "./.mlruns"
@@ -64,6 +67,7 @@ class MLflowClientWrapper:
         return model
 
     def load_latest_model(self, artifact_path: str | None = None):
+        """Load model from explicit MLFLOW_MODEL_URI or latest run; return (model, run_id, uri)."""
         # Prefer explicit model URI override if provided
         explicit_uri = os.getenv("MLFLOW_MODEL_URI")
         if explicit_uri:
@@ -85,6 +89,7 @@ class MLflowClientWrapper:
         return model, run_id, uri
 
     def get_signature_input_names(self, model_uri: str) -> Optional[List[str]]:
+        """Extract model signature input column names; return None if unavailable."""
         try:
             from mlflow.models import get_model_info
 
@@ -104,7 +109,7 @@ class MLflowClientWrapper:
         return None
 
     def get_feature_order(self, run_id: Optional[str] = None) -> Optional[List[str]]:
-        """Try to download feature_order.json from the given run and return the list."""
+        """Download and parse feature_order.json from run artifact; return None if unavailable."""
         try:
             rid = run_id or self._get_latest_run_id()
             artifact_uri = f"runs:/{rid}/{self.feature_order_artifact}"
@@ -122,4 +127,5 @@ class MLflowClientWrapper:
         return None
 
     def get_experiment_name(self) -> str:
+        """Return configured experiment name."""
         return self.experiment

@@ -1,3 +1,5 @@
+"""Research endpoints: multi-step agent loop (search, fetch, summarize, risk_check)."""
+
 import os
 import time
 from typing import List
@@ -16,6 +18,10 @@ router = APIRouter()
 
 @router.post("/research", response_model=ResearchResponse)
 def post_research(req: Request, payload: ResearchRequest):
+    """Run multi-step research agent with guest/analyst/admin role-based restrictions.
+
+    Steps: search, fetch, summarize, risk_check. Guests cannot use fetch step.
+    Audit includes step hashes and overall latency."""
     start = time.perf_counter()
 
     if not payload.topic or len(payload.topic.strip()) < 3:

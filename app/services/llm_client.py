@@ -1,3 +1,4 @@
+"""LLM client: LiteLLM-backed with offline stub fallback, audit metadata included."""
 import os
 from typing import Any, Dict, List, Optional
 
@@ -11,6 +12,7 @@ from app.utils.logger import get_logger
 
 
 class LLMClient:
+    """LiteLLM wrapper with configurable provider/model and offline fallback."""
     def __init__(self):
         self.provider = (os.getenv("LLM_PROVIDER", "stub") or "stub").lower()
         self.model = os.getenv("LLM_MODEL", "gpt-4o-mini")
@@ -70,6 +72,7 @@ class LLMClient:
     def call(
         self, messages: List[Dict[str, str]], model: Optional[str] = None, **kwargs
     ) -> Dict[str, Any]:
+        """Call LLM via LiteLLM; return (text, provider, model, tokens, cost_usd) or stub on failure."""
         provider = self.provider
         model_to_use = model or self.model
         if provider == "stub":
