@@ -1,10 +1,16 @@
+---
+title: ADR 0004: Build-vs-buy policy for AI-Architect components
+status: current
+module: architecture
+last_reviewed: 2026-07-05
+decision_date: 2026-07-01
+adr_status: Accepted
+---
+
 # ADR 0004: Build-vs-buy policy for AI-Architect components
 
-Date: 2026-07-01
+## Context
 
-Status: Accepted
-
-Context
 - Much of this repo was hand-rolled in late 2025 while learning the LLM/agent
   stack, rather than adopting a framework. Reviewing it in 2026, the question
   is not "hand-rolled vs library" in the abstract, but per component: is the
@@ -14,7 +20,8 @@ Context
   [ADR-0001](0001-ports-and-adapters.md): most changes fill a real adapter
   behind an existing port.
 
-Scope
+## Scope
+
 - ai-architect has a single purpose: a reference implementation for running
   LLM and agent services with production controls (RBAC, audit, FinOps,
   retrieval, MLOps) on a FastAPI + ports-and-adapters core. Domain-specific
@@ -23,7 +30,8 @@ Scope
   MCP PRs. The Mandala design documents were removed from HEAD under this
   policy (they remain in git history).
 
-Decision
+## Decision
+
 Classify each component into keep (hand-rolled, on purpose), adopt (a library
 earns its place), or decide (depends on ambition). Rationale is the axis on
 which the current code is measured, not fashion.
@@ -61,7 +69,8 @@ which the current code is measured, not fashion.
     agent** behind `AGENT_BACKEND`, keeping the deterministic planner as the
     default/offline path. (PR F.)
 
-Consequences
+## Consequences
+
 - Modernizing here *reduces* framework coupling: PR D lets us drop the
   heavyweight `langchain` package down to `langchain-core`.
 - The deterministic Null-Object defaults from ADR-0001 remain the CI/offline
@@ -70,7 +79,8 @@ Consequences
 - The roadmap separates shipped from planned per component, and each up-level
   PR moves its component from planned to shipped.
 
-Alternatives considered
+## Alternatives considered
+
 - Blanket "adopt frameworks to shrink the code": rejected. It is what pinned
   us to a stale `langchain` in the first place, and would replace defensible
   custom code (router, audit) with coupling for no benefit.
@@ -78,14 +88,16 @@ Alternatives considered
   reporting on a placeholder, retrieval on the keyword baseline, and the
   parser fragile.
 
-Implementation notes
+## Implementation notes
+
 - Sequenced in [docs/worklog/2026-07-01-modernization-plan.md](../worklog/2026-07-01-modernization-plan.md) as PRs
   0 and A–I.
 - Order: CI health (0) → scope/roadmap docs (A) → retrieval rename/vector
   (B, C) → structured outputs (D) → LiteLLM (E) → LangGraph agent (F) →
   optional MCP (G), Presidio (H), coverage gate (I).
 
-References
+## References
+
 - docs/worklog/2026-07-01-modernization-plan.md
 - docs/adr/0001-ports-and-adapters.md
 - docs/rag.md, docs/agents.md, docs/observability.md

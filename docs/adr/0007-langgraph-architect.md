@@ -1,10 +1,16 @@
+---
+title: ADR 0007: LangGraph tool-loop architect behind AGENT_BACKEND
+status: current
+module: architecture
+last_reviewed: 2026-07-05
+decision_date: 2026-07-04
+adr_status: Accepted
+---
+
 # ADR 0007: LangGraph tool-loop architect behind AGENT_BACKEND
 
-Date: 2026-07-04
+## Context
 
-Status: Accepted
-
-Context
 - The "architect agent" was a deterministic linear chain (memory →
   retrieval → single LLM call → parse), not an agent: the model never
   decides anything about control flow. ADR-0004 posed the choice for row F:
@@ -15,7 +21,8 @@ Context
   state routing, checkpointing hooks, and conditional edges for no benefit
   (build-vs-buy: the library wins on its own claim here).
 
-Decision
+## Decision
+
 - Add `app/services/langgraph_architect.py`: a `StateGraph` with an `agent`
   node (LLM decides: call a tool or finalize) and a `tools` node
   (`retrieve_docs` via `doc_retriever`, so the vector backend applies when
@@ -31,7 +38,8 @@ Decision
   `agent_tool_calls`; tokens/cost accumulate across loop turns via the
   LiteLLM client (ADR 0006 seam).
 
-Consequences
+## Consequences
+
 - The repo's "agent" claim is now real: model-driven control flow with tool
   feedback, observable in the audit trail.
 - Memory read/write integration remains builtin-only in this iteration;

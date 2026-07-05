@@ -1,10 +1,16 @@
+---
+title: ADR 0006: Native structured outputs; drop langchain, keep langchain-core
+status: current
+module: architecture
+last_reviewed: 2026-07-05
+decision_date: 2026-07-04
+adr_status: Accepted
+---
+
 # ADR 0006: Native structured outputs; drop langchain, keep langchain-core
 
-Date: 2026-07-04
+## Context
 
-Status: Accepted
-
-Context
 - `pyproject.toml` pinned `langchain==0.1.11` (early 2024). The only code
   importing the full `langchain` package was
   `app/services/prompt_runner.py`, which turned out to be dead code: no
@@ -20,7 +26,8 @@ Context
   with schema-level guardrails. That is already model-validated, typed
   output; it needs `langchain-core` only.
 
-Decision
+## Decision
+
 - Delete `app/services/prompt_runner.py` (`parse_json_safe`,
   `parse_with_langchain_schema`, `run_prompt_as_chat`,
   `extract_architect_fields`) rather than porting it: schema validation with
@@ -34,7 +41,8 @@ Decision
   model API) become practical once the LLM client moves to LiteLLM (plan
   row E); the parsing seam in `architect_agent` is where they will plug in.
 
-Consequences
+## Consequences
+
 - The stale early-2024 pin is gone; a fresh install resolves a current
   `langchain-core` only, which shrinks the dependency tree.
 - Behavior is unchanged: no live code path is modified, only removed. The

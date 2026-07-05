@@ -1,10 +1,16 @@
+---
+title: ADR 0005: Rename langchain_rag to doc_retriever; retire placeholder responses
+status: current
+module: architecture
+last_reviewed: 2026-07-05
+decision_date: 2026-07-04
+adr_status: Accepted
+---
+
 # ADR 0005: Rename langchain_rag to doc_retriever; retire placeholder responses
 
-Date: 2026-07-04
+## Context
 
-Status: Accepted
-
-Context
 - `app/services/langchain_rag.py` did not use LangChain. It was (and remains)
   a deterministic keyword/file scan over `DOCS_PATH` that returns snippet
   citations. The module name, its docstrings, and `docs/rag.md` all described
@@ -18,7 +24,8 @@ Context
   document matched it invented a `source: synthetic` citation. The `/query`
   router duplicated that fabrication in a second safety-net block.
 
-Decision
+## Decision
+
 - Rename `app/services/langchain_rag.py` to `app/services/doc_retriever.py`
   and describe it as what it is: a deterministic keyword-scan retriever.
 - Retire the placeholder response paths:
@@ -31,7 +38,8 @@ Decision
 - Rewrite `docs/rag.md` to document only what exists, pointing to
   MODERNIZATION_PLAN row C for the real vector backend.
 
-Consequences
+## Consequences
+
 - API-visible changes: `/query` grounded answers contain extracted snippets
   instead of the stub sentence; `audit.rag_backend` changes value; queries
   with an empty/missing corpus return zero citations instead of a fabricated
