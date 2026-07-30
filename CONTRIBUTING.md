@@ -35,3 +35,5 @@ Thanks for your interest in contributing! This project aims to be a minimal refe
 ## Developer tips
 - Makefile targets: `make venv | install | test | serve | lint | ingest | sweep | freeze | export-openapi`
 - Example requests: see `scripts/curl_examples.sh`
+- Export a session transcript for evaluation: `python scripts/export_session.py --list`,
+  then `python scripts/export_session.py --session <id> --out-dir <dir>`
