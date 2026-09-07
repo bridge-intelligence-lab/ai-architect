@@ -4,17 +4,21 @@ Guidance for coding agents working in this repo.
 
 ## Commands
 
+`make` (or `make help`) prints every target, self-documented and grouped
+(Setup / Test & Lint / Run / Data / Eval / Docker). Highlights:
+
 - `make venv && make install` — setup (Python 3.11+, installs `-e .`)
 - `make test` — full suite; offline by design (stub LLM fixture in conftest).
   CI enforces `--cov=app --cov=scripts --cov-fail-under=75`.
 - `make serve` — uvicorn on :8000
 - `make ingest` — build the Chroma store from DOCS_PATH (needed before
   `RAG_BACKEND=vector` does anything)
-- `make dev-up` / `make dev-down` — observability stack (Prometheus :9090,
-  Grafana :3001)
+- `make dev-up` / `make dev-down` — observability stack, base + dev override
+  (Prometheus :9090, Grafana :3001). `make prod-up` runs base only (no override).
 - Eval runs (BILLED OpenAI + LangSmith calls, never run casually):
-  `python scripts/run_langsmith_eval.py --experiment-prefix <name>`;
-  smoke variant: `--limit 3 --no-judges`. Long runs: use nohup (the harness
+  `make eval PREFIX=<name>` (wraps `scripts/run_langsmith_eval.py`);
+  free smoke: `make eval-smoke`. Also `make eval-dataset` (sync golden set,
+  `DRYRUN=1` to preview) and `make eval-grid`. Long runs: use nohup (the harness
   streams each example through the live server).
 
 ## Architecture in one paragraph
